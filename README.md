@@ -1,6 +1,6 @@
 # JavaProject
 
-## Group Java Project of The Milk Man Refuge
+## Group Java Project of The Milk Men Refuge
 
 
 
