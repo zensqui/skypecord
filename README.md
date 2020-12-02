@@ -1,4 +1,4 @@
-# JavaProject
+# Java Project
 
 ## Group Java Project of The Milk Men Refuge
 
