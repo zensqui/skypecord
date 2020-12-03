@@ -1,6 +1,6 @@
 
 import javax.swing.JFrame;
-import javax.swing.JPannel;
+import javax.swing.JPanel;
 import javax.swing.BorderFactory;
 
 
@@ -11,7 +11,7 @@ public class GUI {
         JFrame frame = new JFrame();
 
         
-        JPannel pannel = new JPannel();
+        JPanel pannel = new JPanel();
         pannel.setBorder(BorderFactory.createEmptyBorder(30, 30, 10, 30));
         pannel.setLayout(new Gridlayout(0, 1));
 
