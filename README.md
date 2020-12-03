@@ -1,13 +1,13 @@
 # Java Project
 
-## Group Java Project of The Milk Men Refuge
+## Group Java Project of MMR
 
 
 
-## we'll put our framework here
+## We'll put our framework here
 
 
 ## Dependencies
 
 
-## other
+## Other
