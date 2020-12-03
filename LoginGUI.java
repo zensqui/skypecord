@@ -1,7 +1,7 @@
-
 //Imports
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
 
 public class LoginGUI {
 
@@ -23,6 +23,7 @@ public class LoginGUI {
         layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, Login, 0, SpringLayout.HORIZONTAL_CENTER, contentPane);
         layout.putConstraint(SpringLayout.NORTH, Login, 400, SpringLayout.NORTH, contentPane);
         Login.setPreferredSize(new Dimension(800, 50));
+        Login.addActionListener(new LoginPressed());
 
         // Register Button setup
         JButton Register = new JButton("Register");
@@ -30,6 +31,7 @@ public class LoginGUI {
         layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, Register, 0, SpringLayout.HORIZONTAL_CENTER, contentPane);
         layout.putConstraint(SpringLayout.NORTH, Register, 500, SpringLayout.NORTH, contentPane);
         Register.setPreferredSize(new Dimension(800, 50));
+        Register.addActionListener(new RegisterPressed());
 
         // Finish Frame
         frame.pack();
@@ -38,5 +40,20 @@ public class LoginGUI {
         frame.setVisible(true);
         frame.setLocation(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    }
+
+    // login button actions
+    private static class LoginPressed implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+
+        }
+    }
+
+    // login Register actions
+    private static class RegisterPressed implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+
+        }
+
     }
 }
