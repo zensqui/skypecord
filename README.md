@@ -1,8 +1,8 @@
 # Dev Branch
 
-## Group Java Project of The Milk Men Refuge
+## Group Java Project of MMR
 
-## we'll put our framework here
+## We'll put our framework here
 import java.net.Socket;
 import javax.swing.*;
 import java.util.List;
@@ -16,8 +16,8 @@ import java.util.stream.Collectors;
 ## Dependencies
 
 
-## other
+## Other
 
 
 
-//approved by: Remi, 
+//approved by: Remi,
