@@ -9,12 +9,28 @@ public class ClientTest1 {
             Socket client = new Socket(ip, port);
             System.out.println("Connected to " + ip + " on port " + port + ".");
             
-            //sending input to server
-            DataOutputStream toServer = new DataOutputStream(client.getOutputStream());
-            toServer.writeUTF(UserIn);
+            //input from terminal
+            BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
 
-            //get and print response from server
+            //input to server
+            DataOutputStream toServer = new DataOutputStream(client.getOutputStream());
+
+            //get response from server
             DataInputStream fromServer = new DataInputStream(client.getInputStream());
+
+            //sends output to server
+            String line;
+            while (!line.equals("CloseConnection")) {
+                try { 
+                line = input.readLine();
+                toServer.writeUTF(line); 
+                } 
+                catch(IOException e) { 
+                e.printStackTrace();
+                } 
+            }
+
+            
             System.out.println(fromServer.readUTF());
 
             //close connection
@@ -33,11 +49,9 @@ public class ClientTest1 {
         String ip = scanner.next();
         System.out.println("Enter target port:");
         int port = scanner.nextInt();
-        System.out.println("Enter input to server:");
-        String userIn = scanner.next();
         scanner.close();
 
         //call client
-        Client(ip, port, userIn);
+        Client(ip, port);
     }
 }

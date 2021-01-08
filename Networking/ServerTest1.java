@@ -16,8 +16,11 @@ public class ServerTest1 {
             BufferedReader inputReader = new BufferedReader(new InputStreamReader(fromClient));
             String inputLine;
             while ((inputLine = inputReader.readLine()) != null) {
+                if(".".equals(inputLine)) {
+                    System.out.println("Goodbye.");
+                    break;
+                }
                 System.out.println(inputLine);
-                break;
             }
             DataOutputStream toClient = new DataOutputStream(server.getOutputStream());
             fromClient.transferTo(toClient);
