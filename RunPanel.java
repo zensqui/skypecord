@@ -27,6 +27,7 @@ public class RunPanel
       
       frame.pack();
       frame.setVisible( true );
-    
+      frame.setResizable(false);
+
    }
 }

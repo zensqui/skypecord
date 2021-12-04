@@ -63,6 +63,11 @@ public class Panel extends JPanel
       }   
    }
    
+   public static void eraseAll()
+   {
+      g.setColor(Color.white);
+   }
+   
    public static void drawArray(int[][] pic){
       for (int x = 0; x < pic.length; x++) {
          for (int y = 0; y < pic[0].length; y++) {
