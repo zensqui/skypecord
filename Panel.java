@@ -14,11 +14,10 @@ public class Panel extends JPanel
    private int x1, y1, x2, y2;
 
    private static int[][] pic;
-    
-   private static BufferedImage image = new BufferedImage(400, 400, BufferedImage.TYPE_INT_RGB);
-   Graphics2D g2d = image.createGraphics();
    
-   static JLabel picLabel = new JLabel(new ImageIcon(image));
+   private static BufferedImage image = new BufferedImage(400, 400, BufferedImage.TYPE_INT_RGB);
+   
+   private static Graphics2D g2d = image.createGraphics();
    
    private MyMouseHandler handler;
    private static Graphics g;
@@ -26,6 +25,7 @@ public class Panel extends JPanel
    // CONSTRUCTOR
    public Panel()
    {
+   
       setBackground(BACK_COLOR);
       setPreferredSize(new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT));
       
@@ -40,7 +40,7 @@ public class Panel extends JPanel
             pic[i][j] = 0;
          }
       }
-     
+
       this.addMouseListener(handler);
       this.addMouseMotionListener(handler);
    }
@@ -50,6 +50,7 @@ public class Panel extends JPanel
       g = getGraphics();
    }
     
+   //refreshes array and print 
    public static void printArray(int[][] pic)
    {
       drawArray(pic);
@@ -63,16 +64,31 @@ public class Panel extends JPanel
       }   
    }
    
+   
+   //doesn't work
    public static void eraseAll()
    {
-      g.setColor(Color.white);
+      Panel p = new Panel();
+      p.setBackground(Color.WHITE);
+      
+      g2d.setColor(Color.WHITE);
+      
+      p.removeAll();
+      p.updateUI();
+      
+      System.out.println("erase all");
    }
    
-   public static void drawArray(int[][] pic){
-      for (int x = 0; x < pic.length; x++) {
-         for (int y = 0; y < pic[0].length; y++) {
+   
+   public static void drawArray(int[][] pic)
+   {
+      for (int x = 0; x < pic.length; x++) 
+      {
+         for (int y = 0; y < pic[0].length; y++) 
+         {
          
             final int color = image.getRGB(x, y);
+            
             if(color == -16777216){
                pic[x][y] = 0;
             }else{
@@ -80,6 +96,8 @@ public class Panel extends JPanel
             }                 
          }
       }
+      
+      
    }
    
    public static int[][] getArray(){

@@ -54,9 +54,10 @@ public class Panel1 extends JPanel
          }else if((JButton)e.getSource() == print){
             Panel2.buildImage(Panel.getArray());
          }else if((JButton)e.getSource() == erase){
-            JOptionPane.showMessageDialog(no,"There are no mistakes in art.");
-            //Panel.eraseAll();
+            //JOptionPane.showMessageDialog(no,"There are no mistakes in art.");
             
+            Panel.eraseAll();
+     
          }
       }
    }
