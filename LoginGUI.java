@@ -38,22 +38,23 @@ public class LoginGUI {
         frame.setExtendedState(frame.getExtendedState() | JFrame.MAXIMIZED_BOTH);
         frame.setSize(screenSize.width - 100, screenSize.height - 100);
         frame.setVisible(true);
-        frame.setLocation(null);
+        frame.setLocation(50, 50);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
     // login button actions
     private static class LoginPressed implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-
+            LoginDemo login = new LoginDemo();
+            login.setLocation(400, 100);
         }
     }
 
     // login Register actions
     private static class RegisterPressed implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-
+            RegisterDemo register = new RegisterDemo();
+            register.setLocation(400, 100);
         }
-
     }
 }
