@@ -1,0 +1,7 @@
+{
+    "java.project.sourcePaths": [
+        "Frontend/Games",
+        "Frontend/App",
+        "Frontend/Drawing"
+    ]
+}
