@@ -16,6 +16,22 @@ public class LoginGUI {
         Container contentPane = frame.getContentPane();
         SpringLayout layout = new SpringLayout();
         contentPane.setLayout(layout);
+        
+        JLabel serverLabel = new JLabel("Enter Server Address");
+        contentPane.add(serverLabel);
+        layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, serverLabel, 0, SpringLayout.HORIZONTAL_CENTER, contentPane);
+        layout.putConstraint(SpringLayout.NORTH, serverLabel, 200, SpringLayout.NORTH, contentPane);
+        serverLabel.setPreferredSize(new Dimension(800, 50));
+        
+
+        JTextField serverAdd = new JTextField();
+        contentPane.add(serverAdd);
+        layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, serverAdd, 0, SpringLayout.HORIZONTAL_CENTER, contentPane);
+        layout.putConstraint(SpringLayout.NORTH, serverAdd, 300, SpringLayout.NORTH, contentPane);
+        serverAdd.setPreferredSize(new Dimension(800, 50));
+
+        //contains server address
+        String s = serverAdd.getText();
 
         // Login Button setup
         JButton Login = new JButton("Login");
