@@ -9,8 +9,8 @@ public class GameTester {
         gameFrame.setResizable(false);
         gameFrame.setSize(800, 800);
         ChessBoard mainChessboard = new ChessBoard();
+        System.out.println(mainChessboard.toString());
         JPanel gamePanel = new ChessPanel().boardPanel;
         gameFrame.add(gamePanel);
-        gameFrame.pack();
     }
 }
