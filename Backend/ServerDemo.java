@@ -1,7 +1,7 @@
 import java.net.*;
 import java.io.*;
 
-public class server {
+public class ServerDemo {
     public static void main(String[] args) throws IOException {
         ServerSocket socket = new ServerSocket(5050);
         System.out.println("Server started - waiting for client connection..");

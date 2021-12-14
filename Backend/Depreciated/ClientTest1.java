@@ -1,3 +1,4 @@
+package Depreciated;
 import java.net.*;
 import java.io.*;
 import java.util.Scanner;
@@ -22,11 +23,11 @@ public class ClientTest1 {
             String line = "";
             while (!line.equals("CloseConnection")) {
                 try { 
-                line = input.readLine();
-                toServer.writeUTF(line); 
+                    line = input.readLine();
+                    toServer.writeUTF(line); 
                 } 
                 catch(IOException e) { 
-                e.printStackTrace();
+                    e.printStackTrace();
                 } 
             }
 

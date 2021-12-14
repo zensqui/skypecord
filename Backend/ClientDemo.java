@@ -1,7 +1,7 @@
 import java.net.*;
 import java.io.*;
 
-public class client {
+public class ClientDemo {
     public static void main(String[] args) throws IOException {
         Socket client = new Socket("127.0.0.1", 5050);
         System.out.println("Connected to server.");
