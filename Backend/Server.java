@@ -1,5 +1,5 @@
 import java.net.*;
-import java.io.*;
+import java.io.*; 
 
 public class Server {
     static final int port = 5050;
@@ -10,6 +10,7 @@ public class Server {
         Socket socket = null;
         while (true) {
             socket = server.accept();
+            new ConnectionThread(socket).start();
         }
     }
 }
