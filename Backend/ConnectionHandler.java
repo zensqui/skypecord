@@ -1,10 +1,10 @@
 import java.net.*;
 import java.io.*;
 
-public class ConnectionThread extends Thread {
+public class ConnectionHandler extends Thread {
     private Socket socket;
 
-    public ConnectionThread(Socket socket) {
+    public ConnectionHandler(Socket socket) {
         this.socket = socket;
     }
 
