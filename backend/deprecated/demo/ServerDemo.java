@@ -1,4 +1,4 @@
-package Demo;
+package deprecated.demo;
 import java.net.*;
 import java.io.*;
 
