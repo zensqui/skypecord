@@ -19,5 +19,7 @@ public class ClientDemo {
                 System.out.print(c);
             }
         }
+
+        client.close();
     }    
 }

@@ -16,5 +16,7 @@ public class ServerDemo {
             char c = (char)in.read();
             out.write((byte)c);
         }
+
+        server.close();
     }
 }

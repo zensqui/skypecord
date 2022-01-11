@@ -2,8 +2,6 @@ import java.net.*;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.*;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class ConnectionHandler implements Runnable {
