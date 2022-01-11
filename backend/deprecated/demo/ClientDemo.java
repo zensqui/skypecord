@@ -1,4 +1,4 @@
-package Demo;
+package deprecated.demo;
 import java.net.*;
 import java.io.*;
 
@@ -19,5 +19,7 @@ public class ClientDemo {
                 System.out.print(c);
             }
         }
+
+        client.close();
     }    
 }

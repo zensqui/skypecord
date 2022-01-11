@@ -1,4 +1,4 @@
-package Depreciated;
+package deprecated;
 import java.net.*;
 import java.io.*;
 import java.util.Scanner;
@@ -33,7 +33,7 @@ public class ServerTest1 {
 
             //close connection
             //server.close();
-            //serverSocket.close();
+            serverSocket.close();
         }
         catch(IOException e) {
             e.printStackTrace();

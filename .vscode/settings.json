@@ -1,7 +1,10 @@
 {
     "java.project.sourcePaths": [
-        "Frontend/Games",
+        "Frontend/Drawing",
         "Frontend/App",
-        "Frontend/Drawing"
+        "backend"
+    ],
+    "java.project.referencedLibraries": [
+        "json-simple-1.1.jar"
     ]
 }
