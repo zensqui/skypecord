@@ -13,7 +13,7 @@ public class Client {
         OutputStreamWriter out = new OutputStreamWriter(client.getOutputStream(), StandardCharsets.UTF_8);
 
         String input = "";
-        while (input = in.readLine() != null) {
+        while ((input = in.readLine()) != null) {
             JSONObject json = new JSONObject();
         }
         while (true) {
