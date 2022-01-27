@@ -1,8 +1,7 @@
 {
     "java.project.sourcePaths": [
-        "Frontend/Drawing",
-        "Frontend/App",
-        "backend"
+        "backend",
+        "frontend/app"
     ],
     "java.project.referencedLibraries": [
         "json-simple-1.1.jar"
