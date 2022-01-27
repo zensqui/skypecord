@@ -1,18 +1,22 @@
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import java.io.*;
 public class LoginDemo extends JFrame implements ActionListener {
    JPanel panel;
    JLabel user_label, password_label, message;
    JTextField userName_text;
    JPasswordField password_text;
    JButton submit, cancel;
+
+   Client client;
    
    //final user name and passwords will be stored in here
    String u;  
    String p;
    
-   public LoginDemo() {
+   public LoginDemo(Client client) {
+      this.client = client;
 
       SpringLayout layout = new SpringLayout();
 
@@ -20,7 +24,7 @@ public class LoginDemo extends JFrame implements ActionListener {
       panel = new JPanel(layout);
 
       panel.setBackground(Color.white);
-      ImageIcon logo = new ImageIcon("./content/logo.jpg");
+      ImageIcon logo = new ImageIcon("./client/app/content/logo.jpg");
 
       ImageIcon scaledImage = new ImageIcon(logo.getImage().getScaledInstance(logo.getIconWidth() / 3,logo.getIconHeight() / 3, Image.SCALE_SMOOTH));
 
@@ -66,7 +70,7 @@ public class LoginDemo extends JFrame implements ActionListener {
       message.setPreferredSize(new Dimension(200, 45));
 
 
-      ImageIcon submitPic = new ImageIcon("./content/submit button.jpg");
+      ImageIcon submitPic = new ImageIcon("./client/app/content/submitbutton.jpg");
       
       submit = new JButton(submitPic);
       panel.add(submit);
@@ -88,24 +92,26 @@ public class LoginDemo extends JFrame implements ActionListener {
       setSize(550, 600);
       setVisible(true);
    }
-   public static void main(String[] args) {
-      new LoginDemo();
-   }
+
    @Override
    public void actionPerformed(ActionEvent ae) {
       String userName = userName_text.getText();
       String password = password_text.getText();
       
       if(userName.trim().equals("")){
-         message.setText("Enter a UserName");
+         message.setText("Please enter a valid username.");
       }else if(password.trim().equals("")){
-         message.setText("Enter Password");
-      }else if (userName.trim().equals("admin") && password.trim().equals("admin")) { //would search bank of user names and passwords
-         message.setText(" Hello " + userName + "");
+         message.setText("Please enter a valid password.");
+      }else {         
          u = userName;
          p = password;
-      }else {                                      //if it can't find user name and password in bank 
-         message.setText(" Invalid user.. ");
+         try {
+            client.login(u, p);
+            message.setText(" Hello " + userName + "");
+         } catch (Exception e) {
+            e.printStackTrace();
+         }
+         //message.setText(" Invalid username or password. Please try again.");
       }
    }
 }

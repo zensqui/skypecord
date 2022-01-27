@@ -9,20 +9,23 @@ public class RegisterDemo extends JFrame implements ActionListener {
    JPasswordField password_text;
    JPasswordField confirmPassword_text;
    JButton submit, cancel;
+
+   Client client;
    
    //final user names and passwords will be stored in here
    String u;
    String p;
    
 
-   public RegisterDemo() {
+   public RegisterDemo(Client client) {
+      this.client = client;
 
       SpringLayout layout = new SpringLayout();
 
       panel = new JPanel(layout);
       
       panel.setBackground(Color.white);
-      ImageIcon logo = new ImageIcon("./content/logo.jpg");
+      ImageIcon logo = new ImageIcon("./client/app/content/logo.jpg");
 
       ImageIcon scaledImage = new ImageIcon(logo.getImage().getScaledInstance(logo.getIconWidth() / 3,logo.getIconHeight() / 3, Image.SCALE_SMOOTH));
 
@@ -72,7 +75,7 @@ public class RegisterDemo extends JFrame implements ActionListener {
 
 
       // Submit
-      ImageIcon submitPic = new ImageIcon("./content/submit button.jpg");
+      ImageIcon submitPic = new ImageIcon("./client/app/content/submitbutton.jpg");
       submit = new JButton(submitPic);
       layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, submit, 0, SpringLayout.HORIZONTAL_CENTER, panel);
       layout.putConstraint(SpringLayout.NORTH, submit, 480, SpringLayout.NORTH, panel);
@@ -113,9 +116,7 @@ public class RegisterDemo extends JFrame implements ActionListener {
       setSize(550, 600);
       setVisible(true);
    }
-   public static void main(String[] args) {
-      new RegisterDemo();
-   }
+
    @Override
    public void actionPerformed(ActionEvent ae) {
 

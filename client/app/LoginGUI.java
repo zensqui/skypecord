@@ -2,12 +2,10 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.*;
 
 public class LoginGUI {
-
     public static void main(String[] args) {
-
-
         // Gets Size of screen so we can set correct size and center the GUI
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
@@ -20,7 +18,7 @@ public class LoginGUI {
 
         contentPane.setBackground(Color.white);
 
-        ImageIcon logo = new ImageIcon("./content/logo.jpg");
+        ImageIcon logo = new ImageIcon("./client/app/content/logo.jpg");
 
         ImageIcon scaledImage = new ImageIcon(logo.getImage().getScaledInstance(logo.getIconWidth() / 2,logo.getIconHeight() / 2, Image.SCALE_SMOOTH));
 
@@ -34,7 +32,7 @@ public class LoginGUI {
 
 
         // Login Button setup
-        ImageIcon loginPic = new ImageIcon("./content/login button.jpg");
+        ImageIcon loginPic = new ImageIcon("./client/app/content/loginbutton.jpg");
 
         JButton login = new JButton(loginPic);
         
@@ -51,7 +49,7 @@ public class LoginGUI {
 
         // Register Button setup
 
-        ImageIcon registerPic = new ImageIcon("./content/register button.jpg");
+        ImageIcon registerPic = new ImageIcon("./client/app/content/registerbutton.jpg");
 
         JButton Register = new JButton(registerPic);
         
@@ -67,13 +65,9 @@ public class LoginGUI {
         Register.addActionListener(new RegisterPressed());
 
         // Finish Frame
-        frame.pack();
-        frame.setExtendedState(frame.getExtendedState() | JFrame.MAXIMIZED_BOTH);
-        //frame.setSize(screenSize.width - 100, screenSize.height - 100);
         frame.setSize(550, 600);
         frame.setLocation(screenSize.width/2-frame.getSize().width/2, screenSize.height/2-frame.getSize().height/2);
         frame.setVisible(true);
-        //frame.setLocation(400, 50);
         frame.setResizable(false);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
@@ -81,19 +75,28 @@ public class LoginGUI {
     // login button actions
     private static class LoginPressed implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-            Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-            LoginDemo login = new LoginDemo();
-            login.setLocation(screenSize.width / 2 - login.getSize().width / 2, screenSize.height / 2 - login.getSize().height / 2);
+            try {
+                Client client = new Client();
+                Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+                LoginDemo login = new LoginDemo(client);
+                login.setLocation(screenSize.width / 2 - login.getSize().width / 2, screenSize.height / 2 - login.getSize().height / 2);
+            } catch(IOException err) {
+                System.out.println("Error: " + err);
+            }    
         }
     }
 
     // login Register actions
     private static class RegisterPressed implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-            Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-            RegisterDemo register = new RegisterDemo();
-            register.setLocation(screenSize.width / 2 - register.getSize().width / 2, screenSize.height / 2 - register.getSize().height / 2);
-            
+            try {
+                Client client = new Client();
+                Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+                RegisterDemo register = new RegisterDemo(client);
+                register.setLocation(screenSize.width / 2 - register.getSize().width / 2, screenSize.height / 2 - register.getSize().height / 2);
+            } catch(IOException err) {
+                System.out.println("Error: " + err);
+            }
         }
     }
 }
