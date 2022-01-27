@@ -5,6 +5,11 @@ import java.nio.charset.StandardCharsets;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.*;
 public class Client {
+    
+
+    public Client() {
+
+    }
     public static void main(String[] args) throws IOException, ParseException {
         Socket client = new Socket("sc.zenithproject.xyz", 5050);
 

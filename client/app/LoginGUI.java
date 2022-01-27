@@ -20,7 +20,7 @@ public class LoginGUI {
 
         contentPane.setBackground(Color.white);
 
-        ImageIcon logo = new ImageIcon("./content/logo.jpg");
+        ImageIcon logo = new ImageIcon("./client/app/content/logo.jpg");
 
         ImageIcon scaledImage = new ImageIcon(logo.getImage().getScaledInstance(logo.getIconWidth() / 2,logo.getIconHeight() / 2, Image.SCALE_SMOOTH));
 
@@ -34,7 +34,7 @@ public class LoginGUI {
 
 
         // Login Button setup
-        ImageIcon loginPic = new ImageIcon("./content/login button.jpg");
+        ImageIcon loginPic = new ImageIcon("./client/app/content/loginbutton.jpg");
 
         JButton login = new JButton(loginPic);
         
@@ -51,7 +51,7 @@ public class LoginGUI {
 
         // Register Button setup
 
-        ImageIcon registerPic = new ImageIcon("./content/register button.jpg");
+        ImageIcon registerPic = new ImageIcon("./client/app/content/registerbutton.jpg");
 
         JButton Register = new JButton(registerPic);
         
