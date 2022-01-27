@@ -20,7 +20,7 @@ public class LoginDemo extends JFrame implements ActionListener {
       panel = new JPanel(layout);
 
       panel.setBackground(Color.white);
-      ImageIcon logo = new ImageIcon("./content/logo.jpg");
+      ImageIcon logo = new ImageIcon("./client/app/content/logo.jpg");
 
       ImageIcon scaledImage = new ImageIcon(logo.getImage().getScaledInstance(logo.getIconWidth() / 3,logo.getIconHeight() / 3, Image.SCALE_SMOOTH));
 
@@ -66,7 +66,7 @@ public class LoginDemo extends JFrame implements ActionListener {
       message.setPreferredSize(new Dimension(200, 45));
 
 
-      ImageIcon submitPic = new ImageIcon("./content/submit button.jpg");
+      ImageIcon submitPic = new ImageIcon("./client/app/content/submitbutton.jpg");
       
       submit = new JButton(submitPic);
       panel.add(submit);
