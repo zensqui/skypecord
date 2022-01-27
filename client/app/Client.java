@@ -22,5 +22,10 @@ public class Client {
         json.put("pass", pass);
         out.append(json.toJSONString() + "\n");
         out.flush();
-    }  
+    }
+
+    public static void main(String[] args) throws IOException, ParseException {
+        Client client = new Client();
+        client.login("test", "test");
+    }
 }
