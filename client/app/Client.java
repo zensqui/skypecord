@@ -25,7 +25,9 @@ public class Client {
     }
 
     public static void main(String[] args) throws IOException, ParseException {
+        System.out.println("Running...");
         Client client = new Client();
         client.login("test", "test");
+        System.out.println("Done.");
     }
 }
