@@ -9,13 +9,16 @@ public class RegisterDemo extends JFrame implements ActionListener {
    JPasswordField password_text;
    JPasswordField confirmPassword_text;
    JButton submit, cancel;
+
+   Client client;
    
    //final user names and passwords will be stored in here
    String u;
    String p;
    
 
-   public RegisterDemo() {
+   public RegisterDemo(Client client) {
+      this.client = client;
 
       SpringLayout layout = new SpringLayout();
 
@@ -113,9 +116,7 @@ public class RegisterDemo extends JFrame implements ActionListener {
       setSize(550, 600);
       setVisible(true);
    }
-   public static void main(String[] args) {
-      new RegisterDemo();
-   }
+
    @Override
    public void actionPerformed(ActionEvent ae) {
 
