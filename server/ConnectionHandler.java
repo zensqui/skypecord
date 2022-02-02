@@ -19,6 +19,7 @@ public class ConnectionHandler implements Runnable {
         this.socket = socket;
         this.listener = listener;
         this.queue = new LinkedBlockingQueue<JSONObject>();
+        this.user = user;
     }
 
     public void run() {

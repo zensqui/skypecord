@@ -60,13 +60,14 @@ public class DbInterface {
                 Statement stmt = conn.createStatement();
                 String sql = String.format("SELECT * FROM users WHERE user='%s'", user);
                 ResultSet res = stmt.executeQuery(sql);
-                int exit = res.getString("pass").equals(pass) ? 1 : 3;
+                res.next();
+                int exit = res.getString("pass").equals(pass) ? 0 : 2;
                 return exit;
             }
-            return 2;
+            return 1;
         } catch (SQLException e) {
             e.printStackTrace();
-            return 4;
+            return 3;
         }
     }
 
