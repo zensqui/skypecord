@@ -132,9 +132,14 @@ public class RegisterDemo extends JFrame implements ActionListener {
          }else if(confirmPassword.trim().equals("")){
             message.setText("Please confirm password");
          }else if (confirmPassword.trim().equals(password.trim())) {
+            u = userName.trim();
+            p = password.trim();
+            try {
+               client.register(u, p);
+            } catch (Exception e) {
+               e.printStackTrace();
+            }
             message.setText(" Hello " + userName + "!");
-            u = userName;
-            p = password;
          
          }else if(confirmPassword.trim() != password.trim()){
             message.setText("Passwords don't match");

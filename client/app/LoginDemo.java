@@ -1,7 +1,7 @@
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
-import java.io.*;
+
 public class LoginDemo extends JFrame implements ActionListener {
    JPanel panel;
    JLabel user_label, password_label, message;
@@ -103,8 +103,8 @@ public class LoginDemo extends JFrame implements ActionListener {
       }else if(password.trim().equals("")){
          message.setText("Please enter a valid password.");
       }else {         
-         u = userName;
-         p = password;
+         u = userName.trim();
+         p = password.trim();
          try {
             client.login(u, p);
             message.setText(" Hello " + userName + "");

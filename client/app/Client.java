@@ -39,7 +39,7 @@ public class Client {
 
     public void message(String type, String target, String data) throws IOException, ParseException {
         JSONObject json = new JSONObject();
-        json.put("type", type);
+        json.put("type", "msg");
         json.put("user", user);
         json.put("target", target);
         json.put("data", data);

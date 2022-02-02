@@ -15,7 +15,7 @@ public class ConnectionHandler implements Runnable {
 
     private String user;
 
-    public ConnectionHandler(Socket socket, ServerEventListener listener) {
+    public ConnectionHandler(Socket socket, ServerEventListener listener, String user) {
         this.socket = socket;
         this.listener = listener;
         this.queue = new LinkedBlockingQueue<JSONObject>();
@@ -34,11 +34,6 @@ public class ConnectionHandler implements Runnable {
             queueReader = new ThreadedQueueReader(queue, queueListener);
             Thread tQueue = new Thread(queueReader);
             tQueue.start();
-
-            JSONObject jsonOut = new JSONObject();
-            jsonOut.put("type", "status");
-            jsonOut.put("data", "Connected to sc.zenithproject.xyz.");
-            out.flush();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -49,13 +44,6 @@ public class ConnectionHandler implements Runnable {
     }
 
     public String getUser() {
-        while (this.user == null) {
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
         return this.user;
     }
 
@@ -86,11 +74,7 @@ class InputEventHandler implements InputEventListener {
     }
 
     public void onInputEvent(JSONObject json) {
-        if (json.get("type").toString().equals("login")) {
-            connection.setUser(json.get("user").toString());
-        } else {
-            listener.onServerEvent(json);
-        }
+        listener.onServerEvent(connection, json);
     }
 }
 
