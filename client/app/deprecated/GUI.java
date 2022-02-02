@@ -1,3 +1,4 @@
+package deprecated;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -13,9 +14,9 @@ public class GUI {
         
         JPanel pannel = new JPanel();
         pannel.setBorder(BorderFactory.createEmptyBorder(30, 30, 10, 30));
-        pannel.setLayout(new Gridlayout(0, 1));
+        //pannel.setLayout(new Gridlayout(0, 1));
 
-        frame.add(pannel, BorderLayout.CENTER);
+        //frame.add(pannel, BorderLayout.CENTER);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setTitle("Our GUI");
         frame.pack();

@@ -4,6 +4,7 @@
         "server"
     ],
     "java.project.referencedLibraries": [
-        "json-simple-1.1.jar"
+        "dependencies/json-simple-1.1.jar",
+        "dependencies/mysql-connector-java-8.0.28.jar"
     ]
 }

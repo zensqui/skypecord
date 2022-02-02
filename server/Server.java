@@ -11,12 +11,14 @@ public class Server {
         ServerSocket server = new ServerSocket(port);
         System.out.println("Server listening on port " + port + ".");
 
+        DbInterface db = new DbInterface();
+
         Socket socket = null;
         while (true) {
             socket = server.accept();
-
             ServerEventListener listener = new EventHandler();
-            ConnectionHandler connection = new ConnectionHandler(socket, listener);
+
+            ConnectionHandler connection = new ConnectionHandler(socket, listener, db);
             Thread t = new Thread(connection);
             t.start();
 

@@ -13,12 +13,15 @@ public class ConnectionHandler implements Runnable {
     private OutputStreamWriter out;
     private ThreadedQueueReader queueReader;
 
+    private DbInterface db;
+
     private String user;
 
-    public ConnectionHandler(Socket socket, ServerEventListener listener) {
+    public ConnectionHandler(Socket socket, ServerEventListener listener, DbInterface db) {
         this.socket = socket;
         this.listener = listener;
         this.queue = new LinkedBlockingQueue<JSONObject>();
+        this.db = db;
     }
 
     public void run() {
