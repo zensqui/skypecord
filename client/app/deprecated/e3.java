@@ -1,3 +1,4 @@
+package deprecated;
 import javax.swing.*;
 import javax.swing.text.StyledDocument;
 
