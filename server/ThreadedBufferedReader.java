@@ -21,7 +21,7 @@ public class ThreadedBufferedReader implements Runnable {
                 listener.onInputEvent(jsonIn);
             }
         } catch (Exception e) {
-            //e.printStackTrace();
+            e.printStackTrace();
         }
     }
 }
