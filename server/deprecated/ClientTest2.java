@@ -1,3 +1,4 @@
+package deprecated;
 import java.net.*;
 import java.io.*;
 import java.nio.charset.StandardCharsets;

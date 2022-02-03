@@ -17,61 +17,75 @@ public class DbInterface {
             e.printStackTrace();
         }
     }
-
-    public Boolean createUser(String user, String pass) {
+    //* 0 = User created successfully.
+    //* 1 = User already exists.
+    //* 2 = User creation failed.
+    public int addUser(String user, String pass) {
         try {
-            if (!userExists(user)) {
+            if (userExists(user) == 1) {
                 Statement stmt = conn.createStatement();
                 String sql = String.format("INSERT INTO users(user, pass) VALUES ('%s', '%s')", user, pass);
                 stmt.executeUpdate(sql);
-                return true;
+                return 0;
             }
-            return false;
+            return 1;
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
+            return 2;
         }
     }
 
-    public Boolean userExists(String user) {
+    //* 0 = User exists.
+    //* 1 = User does not exist.
+    //* 2 = User check failed.
+    public int userExists(String user) {
         try {
             Statement stmt = conn.createStatement();
             String sql = String.format("SELECT * FROM users WHERE user='%s'", user);
             ResultSet res = stmt.executeQuery(sql);
-            return res.next();
+            return res.next() ? 0 : 1;
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
+            return 3;
         }
     }
 
-    public Boolean auth(String user, String pass) {
+    //* 0 = User authenticated successfully.
+    //* 1 = User does not exist.
+    //* 2 = User password incorrect.
+    //* 3 = User authentication failed.
+    public int auth(String user, String pass) {
         try {
-            if(userExists(user)) {
+            if(userExists(user) == 0) {
                 Statement stmt = conn.createStatement();
                 String sql = String.format("SELECT * FROM users WHERE user='%s'", user);
                 ResultSet res = stmt.executeQuery(sql);
-                return res.getString("pass").equals(pass);
+                res.next();
+                int exit = res.getString("pass").equals(pass) ? 0 : 2;
+                return exit;
             }
-            return false;
+            return 1;
         } catch (SQLException e) {
             e.printStackTrace();
-            return null;
+            return 3;
         }
     }
 
-    public Boolean delUser(String user) {
+    //* 0 = User deleted successfully.
+    //* 1 = User does not exist.
+    //* 2 = User deletion failed.
+    public int delUser(String user) {
         try {
-            if (userExists(user)) {
+            if (userExists(user) == 0) {
                 Statement stmt = conn.createStatement();
                 String sql = String.format("DELETE FROM users WHERE user='%s'", user);
                 stmt.executeUpdate(sql);
-                return true;
+                return 0;
             }
-            return false;
+            return 1;
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
+            return 2;
         }
     }
 }
