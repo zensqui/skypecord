@@ -2,6 +2,8 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
+import org.json.simple.JSONObject;
+
 public class RegisterDemo extends JFrame implements ActionListener {
    JPanel panel;
    JLabel user_label, password_label, message, confirmPassword_label;
@@ -112,7 +114,7 @@ public class RegisterDemo extends JFrame implements ActionListener {
       // Adding the listeners to components..
       submit.addActionListener(this);
       add(panel, BorderLayout.CENTER);
-      setTitle("Please Register Here !");
+      setTitle("Skypecord | Registration");
       setSize(550, 600);
       setVisible(true);
    }
@@ -123,29 +125,33 @@ public class RegisterDemo extends JFrame implements ActionListener {
       if((JButton)ae.getSource() == submit){
          String userName = userName_text.getText();
          String password = password_text.getText();
-         String confirmPassword = confirmPassword_text.getText();
-      
-         if(userName.trim().equals("")){
-            message.setText("Enter a UserName");
-         }else if(password.trim().equals("")){
-            message.setText("Enter Password");
-         }else if(confirmPassword.trim().equals("")){
-            message.setText("Please confirm password");
-         }else if (confirmPassword.trim().equals(password.trim())) {
+         String confirmPassword = confirmPassword_text.getText(); 
+
+         if(password.trim().equals(confirmPassword.trim())) {
             u = userName.trim();
             p = password.trim();
             try {
                client.register(u, p);
+               JSONObject res = client.getResponse();
+               String exit = res.get("data").toString();
+               switch (exit) {
+                  case "0":
+                     message.setText("Registration successful.");
+                     break;
+                  case "1":
+                     message.setText("User already exists.");
+                     break;
+                  case "2":
+                     message.setText("Registration failed. Please try again.");
+                     break;
+               }
             } catch (Exception e) {
                e.printStackTrace();
             }
-            message.setText(" Hello " + userName + "!");
-         
-         }else if(confirmPassword.trim() != password.trim()){
-            message.setText("Passwords don't match");
+         } else {
+            message.setText("Passwords don't match.");
          }
-      }
-      else if((JButton)ae.getSource() == cancel){
+      } else if((JButton)ae.getSource() == cancel){
          
       }
    }

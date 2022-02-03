@@ -2,6 +2,8 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
+import org.json.simple.JSONObject;
+
 public class LoginDemo extends JFrame implements ActionListener {
    JPanel panel;
    JLabel user_label, password_label, message;
@@ -88,7 +90,7 @@ public class LoginDemo extends JFrame implements ActionListener {
       // Adding the listeners to components..
       submit.addActionListener(this);
       add(panel, BorderLayout.CENTER);
-      setTitle("Please Login Here !");
+      setTitle("Skypecord | Login");
       setSize(550, 600);
       setVisible(true);
    }
@@ -96,22 +98,29 @@ public class LoginDemo extends JFrame implements ActionListener {
    @Override
    public void actionPerformed(ActionEvent ae) {
       String userName = userName_text.getText();
-      String password = password_text.getText();
-      
-      if(userName.trim().equals("")){
-         message.setText("Please enter a valid username.");
-      }else if(password.trim().equals("")){
-         message.setText("Please enter a valid password.");
-      }else {         
-         u = userName.trim();
-         p = password.trim();
-         try {
-            client.login(u, p);
-            message.setText(" Hello " + userName + "");
-         } catch (Exception e) {
-            e.printStackTrace();
+      String password = password_text.getText();        
+      u = userName.trim();
+      p = password.trim();
+      try {
+         client.login(u, p);
+         JSONObject res = client.getResponse();
+         String exit = res.get("data").toString();
+         switch (exit) {
+            case "0":
+               message.setText("Login successful.");
+               break;
+            case "1":
+               message.setText("Invalid user.");
+               break;
+            case "2":
+               message.setText("Invalid password.");
+               break;
+            case "3":
+               message.setText("Login failed. Please try again.");
+               break;
          }
-         //message.setText(" Invalid username or password. Please try again.");
+      } catch (Exception e) {
+         e.printStackTrace();
       }
    }
 }

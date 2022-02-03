@@ -9,7 +9,7 @@ public class LoginGUI {
         // Gets Size of screen so we can set correct size and center the GUI
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
-        JFrame frame = new JFrame("LoginGUI");
+        JFrame frame = new JFrame("Skypecord");
 
         // Creates a container (practicaly the a panel) that is used to set up the GUI
         Container contentPane = frame.getContentPane();
