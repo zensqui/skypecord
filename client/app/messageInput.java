@@ -81,6 +81,11 @@ public class messageInput extends JFrame implements ActionListener{
         new messageInput();
     }
 
+    public void addMessage(String input){
+      if(!(message.getText() == null)){
+         model.addElement(user + ": " + message.getText());
+      }
+    }
 
     @Override
    public void actionPerformed(ActionEvent e) {
