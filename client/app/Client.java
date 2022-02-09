@@ -11,24 +11,23 @@ public class Client {
     private ThreadedBufferedReader in;
     private OutputStreamWriter out;
     private LinkedBlockingQueue<JSONObject> queue;
+    private InputEventHandler inputListener;
 
     private String user;
-
-    private messageInput messageUi;
 
     public Client() throws IOException {
         this.client = new Socket("sc.zepr.dev", 5050);
         this.out = new OutputStreamWriter(client.getOutputStream(), StandardCharsets.UTF_8);
         this.queue = new LinkedBlockingQueue<JSONObject>();
 
-        InputEventListener inputListener = new InputEventHandler(queue, messageUi);
+        inputListener = new InputEventHandler(queue);
         this.in = new ThreadedBufferedReader(client, inputListener);
         Thread tIn = new Thread(in);
         tIn.start();
     }
 
-    public void setMessageUi(messageInput messageUi) {
-        this.messageUi = messageUi;
+    public void setMessageUi(messageInput messageUi) throws IOException {
+        inputListener.updateMessageUi(messageUi);
     }
 
     public String getUser() {
@@ -87,15 +86,18 @@ class InputEventHandler implements InputEventListener {
     private LinkedBlockingQueue<JSONObject> queue;
     private messageInput messageUi;
 
-    public InputEventHandler(LinkedBlockingQueue<JSONObject> queue, messageInput messageUi) {
+    public InputEventHandler(LinkedBlockingQueue<JSONObject> queue) {
         this.queue = queue;
+    }
+
+    public void updateMessageUi(messageInput messageUi) {
         this.messageUi = messageUi;
     }
 
     public void onInputEvent(JSONObject json) {
         if(json.get("type").equals("msg")) {
             System.out.println("[" + json.get("user") + "] " + json.get("data"));
-            messageUi.addMessage(json.get("user").toString() + ": " + json.get("data").toString());
+            messageUi.addMessage(json.get("data").toString());
         } else {
             try {
                 this.queue.put(json);

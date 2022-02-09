@@ -1,5 +1,7 @@
 import java.awt.*;
 import java.awt.event.*;
+import java.io.IOException;
+
 import javax.swing.*;
 import java.util.*;
 public class messageInput extends JFrame implements ActionListener{
@@ -15,7 +17,7 @@ public class messageInput extends JFrame implements ActionListener{
     String user;
     String targetUser;
     Client client;
-    public messageInput(Client client) {
+    public messageInput(Client client) throws IOException {
          this.client = client;
          client.setMessageUi(this);
 
@@ -82,7 +84,7 @@ public class messageInput extends JFrame implements ActionListener{
 
     public void addMessage(String input){
       if(!(message.getText() == null)){
-         model.addElement(targetUser + ": " + message.getText());
+         model.addElement(targetUser + ": " + input);
       }
     }
 
