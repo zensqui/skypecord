@@ -1,13 +1,15 @@
 import java.net.*;
 import java.io.*; 
 import java.util.HashMap;
+import java.util.UUID;
+
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 public class Server {
     private static final int port = 5050;
     private static HashMap<String, ConnectionHandler> connections = new HashMap<String, ConnectionHandler>();
     private static DbInterface db = new DbInterface();
-    private static int numConnections = 0;
 
     public static void main(String[] args) throws IOException {
         ServerSocket server = new ServerSocket(port);
@@ -17,7 +19,8 @@ public class Server {
         while (true) {
             socket = server.accept();
             ServerEventListener listener = new EventHandler(db, connections);
-            String user = "temp" + String.valueOf(numConnections);
+
+            String user = UUID.randomUUID().toString();
 
             ConnectionHandler connection = new ConnectionHandler(socket, listener, user);
             Thread t = new Thread(connection);
@@ -26,7 +29,6 @@ public class Server {
             
             connections.put(user, connection);
             System.out.println("connection " + user + " --> new connection from " + socket.getInetAddress() + ":" + socket.getPort());
-            numConnections++;
         }
     }
 }
@@ -44,7 +46,7 @@ class EventHandler implements ServerEventListener {
         this.connections = connections;
     }
 
-    private void sendExit(ConnectionHandler connection, JSONObject json, int res) {
+    private void sendExit(ConnectionHandler connection, JSONObject json, String res) {
         JSONObject jsonOut = new JSONObject();
         jsonOut.put("type", "res");
         jsonOut.put("data", res);
@@ -54,7 +56,7 @@ class EventHandler implements ServerEventListener {
 
     public void onServerEvent(ConnectionHandler connection, JSONObject json) {
         String type = (String)json.get("type");
-        int res;
+        String res;
         switch (type) {
             case "register":
                 res = db.addUser((String)json.get("user"), (String)json.get("pass"));
@@ -63,13 +65,18 @@ class EventHandler implements ServerEventListener {
             case "login":
                 res = db.auth((String)json.get("user"), (String)json.get("pass"));
                 sendExit(connection, json, res);
-                if(res == 0) {
+                if(res.equals("0")) {
                     String user = connection.getUser();
                     connection.setUser((String)json.get("user"));
                     connections.remove(user);
                     connections.put((String)json.get("user"), connection);
                     System.out.println("connection " + user + " --> user " + connection.getUser());
                 }
+                break;
+            case "addconversation":
+                JSONArray users = (JSONArray)json.get("users");
+                res = (db.addConversation(users) == null) ? "0" : "1";
+                sendExit(connection, json, res);
                 break;
             case "msg":
                 ConnectionHandler target = connections.get(json.get("target"));
