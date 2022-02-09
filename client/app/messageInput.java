@@ -1,5 +1,7 @@
 import java.awt.*;
 import java.awt.event.*;
+import java.io.IOException;
+
 import javax.swing.*;
 import java.util.*;
 public class messageInput extends JFrame implements ActionListener{
@@ -14,7 +16,10 @@ public class messageInput extends JFrame implements ActionListener{
     int maxSize;
     String user;
     String targetUser;
-    public messageInput(){
+    Client client;
+    public messageInput(Client client) throws IOException {
+         this.client = client;
+         client.setMessageUi(this);
 
         SpringLayout layout = new SpringLayout();
 
@@ -23,9 +28,9 @@ public class messageInput extends JFrame implements ActionListener{
 
         model = new DefaultListModel<>();
 
-         user = "Morgan";
+         user = client.getUser();
 
-         targetUser = "Brady";
+         targetUser = "bradyap";
 
         send = new JButton();
         send.setText("Send");
@@ -77,27 +82,27 @@ public class messageInput extends JFrame implements ActionListener{
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
-    public static void main(String[] args) {
-        new messageInput();
-    }
-
     public void addMessage(String input){
       if(!(message.getText() == null)){
-         model.addElement(user + ": " + message.getText());
+         model.addElement(targetUser + ": " + input);
       }
     }
 
     @Override
-   public void actionPerformed(ActionEvent e) {
+   public void actionPerformed(ActionEvent e){
 
       if((JButton)e.getSource() == send){
          if(!(message.getText() == null)){
             model.addElement(user + ": " + message.getText());
+            try { 
+               client.message(targetUser, message.getText());
+               } catch (Exception ex) {
+                  ex.printStackTrace();
+               }
          }
-
       }
-        System.out.println(message.getText());
-        message.setText("");
+      System.out.println(message.getText());
+      message.setText("");
    }
 
 private class keyListener implements KeyListener{
@@ -112,7 +117,12 @@ private class keyListener implements KeyListener{
       if (e.getKeyCode() == KeyEvent.VK_ENTER) {
          if(!(message.getText().equals(""))){
             model.addElement(user + ": " + message.getText());
-         }
+            try { 
+               client.message(targetUser, message.getText());
+               } catch (Exception ex) {
+                  ex.printStackTrace();
+               }
+         }  
          System.out.println(message.getText());
          message.setText("");
 
