@@ -7,7 +7,7 @@ public class mainFrame {
         
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
-        JFrame frame = new JFrame("Skypecord");
+        JFrame frame = new JFrame("main");
         frame.setSize(screenSize);
 
         Container contentPane = frame.getContentPane();
