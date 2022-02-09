@@ -81,6 +81,7 @@ class EventHandler implements ServerEventListener {
             case "msg":
                 ConnectionHandler target = connections.get(json.get("target"));
                 target.add(json);
+                System.out.println(json.toJSONString() + " --> user " + json.get("target"));
                 break;
             default:
                 System.out.println("Unhandled event: " + type);
