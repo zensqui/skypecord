@@ -17,6 +17,7 @@ public class messageInput extends JFrame implements ActionListener{
     Client client;
     public messageInput(Client client) {
          this.client = client;
+         client.setMessageUi(this);
 
         SpringLayout layout = new SpringLayout();
 
@@ -81,7 +82,7 @@ public class messageInput extends JFrame implements ActionListener{
 
     public void addMessage(String input){
       if(!(message.getText() == null)){
-         model.addElement(user + ": " + message.getText());
+         model.addElement(targetUser + ": " + message.getText());
       }
     }
 
@@ -91,13 +92,12 @@ public class messageInput extends JFrame implements ActionListener{
       if((JButton)e.getSource() == send){
          if(!(message.getText() == null)){
             model.addElement(user + ": " + message.getText());
-            
+            try { 
+               client.message(targetUser, message.getText());
+               } catch (Exception ex) {
+                  ex.printStackTrace();
+               }
          }
-      }
-      try {
-         client.message(targetUser, message.getText());
-      } catch (Exception e1) {
-         e1.printStackTrace();
       }
       System.out.println(message.getText());
       message.setText("");
@@ -115,12 +115,12 @@ private class keyListener implements KeyListener{
       if (e.getKeyCode() == KeyEvent.VK_ENTER) {
          if(!(message.getText().equals(""))){
             model.addElement(user + ": " + message.getText());
-         }
-         try {
-            client.message(targetUser, message.getText());
-         } catch (Exception e1) {
-            e1.printStackTrace();
-         }
+            try { 
+               client.message(targetUser, message.getText());
+               } catch (Exception ex) {
+                  ex.printStackTrace();
+               }
+         }  
          System.out.println(message.getText());
          message.setText("");
 

@@ -120,7 +120,6 @@ public class LoginDemo extends JFrame implements ActionListener {
                message.setText("Login failed. Please try again.");
                break;
          }
-         client.message("bradyap", "testing");
       } catch (Exception e) {
          e.printStackTrace();
       }
