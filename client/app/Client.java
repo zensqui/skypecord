@@ -15,7 +15,7 @@ public class Client {
     private String user;
 
     public Client() throws IOException {
-        this.client = new Socket("sc.zenithproject.xyz", 5050);
+        this.client = new Socket("sc.zepr.dev", 5050);
         this.out = new OutputStreamWriter(client.getOutputStream(), StandardCharsets.UTF_8);
         this.queue = new LinkedBlockingQueue<JSONObject>();
 
@@ -25,10 +25,17 @@ public class Client {
         tIn.start();
     }
 
+    public String getUser() {
+        return user;
+    }
+
     public JSONObject getResponse() {
         try {
             JSONObject res = queue.poll(10L, TimeUnit.SECONDS);
-            return res;
+            if (res.get("type").equals("res")) {
+                return res;
+            }
+            return null;
         } catch (InterruptedException e) {
             e.printStackTrace();
             return null;
@@ -55,7 +62,7 @@ public class Client {
         out.flush();
     }
 
-    public void message(String type, String target, String data) throws IOException, ParseException {
+    public void message(String target, String data) throws IOException, ParseException {
         JSONObject json = new JSONObject();
         json.put("type", "msg");
         json.put("user", user);
@@ -80,6 +87,7 @@ class InputEventHandler implements InputEventListener {
     public void onInputEvent(JSONObject json) {
         if(json.get("type") == "msg") {
             System.out.println("[" + json.get("user") + "] " + json.get("data"));
+
         } else {
             try {
                 this.queue.put(json);
