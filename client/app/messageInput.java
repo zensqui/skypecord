@@ -1,29 +1,41 @@
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 import javax.swing.*;
 import java.util.*;
 public class messageInput extends JFrame implements ActionListener{
 
-    JPanel msgInpt;
+    JPanel panel;
+    
+    //for sending messages
     JButton send;
     JTextField message;
     JList<String> list;
     JScrollPane scrollPane;
-    ArrayList<String> data;
     DefaultListModel<String> model;
     int maxSize;
+
+    //directory
+    JButton create;
+    JList<String> dList;
+    JScrollPane dScrollPane;
+    DefaultListModel<String> dmodel;
+
     String user;
     String targetUser;
     Client client;
+
     public messageInput(Client client) throws IOException {
          this.client = client;
          client.setMessageUi(this);
 
         SpringLayout layout = new SpringLayout();
 
-        msgInpt = new JPanel(layout);
+        panel = new JPanel(layout);
 
 
         model = new DefaultListModel<>();
@@ -54,29 +66,74 @@ public class messageInput extends JFrame implements ActionListener{
             maxSize = scrollPane.getVerticalScrollBar().getMaximum();
          });
       
-        layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, scrollPane, 0, SpringLayout.HORIZONTAL_CENTER, msgInpt);
-        layout.putConstraint(SpringLayout.NORTH, scrollPane, 0, SpringLayout.NORTH, msgInpt);
-        scrollPane.setPreferredSize(new Dimension(400, 400));
-        msgInpt.add(scrollPane);
+        layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, scrollPane, 75, SpringLayout.HORIZONTAL_CENTER, panel);
+        layout.putConstraint(SpringLayout.NORTH, scrollPane, 0, SpringLayout.NORTH, panel);
+        scrollPane.setPreferredSize(new Dimension(300, 400));
+        panel.add(scrollPane);
         
         message = new JTextField();
-        layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, message, -50, SpringLayout.HORIZONTAL_CENTER, msgInpt);
-        layout.putConstraint(SpringLayout.NORTH, message, 400, SpringLayout.NORTH, msgInpt);
-        message.setPreferredSize(new Dimension(300, 50));
+        layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, message, 50, SpringLayout.HORIZONTAL_CENTER, panel);
+        layout.putConstraint(SpringLayout.NORTH, message, 400, SpringLayout.NORTH, panel);
+        message.setPreferredSize(new Dimension(250, 50));
         message.addKeyListener(new keyListener());
-        msgInpt.add(message);
+        panel.add(message);
          
          
 
         send = new JButton("Send");
-        layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, send, 150, SpringLayout.HORIZONTAL_CENTER, msgInpt);
-        layout.putConstraint(SpringLayout.NORTH, send, 400, SpringLayout.NORTH, msgInpt);
-        send.setPreferredSize(new Dimension(100, 50));
+        layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, send, 200, SpringLayout.HORIZONTAL_CENTER, panel);
+        layout.putConstraint(SpringLayout.NORTH, send, 400, SpringLayout.NORTH, panel);
+        send.setPreferredSize(new Dimension(75, 50));
         send.addActionListener(this);
-        msgInpt.add(send);
+        panel.add(send);
+         
+        //directory
+        dmodel = new DefaultListModel<>();
+
+        create = new JButton();
+        create.setText("create");
+        
+        dList = new JList<>(dmodel);
+        
+        dScrollPane = new JScrollPane();
+        dScrollPane.setViewportView(dList);
+        dList.setLayoutOrientation(JList.VERTICAL);
+
+      MouseListener mousedListener = new MouseAdapter() {
+          public void mouseClicked(MouseEvent e) {
+              if (e.getClickCount() == 1) {
+      
+                 String selectedItem = (String) dList.getSelectedValue();
+                 System.out.println(selectedItem);
+                 model.clear();
+                 model.addElement("Chat With " + selectedItem);
+                 try {
+                  parseFile(selectedItem);
+               } catch (FileNotFoundException e1) {
+                  System.out.println("couldn't find file " + selectedItem + ".txt");
+                  //e1.printStackTrace();
+               }
+               }
+          }
+      };
+
+      dList.addMouseListener(mousedListener);
+
+        layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, dScrollPane, -150, SpringLayout.HORIZONTAL_CENTER, panel);
+        layout.putConstraint(SpringLayout.NORTH, dScrollPane, 10, SpringLayout.NORTH, panel);
+        dScrollPane.setPreferredSize(new Dimension(150, 380));
+        panel.add(dScrollPane);
+         
+        create = new JButton("create");
+        layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, create, -175, SpringLayout.HORIZONTAL_CENTER, panel);
+        layout.putConstraint(SpringLayout.NORTH, create, 400, SpringLayout.NORTH, panel);
+        create.setPreferredSize(new Dimension(100, 50));
+        create.addActionListener(this);
+        panel.add(create);
 
 
-        add(msgInpt, BorderLayout.CENTER);
+
+        add(panel, BorderLayout.CENTER);
         setSize(500, 500);
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -87,6 +144,17 @@ public class messageInput extends JFrame implements ActionListener{
          model.addElement(targetUser + ": " + input);
       }
     }
+
+    public void parseFile(String fileName) throws FileNotFoundException{
+      fileName = fileName + ".txt";
+      Scanner scan = new Scanner(new File("./client/app/" + fileName));
+      
+         while(scan.hasNext()){
+            String line = scan.nextLine().toString();
+            model.addElement(line);
+         }
+   }
+
 
     @Override
    public void actionPerformed(ActionEvent e){
@@ -101,6 +169,14 @@ public class messageInput extends JFrame implements ActionListener{
                }
          }
       }
+
+      if((JButton)e.getSource() == create){
+         String test1 = JOptionPane.showInputDialog("UserName of Person you want to chat with");
+         if(!(test1 == null)){
+             dmodel.addElement(test1);
+         }
+       }
+
       System.out.println(message.getText());
       message.setText("");
    }
@@ -133,7 +209,7 @@ private class keyListener implements KeyListener{
    @Override
    public void keyReleased(KeyEvent e) {
       
-      
    }
  }
+
 }
