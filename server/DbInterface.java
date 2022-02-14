@@ -96,29 +96,6 @@ public class DbInterface {
         }
     }
 
-    public ArrayList<String> getConversations(String user) { //* get all conversations for a given user
-        try {
-            Statement stmt = conn.createStatement();
-            String sql = String.format("SELECT * FROM conversations");
-            ResultSet res = stmt.executeQuery(sql);
-
-            ArrayList<String> conversations = new ArrayList<String>();
-            while (res.next()) {
-                JSONObject json = new JSONObject();
-                JSONArray users = new JSONArray();
-                json = (JSONObject)new JSONParser().parse(res.getString("users"));
-                users = (JSONArray)json.get("users");
-                if (users.contains(user)) {
-                    conversations.add(res.getString("id"));
-                }
-            }
-            return conversations;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
     //? 0 = Conversation exists.
     //? 1 = Conversation does not exist.
     //? 2 = Conversation check failed.
@@ -134,6 +111,7 @@ public class DbInterface {
         }
     }
 
+    //? Returns id of conversation.
     public String addConversation(JSONArray users) { //* add conversation given arraylist of users
         String cid = UUID.randomUUID().toString();
         JSONObject json = new JSONObject();
@@ -168,6 +146,7 @@ public class DbInterface {
         }
     }
 
+    //? Returns list of users.
     public String getConversationUsers(String cid) { //* get list of users in conversation given cid
         try {
             Statement stmt = conn.createStatement();
@@ -181,12 +160,116 @@ public class DbInterface {
         }
     }
 
-    public String editConversationUsers(String cid, String users) { //* edit list of users in conversation given cid and new userlist
+    //? Returns list of conversations.
+    public String getUserConversations(String user) { //* get list of conversations for a given user
         try {
             Statement stmt = conn.createStatement();
-            String sql = String.format("UPDATE conversations SET users='%s' WHERE cid='%s'", users, cid);
+            String sql = String.format("SELECT * FROM conversations");
+            ResultSet res = stmt.executeQuery(sql);
+            JSONArray conversations = new JSONArray();
+            while (res.next()) {
+                JSONObject json = new JSONObject();
+                JSONArray users = new JSONArray();
+                json = (JSONObject)new JSONParser().parse(res.getString("users"));
+                users = (JSONArray)json.get("users");
+                if (users.contains(user)) {
+                    conversations.add(res.getString("cid"));
+                }
+            }
+            return conversations.toString();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    //? 0 = User added to conversation successfully.
+    //? 1 = User already in conversation.
+    //? 2 = Conversation does not exist.
+    //? 3 = User addition to conversation failed.
+    public String addConversationUser(String cid, String user) { //* add user to conversation given cid and user
+        try {
+            if (conversationExists(cid).equals("0")) {
+                Statement stmt = conn.createStatement();
+                String sql = String.format("SELECT * FROM conversations WHERE cid='%s'", cid);
+                ResultSet res = stmt.executeQuery(sql);
+                res.next();
+                JSONObject json = new JSONObject();
+                JSONArray users = (JSONArray)new JSONParser().parse(res.getString("users"));
+                if (!users.contains(user)) {
+                    users.add(user);
+                    json.put("users", users);
+                    sql = String.format("UPDATE conversations SET users='%s' WHERE cid='%s'", json.toJSONString(), cid);
+                    stmt.executeUpdate(sql);
+                    return "0";
+                }
+                return "1";
+            }
+            return "2";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "3";
+        }
+    }
+
+    //? 0 = User removed from conversation successfully.
+    //? 1 = User not in conversation.
+    //? 2 = Conversation does not exist.
+    //? 3 = User removal from conversation failed.
+    public String removeConversationUser(String cid, String user) { //* add user to conversation given cid and user
+        try {
+            if (conversationExists(cid).equals("0")) {
+                Statement stmt = conn.createStatement();
+                String sql = String.format("SELECT * FROM conversations WHERE cid='%s'", cid);
+                ResultSet res = stmt.executeQuery(sql);
+                res.next();
+                JSONObject json = new JSONObject();
+                JSONArray users = (JSONArray)new JSONParser().parse(res.getString("users"));
+                if (users.contains(user)) {
+                    users.remove(user);
+                    json.put("users", users);
+                    sql = String.format("UPDATE conversations SET users='%s' WHERE cid='%s'", json.toJSONString(), cid);
+                    stmt.executeUpdate(sql);
+                    return "0";
+                }
+                return "1";
+            }
+            return "2";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "3";
+        }
+    }
+
+    //? Returns list of messages.
+    public String getConversationMessages(String cid) { //* get list of messages in conversation given cid
+        try {
+            Statement stmt = conn.createStatement();
+            String sql = String.format("SELECT * FROM messages WHERE cid='%s'", cid);
+            ResultSet res = stmt.executeQuery(sql);
+            JSONArray messages = new JSONArray();
+            while (res.next()) {
+                JSONObject json = new JSONObject();
+                json.put("mid", res.getString("mid"));
+                json.put("user", res.getString("user"));
+                json.put("message", res.getString("message"));
+                messages.add(json);
+            }
+            return messages.toJSONString();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    //? Returns message id. 
+    public String addMessage(String cid, String user, String message) { //* add message to conversation given cid, user, and message
+        String mid = UUID.randomUUID().toString();
+        try {
+            Statement stmt = conn.createStatement();
+            String sql = String.format("INSERT INTO messages(mid, cid, user, message) VALUES ('%s', '%s', '%s', '%s')", mid, cid, user, message);
             stmt.executeUpdate(sql);
-            return users;
+            return mid;
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
