@@ -3,7 +3,6 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.ResultSet;
-import java.util.ArrayList;
 import java.util.UUID;
 
 import org.json.simple.JSONArray;
@@ -168,10 +167,7 @@ public class DbInterface {
             ResultSet res = stmt.executeQuery(sql);
             JSONArray conversations = new JSONArray();
             while (res.next()) {
-                JSONObject json = new JSONObject();
-                JSONArray users = new JSONArray();
-                json = (JSONObject)new JSONParser().parse(res.getString("users"));
-                users = (JSONArray)json.get("users");
+                JSONArray users = (JSONArray)new JSONParser().parse(res.getString("users"));
                 if (users.contains(user)) {
                     conversations.add(res.getString("cid"));
                 }
@@ -194,12 +190,10 @@ public class DbInterface {
                 String sql = String.format("SELECT * FROM conversations WHERE cid='%s'", cid);
                 ResultSet res = stmt.executeQuery(sql);
                 res.next();
-                JSONObject json = new JSONObject();
                 JSONArray users = (JSONArray)new JSONParser().parse(res.getString("users"));
                 if (!users.contains(user)) {
                     users.add(user);
-                    json.put("users", users);
-                    sql = String.format("UPDATE conversations SET users='%s' WHERE cid='%s'", json.toJSONString(), cid);
+                    sql = String.format("UPDATE conversations SET users='%s' WHERE cid='%s'", users.toJSONString(), cid);
                     stmt.executeUpdate(sql);
                     return "0";
                 }
@@ -223,12 +217,10 @@ public class DbInterface {
                 String sql = String.format("SELECT * FROM conversations WHERE cid='%s'", cid);
                 ResultSet res = stmt.executeQuery(sql);
                 res.next();
-                JSONObject json = new JSONObject();
                 JSONArray users = (JSONArray)new JSONParser().parse(res.getString("users"));
                 if (users.contains(user)) {
                     users.remove(user);
-                    json.put("users", users);
-                    sql = String.format("UPDATE conversations SET users='%s' WHERE cid='%s'", json.toJSONString(), cid);
+                    sql = String.format("UPDATE conversations SET users='%s' WHERE cid='%s'", users.toJSONString(), cid);
                     stmt.executeUpdate(sql);
                     return "0";
                 }

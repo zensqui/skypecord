@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.*;
 
 public class Server {
     private static final int port = 5050;
@@ -73,18 +74,55 @@ class EventHandler implements ServerEventListener {
                     System.out.println("connection " + user + " --> user " + connection.getUser());
                 }
                 break;
-            case "addconversation":
-                JSONArray users = (JSONArray)json.get("users");
-                res = (db.addConversation(users) == null) ? "0" : "1";
+            case "addConvo":
+                JSONArray userlist = (JSONArray)json.get("users");
+                res = (db.addConversation(userlist) != null) ? "0" : "1";
+                sendExit(connection, json, res);
+                break;
+            case "delConvo":
+                res = db.delConversation((String)json.get("cid"));
+                sendExit(connection, json, res);
+                break;
+            case "getConvoUsers":
+                res = db.getConversationUsers((String)json.get("cid"));
+                sendExit(connection, json, res);
+                break;
+            case "getUserConvos":
+                res = db.getUserConversations((String)json.get("user"));
+                sendExit(connection, json, res);
+                break;
+            case "addConvoUser":
+                res = db.addConversationUser((String)json.get("cid"), (String)json.get("user"));
+                sendExit(connection, json, res);
+                break;
+            case "delConvoUser":
+                res = db.removeConversationUser((String)json.get("cid"), (String)json.get("user"));
+                sendExit(connection, json, res);
+                break;
+            case "getConvoMessages":
+                res = db.getConversationMessages((String)json.get("cid"));
                 sendExit(connection, json, res);
                 break;
             case "msg":
-                ConnectionHandler target = connections.get(json.get("target"));
-                target.add(json);
-                System.out.println(json.toJSONString() + " --> user " + json.get("target"));
+                try {
+                    db.addMessage((String)json.get("cid"), (String)json.get("user"), (String)json.get("data"));
+                    JSONArray users = (JSONArray)new JSONParser().parse(db.getConversationUsers((String)json.get("cid")));
+                    for(Object user : users) {
+                        ConnectionHandler c = connections.get((String)user);
+                        if(c != null) {
+                            JSONObject jsonOut = new JSONObject();
+                            jsonOut.put("type", "msg");
+                            jsonOut.put("data", json.get("data"));
+                            c.add(jsonOut);
+                            System.out.println(json.toJSONString() + " --> " + jsonOut.toJSONString());
+                        }
+                    }
+                } catch (Exception e) {
+                    System.out.println("error: " + e.getMessage());
+                }
                 break;
             default:
-                System.out.println("Unhandled event: " + type);
+                System.out.println("unhandled event: " + type);
         }
         
     }
