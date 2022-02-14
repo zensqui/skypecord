@@ -4,6 +4,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.*;
 public class Client {
@@ -73,6 +74,70 @@ public class Client {
         json.put("user", user);
         json.put("target", target);
         json.put("data", data);
+        out.append(json.toJSONString() + "\n");
+        out.flush();
+    }
+
+    public void addConvo(String users) throws IOException {
+        String[] userarray = users.split(", ");
+        JSONArray userjson = new JSONArray();
+        for (String user : userarray) {
+            userjson.add(user);
+        }
+
+        JSONObject json = new JSONObject();
+        json.put("type", "addConvo");
+        json.put("users", userjson);
+        out.append(json.toJSONString() + "\n");
+        out.flush();
+    }
+
+    public void delConvo(String cid) throws IOException {
+        JSONObject json = new JSONObject();
+        json.put("type", "delConvo");
+        json.put("cid", cid);
+        out.append(json.toJSONString() + "\n");
+        out.flush();
+    }
+
+    public void getConvoUsers(String cid) throws IOException {
+        JSONObject json = new JSONObject();
+        json.put("type", "getConvoUsers");
+        json.put("cid", cid);
+        out.append(json.toJSONString() + "\n");
+        out.flush();
+    }
+
+    public void getUserConvos(String user) throws IOException {
+        JSONObject json = new JSONObject();
+        json.put("type", "getUserConvos");
+        json.put("user", user);
+        out.append(json.toJSONString() + "\n");
+        out.flush();
+    }
+
+    public void addConvoUser(String cid, String user) throws IOException {
+        JSONObject json = new JSONObject();
+        json.put("type", "addConvoUser");
+        json.put("cid", cid);
+        json.put("user", user);
+        out.append(json.toJSONString() + "\n");
+        out.flush();
+    }
+
+    public void delConvoUser(String cid, String user) throws IOException {
+        JSONObject json = new JSONObject();
+        json.put("type", "delConvoUser");
+        json.put("cid", cid);
+        json.put("user", user);
+        out.append(json.toJSONString() + "\n");
+        out.flush();
+    }
+
+    public void getConvoMessages(String cid) throws IOException {
+        JSONObject json = new JSONObject();
+        json.put("type", "getConvoMessages");
+        json.put("cid", cid);
         out.append(json.toJSONString() + "\n");
         out.flush();
     }
