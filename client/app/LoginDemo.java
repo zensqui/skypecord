@@ -102,8 +102,7 @@ public class LoginDemo extends JFrame implements ActionListener {
       u = userName.trim();
       p = password.trim();
       try {
-         client.login(u, p);
-         JSONObject res = client.getResponse();
+         JSONObject res = client.login(u, p);
          String exit = res.get("data").toString();
          switch (exit) {
             case "0":
