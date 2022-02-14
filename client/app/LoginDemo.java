@@ -108,6 +108,7 @@ public class LoginDemo extends JFrame implements ActionListener {
          switch (exit) {
             case "0":
                message.setText("Login successful.");
+               setVisible(false);
                new messageInput(client);
                break;
             case "1":
