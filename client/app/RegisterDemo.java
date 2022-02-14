@@ -137,6 +137,7 @@ public class RegisterDemo extends JFrame implements ActionListener {
                switch (exit) {
                   case "0":
                      message.setText("Registration successful.");
+                     setVisible(false);
                      break;
                   case "1":
                      message.setText("User already exists.");

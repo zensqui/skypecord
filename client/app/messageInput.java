@@ -1,92 +1,170 @@
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 import javax.swing.*;
 import java.util.*;
 public class messageInput extends JFrame implements ActionListener{
 
-    JPanel msgInpt;
+    JPanel panel;
+    
+    //for sending messages
     JButton send;
     JTextField message;
     JList<String> list;
     JScrollPane scrollPane;
-    ArrayList<String> data;
     DefaultListModel<String> model;
     int maxSize;
+
+    //directory
+    JButton create;
+    JList<String> dList;
+    JScrollPane dScrollPane;
+    DefaultListModel<String> dmodel;
+
     String user;
     String targetUser;
     Client client;
+
     public messageInput(Client client) throws IOException {
-         this.client = client;
-         client.setMessageUi(this);
+      this.client = client;
+      client.setMessageUi(this);
 
-        SpringLayout layout = new SpringLayout();
+      Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
-        msgInpt = new JPanel(layout);
+      SpringLayout layout = new SpringLayout();
 
+      panel = new JPanel(layout);
+      panel.setBackground(Color.WHITE);
 
-        model = new DefaultListModel<>();
+      //Sending and Viewing messages***********************************************************************************
+         model = new DefaultListModel<>();
 
          user = client.getUser();
 
          targetUser = "bradyap";
 
-        send = new JButton();
-        send.setText("Send");
+         send = new JButton();
+         send.setText("Send");
         
-        //the first element should have the user you are talking to
-        model.addElement("Chat with " + targetUser);
-        model.addElement("   ");
-        list = new JList<>(model);
-        
-        scrollPane = new JScrollPane();
-        scrollPane.setViewportView(list);
-        list.setLayoutOrientation(JList.VERTICAL);
+         //the first element should have the user you are talking to
+         model.addElement("Chat with " + targetUser);
+         model.addElement("   ");
+         list = new JList<>(model);
+         list.setFont(list.getFont().deriveFont(16.0f));
 
 
-        //scroll pane scrolls to the bottem when model is updated
+         scrollPane = new JScrollPane();
+         scrollPane.setViewportView(list);
+         list.setLayoutOrientation(JList.VERTICAL);
+
+
+         //scroll pane scrolls to the bottem when model is updated
          maxSize = scrollPane.getVerticalScrollBar().getMaximum();
          scrollPane.getVerticalScrollBar().addAdjustmentListener(e -> {
-            if ((maxSize - e.getAdjustable().getMaximum()) == 0)
-                  return;
+            if ((maxSize - e.getAdjustable().getMaximum()) == 0)  return;
+
             e.getAdjustable().setValue(e.getAdjustable().getMaximum());
             maxSize = scrollPane.getVerticalScrollBar().getMaximum();
          });
       
-        layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, scrollPane, 0, SpringLayout.HORIZONTAL_CENTER, msgInpt);
-        layout.putConstraint(SpringLayout.NORTH, scrollPane, 0, SpringLayout.NORTH, msgInpt);
-        scrollPane.setPreferredSize(new Dimension(400, 400));
-        msgInpt.add(scrollPane);
+         layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, scrollPane, 75, SpringLayout.HORIZONTAL_CENTER, panel);
+         layout.putConstraint(SpringLayout.NORTH, scrollPane, 10, SpringLayout.NORTH, panel);
+         scrollPane.setPreferredSize(new Dimension(800, 600));
+         panel.add(scrollPane);
         
-        message = new JTextField();
-        layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, message, -50, SpringLayout.HORIZONTAL_CENTER, msgInpt);
-        layout.putConstraint(SpringLayout.NORTH, message, 400, SpringLayout.NORTH, msgInpt);
-        message.setPreferredSize(new Dimension(300, 50));
-        message.addKeyListener(new keyListener());
-        msgInpt.add(message);
+         message = new JTextField();
+         layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, message, 35, SpringLayout.HORIZONTAL_CENTER, panel);
+         layout.putConstraint(SpringLayout.NORTH, message, 625, SpringLayout.NORTH, panel);
+         message.setPreferredSize(new Dimension(725, 50));
+         message.addKeyListener(new keyListener());
+         panel.add(message);
          
          
 
-        send = new JButton("Send");
-        layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, send, 150, SpringLayout.HORIZONTAL_CENTER, msgInpt);
-        layout.putConstraint(SpringLayout.NORTH, send, 400, SpringLayout.NORTH, msgInpt);
-        send.setPreferredSize(new Dimension(100, 50));
-        send.addActionListener(this);
-        msgInpt.add(send);
+         send = new JButton("Send");
+         layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, send, 435, SpringLayout.HORIZONTAL_CENTER, panel);
+         layout.putConstraint(SpringLayout.NORTH, send, 625, SpringLayout.NORTH, panel);
+         send.setPreferredSize(new Dimension(75, 50));
+         send.addActionListener(this);
+         panel.add(send);
+         
+         //directory**************************************************************************************
+         dmodel = new DefaultListModel<>();
+
+         create = new JButton();
+         create.setText("create");
+        
+         dList = new JList<>(dmodel);
+        
+         dList.setFont(dList.getFont().deriveFont(18.0f));
+         dList.setFixedCellHeight(40);
+
+         dScrollPane = new JScrollPane();
+         dScrollPane.setViewportView(dList);
+         dList.setLayoutOrientation(JList.VERTICAL);
+
+         MouseListener mousedListener = new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+               if (e.getClickCount() == 1) {
+      
+                  String selectedItem = (String) dList.getSelectedValue();
+                  System.out.println(selectedItem);
+                  model.clear();
+                  model.addElement("Chat With " + selectedItem);
+                  try {
+                     parseFile(selectedItem);
+                  } catch (FileNotFoundException e1) {
+                     System.out.println("couldn't find file " + selectedItem + ".txt");
+                     //e1.printStackTrace();
+                  }
+               }
+            }
+         };
+
+         dList.addMouseListener(mousedListener);
+
+         layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, dScrollPane, -550, SpringLayout.HORIZONTAL_CENTER, panel);
+         layout.putConstraint(SpringLayout.NORTH, dScrollPane, 10, SpringLayout.NORTH, panel);
+         dScrollPane.setPreferredSize(new Dimension(250, 600));
+         panel.add(dScrollPane);
+         
+         create = new JButton("create");
+         layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, create, -550, SpringLayout.HORIZONTAL_CENTER, panel);
+         layout.putConstraint(SpringLayout.NORTH, create, 625, SpringLayout.NORTH, panel);
+         create.setPreferredSize(new Dimension(250, 50));
+         create.addActionListener(this);
+         panel.add(create);
+      //////////////////************************************************************************************* */
 
 
-        add(msgInpt, BorderLayout.CENTER);
-        setSize(500, 500);
-        setVisible(true);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+         add(panel, BorderLayout.CENTER);
+         setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
+         setSize(screenSize.width, screenSize.height);
+         setResizable(false);
+         setVisible(true);
+         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
     public void addMessage(String input){
-      if(!(message.getText() == null)){
+      if(message.getText() == null){
          model.addElement(targetUser + ": " + input);
       }
     }
+
+    public void parseFile(String fileName) throws FileNotFoundException{
+      fileName = fileName + ".txt";
+      Scanner scan = new Scanner(new File("./client/app/" + fileName));
+      
+         while(scan.hasNext()){
+            String line = scan.nextLine().toString();
+            model.addElement(line);
+         }
+   }
+
 
     @Override
    public void actionPerformed(ActionEvent e){
@@ -101,6 +179,14 @@ public class messageInput extends JFrame implements ActionListener{
                }
          }
       }
+
+      if((JButton)e.getSource() == create){
+         String test1 = JOptionPane.showInputDialog("UserName of Person you want to chat with");
+         if(!(test1 == null)){
+             dmodel.addElement(test1);
+         }
+       }
+
       System.out.println(message.getText());
       message.setText("");
    }
@@ -133,7 +219,7 @@ private class keyListener implements KeyListener{
    @Override
    public void keyReleased(KeyEvent e) {
       
-      
    }
  }
+
 }
