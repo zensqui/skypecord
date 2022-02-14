@@ -5,11 +5,13 @@ import java.awt.event.*;
 import java.io.*;
 
 public class LoginGUI {
+    
+    private static JFrame frame;
     public static void main(String[] args) {
         // Gets Size of screen so we can set correct size and center the GUI
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
-        JFrame frame = new JFrame("Skypecord");
+        frame = new JFrame("Skypecord");
 
         // Creates a container (practicaly the a panel) that is used to set up the GUI
         Container contentPane = frame.getContentPane();
@@ -64,6 +66,7 @@ public class LoginGUI {
         Register.setPreferredSize(new Dimension(360, 50));
         Register.addActionListener(new RegisterPressed());
 
+
         // Finish Frame
         frame.setSize(550, 600);
         frame.setLocation(screenSize.width/2-frame.getSize().width/2, screenSize.height/2-frame.getSize().height/2);
@@ -79,6 +82,7 @@ public class LoginGUI {
                 Client client = new Client();
                 Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
                 LoginDemo login = new LoginDemo(client);
+                frame.setVisible(false);
                 login.setLocation(screenSize.width / 2 - login.getSize().width / 2, screenSize.height / 2 - login.getSize().height / 2);
             } catch(IOException err) {
                 System.out.println("Error: " + err);
@@ -92,7 +96,8 @@ public class LoginGUI {
             try {
                 Client client = new Client();
                 Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-                RegisterDemo register = new RegisterDemo(client);
+                RegisterDemo register = new RegisterDemo(client); 
+                //frame.setVisible(false);
                 register.setLocation(screenSize.width / 2 - register.getSize().width / 2, screenSize.height / 2 - register.getSize().height / 2);
             } catch(IOException err) {
                 System.out.println("Error: " + err);
