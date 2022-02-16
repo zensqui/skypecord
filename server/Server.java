@@ -110,11 +110,8 @@ class EventHandler implements ServerEventListener {
                     for(Object user : users) {
                         ConnectionHandler c = connections.get((String)user);
                         if(c != null) {
-                            JSONObject jsonOut = new JSONObject();
-                            jsonOut.put("type", "msg");
-                            jsonOut.put("data", json.get("data"));
-                            c.add(jsonOut);
-                            System.out.println(json.toJSONString() + " --> " + jsonOut.toJSONString());
+                            c.add(json);
+                            System.out.println(json.toJSONString() + " --> " + json.toJSONString());
                         }
                     }
                 } catch (Exception e) {
