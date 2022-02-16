@@ -131,8 +131,7 @@ public class RegisterDemo extends JFrame implements ActionListener {
             u = userName.trim();
             p = password.trim();
             try {
-               client.register(u, p);
-               JSONObject res = client.getResponse();
+               JSONObject res = client.register(u, p);
                String exit = res.get("data").toString();
                switch (exit) {
                   case "0":

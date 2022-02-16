@@ -4,6 +4,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.*;
 public class Client {
@@ -34,7 +35,7 @@ public class Client {
         return user;
     }
 
-    public JSONObject getResponse() {
+    private JSONObject getResponse() {
         try {
             JSONObject res = queue.poll(10L, TimeUnit.SECONDS);
             if (res.get("type").equals("res")) {
@@ -47,7 +48,7 @@ public class Client {
         }
     }
 
-    public void login(String user, String pass) throws IOException, ParseException {
+    public JSONObject login(String user, String pass) throws IOException, ParseException {
         JSONObject json = new JSONObject();
         json.put("type", "login");
         json.put("user", user);
@@ -56,18 +57,22 @@ public class Client {
         out.flush();
 
         this.user = user;
+
+        return getResponse();
     }
 
-    public void register(String user, String pass) throws IOException, ParseException {
+    public JSONObject register(String user, String pass) throws IOException, ParseException {
         JSONObject json = new JSONObject();
         json.put("type", "register");
         json.put("user", user);
         json.put("pass", pass);
         out.append(json.toJSONString() + "\n");
         out.flush();
+
+        return getResponse();
     }
 
-    public void message(String target, String data) throws IOException, ParseException {
+    public JSONObject message(String target, String data) throws IOException, ParseException {
         JSONObject json = new JSONObject();
         json.put("type", "msg");
         json.put("user", user);
@@ -75,6 +80,86 @@ public class Client {
         json.put("data", data);
         out.append(json.toJSONString() + "\n");
         out.flush();
+
+        return getResponse();
+    }
+
+    public JSONObject addConvo(String users) throws IOException {
+        String[] userarray = users.split(", ");
+        JSONArray userjson = new JSONArray();
+        for (String user : userarray) {
+            userjson.add(user);
+        }
+
+        JSONObject json = new JSONObject();
+        json.put("type", "addConvo");
+        json.put("users", userjson);
+        out.append(json.toJSONString() + "\n");
+        out.flush();
+
+        return getResponse();
+    }
+
+    public JSONObject delConvo(String cid) throws IOException {
+        JSONObject json = new JSONObject();
+        json.put("type", "delConvo");
+        json.put("cid", cid);
+        out.append(json.toJSONString() + "\n");
+        out.flush();
+
+        return getResponse();
+    }
+
+    public JSONObject getConvoUsers(String cid) throws IOException {
+        JSONObject json = new JSONObject();
+        json.put("type", "getConvoUsers");
+        json.put("cid", cid);
+        out.append(json.toJSONString() + "\n");
+        out.flush();
+
+        return getResponse();
+    }
+
+    public JSONObject getUserConvos(String user) throws IOException {
+        JSONObject json = new JSONObject();
+        json.put("type", "getUserConvos");
+        json.put("user", user);
+        out.append(json.toJSONString() + "\n");
+        out.flush();
+
+        return getResponse();
+    }
+
+    public JSONObject addConvoUser(String cid, String user) throws IOException {
+        JSONObject json = new JSONObject();
+        json.put("type", "addConvoUser");
+        json.put("cid", cid);
+        json.put("user", user);
+        out.append(json.toJSONString() + "\n");
+        out.flush();
+
+        return getResponse();
+    }
+
+    public JSONObject delConvoUser(String cid, String user) throws IOException {
+        JSONObject json = new JSONObject();
+        json.put("type", "delConvoUser");
+        json.put("cid", cid);
+        json.put("user", user);
+        out.append(json.toJSONString() + "\n");
+        out.flush();
+
+        return getResponse();
+    }
+
+    public JSONObject getConvoMessages(String cid) throws IOException {
+        JSONObject json = new JSONObject();
+        json.put("type", "getConvoMessages");
+        json.put("cid", cid);
+        out.append(json.toJSONString() + "\n");
+        out.flush();
+
+        return getResponse();
     }
 }
 
