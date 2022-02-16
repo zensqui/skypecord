@@ -72,11 +72,11 @@ public class Client {
         return getResponse();
     }
 
-    public JSONObject message(String target, String data) throws IOException, ParseException {
+    public JSONObject message(String cid, String data) throws IOException, ParseException {
         JSONObject json = new JSONObject();
         json.put("type", "msg");
         json.put("user", user);
-        json.put("target", target);
+        json.put("cid", cid);
         json.put("data", data);
         out.append(json.toJSONString() + "\n");
         out.flush();
