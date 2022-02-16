@@ -76,7 +76,7 @@ class EventHandler implements ServerEventListener {
                 break;
             case "addConvo":
                 JSONArray userlist = (JSONArray)json.get("users");
-                res = (db.addConversation(userlist) != null) ? "0" : "1";
+                res = (db.addConversation(userlist));
                 sendExit(connection, json, res);
                 break;
             case "delConvo":
