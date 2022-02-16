@@ -120,7 +120,7 @@ public class Client {
         return getResponse();
     }
 
-    public JSONObject getUserConvos(String user) throws IOException {
+    public JSONObject getUserConvos() throws IOException {
         JSONObject json = new JSONObject();
         json.put("type", "getUserConvos");
         json.put("user", user);

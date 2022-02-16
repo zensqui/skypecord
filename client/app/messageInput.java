@@ -4,8 +4,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
 
 import javax.swing.*;
+
+import org.json.simple.JSONObject;
+
 import java.util.*;
 public class messageInput extends JFrame implements ActionListener{
 
@@ -28,10 +32,14 @@ public class messageInput extends JFrame implements ActionListener{
     String user;
     String targetUser;
     Client client;
+    String convoID;
+    HashMap<String, String> convo;
 
     public messageInput(Client client) throws IOException {
       this.client = client;
       client.setMessageUi(this);
+      
+      convo = new HashMap<String, String>();
 
       Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
@@ -113,14 +121,12 @@ public class messageInput extends JFrame implements ActionListener{
       
                   String selectedItem = (String) dList.getSelectedValue();
                   System.out.println(selectedItem);
+                  convoID = convo.get(selectedItem + ", ");
                   model.clear();
                   model.addElement("Chat With " + selectedItem);
-                  try {
-                     parseFile(selectedItem);
-                  } catch (FileNotFoundException e1) {
-                     System.out.println("couldn't find file " + selectedItem + ".txt");
-                     //e1.printStackTrace();
-                  }
+                  
+                  getMsg(selectedItem);
+                  
                }
             }
          };
@@ -155,14 +161,14 @@ public class messageInput extends JFrame implements ActionListener{
       }
     }
 
-    public void parseFile(String fileName) throws FileNotFoundException{
+    public void getMsg(String fileName){
       fileName = fileName + ".txt";
-      Scanner scan = new Scanner(new File("./client/app/" + fileName));
       
-         while(scan.hasNext()){
-            String line = scan.nextLine().toString();
-            model.addElement(line);
-         }
+      //client.getConvoMessages(convoID);
+         //while(hasNext()){
+            
+         //   model.addElement();
+         //}
    }
 
 
@@ -173,7 +179,7 @@ public class messageInput extends JFrame implements ActionListener{
          if(!(message.getText() == null)){
             model.addElement(user + ": " + message.getText());
             try { 
-               client.message(targetUser, message.getText());
+               client.message(convoID, message.getText());
                } catch (Exception ex) {
                   ex.printStackTrace();
                }
@@ -183,7 +189,16 @@ public class messageInput extends JFrame implements ActionListener{
       if((JButton)e.getSource() == create){
          String test1 = JOptionPane.showInputDialog("UserName of Person you want to chat with");
          if(!(test1 == null)){
-             dmodel.addElement(test1);
+             try {
+               dmodel.addElement(test1);
+               test1+= ", " + user;
+               JSONObject json = client.addConvo(test1);
+               convoID = (String)json.get("cid");
+               convo.put(test1, convoID);
+            } catch (IOException e1) {
+               e1.printStackTrace();
+            }
+             
          }
        }
 
@@ -204,7 +219,7 @@ private class keyListener implements KeyListener{
          if(!(message.getText().equals(""))){
             model.addElement(user + ": " + message.getText());
             try { 
-               client.message(targetUser, message.getText());
+               client.message(convoID, message.getText());
                } catch (Exception ex) {
                   ex.printStackTrace();
                }
