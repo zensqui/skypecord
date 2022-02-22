@@ -1,5 +1,6 @@
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.ResultSet;
@@ -28,9 +29,9 @@ public class DbInterface {
     //? 2 = User check failed.
     public String userExists(String user) { //* utility function to check if a user exists given username
         try {
-            Statement stmt = conn.createStatement();
-            String sql = String.format("SELECT * FROM users WHERE user='%s'", user);
-            ResultSet res = stmt.executeQuery(sql);
+            PreparedStatement stmt = conn.prepareStatement("SELECT * FROM users WHERE user=?");
+            stmt.setString(1, user);
+            ResultSet res = stmt.executeQuery();
             return res.next() ? "0" : "1";
         } catch (SQLException e) {
             e.printStackTrace();
@@ -44,9 +45,10 @@ public class DbInterface {
     public String addUser(String user, String pass) { //* add user given username and password
         try {
             if (userExists(user).equals("1")) {
-                Statement stmt = conn.createStatement();
-                String sql = String.format("INSERT INTO users(user, pass) VALUES ('%s', '%s')", user, pass);
-                stmt.executeUpdate(sql);
+                PreparedStatement stmt = conn.prepareStatement("INSERT INTO users (user, pass) VALUES (?, ?)");
+                stmt.setString(1, user);
+                stmt.setString(2, pass);
+                stmt.executeUpdate();
                 return "0";
             }
             return "1";
@@ -62,9 +64,9 @@ public class DbInterface {
     public String delUser(String user) { //* delete user given username
         try {
             if (userExists(user).equals("0")) {
-                Statement stmt = conn.createStatement();
-                String sql = String.format("DELETE FROM users WHERE user='%s'", user);
-                stmt.executeUpdate(sql);
+                PreparedStatement stmt = conn.prepareStatement("DELETE FROM users WHERE user=?");
+                stmt.setString(1, user);
+                stmt.executeUpdate();
                 return "0";
             }
             return "1";
@@ -81,9 +83,9 @@ public class DbInterface {
     public String auth(String user, String pass) { //* attempt to authenticate user given username and password
         try {
             if(userExists(user).equals("0")) {
-                Statement stmt = conn.createStatement();
-                String sql = String.format("SELECT * FROM users WHERE user='%s'", user);
-                ResultSet res = stmt.executeQuery(sql);
+                PreparedStatement stmt = conn.prepareStatement("SELECT * FROM users WHERE user=?");
+                stmt.setString(1, user);
+                ResultSet res = stmt.executeQuery();
                 res.next();
                 String exit = res.getString("pass").equals(pass) ? "0" : "2";
                 return exit;
@@ -100,9 +102,9 @@ public class DbInterface {
     //? 2 = Conversation check failed.
     public String conversationExists(String cid) { //* utility function to check if a conversation exists given conversation id
         try {
-            Statement stmt = conn.createStatement();
-            String sql = String.format("SELECT * FROM conversations WHERE cid='%s'", cid);
-            ResultSet res = stmt.executeQuery(sql);
+            PreparedStatement stmt = conn.prepareStatement("SELECT * FROM conversations WHERE cid=?");
+            stmt.setString(1, cid);
+            ResultSet res = stmt.executeQuery();
             return res.next() ? "0" : "1";
         } catch (SQLException e) {
             e.printStackTrace();
@@ -110,17 +112,37 @@ public class DbInterface {
         }
     }
 
+    //? Returns conversation id if conversation exists.
+    //? 1 = Conversation does not exist.
+    //? 2 = Conversation check failed.
+    public String userConversationExists(JSONArray users) {
+        try {
+            PreparedStatement stmt = conn.prepareStatement("SELECT * FROM conversations WHERE users=?");
+            stmt.setString(1, users.toJSONString());
+            ResultSet res = stmt.executeQuery();
+            System.out.println(res);
+            return res.next() ? res.getString("cid") : "1";
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return "2";
+        }
+    }
+
     //? Returns id of conversation.
+    //? Returns id of existing conversation with userlist if it exists.
     public String addConversation(JSONArray users) { //* add conversation given arraylist of users
         String cid = UUID.randomUUID().toString();
-        JSONObject json = new JSONObject();
-        json.put("users", users);
-
         try {
-            Statement stmt = conn.createStatement();
-            String sql = String.format("INSERT INTO conversations(cid, users) VALUES ('%s', '%s')", cid, users);
-            stmt.executeUpdate(sql);
-            return cid; //? returns conversation id of created conversation
+            String check = userConversationExists(users);
+            if (check.equals("1")) {
+                PreparedStatement stmt = conn.prepareStatement("INSERT INTO conversations (cid, users) VALUES (?, ?)");
+                stmt.setString(1, cid);
+                stmt.setString(2, users.toJSONString());
+                stmt.executeUpdate();
+                return cid; //? returns conversation id of created conversation
+            } else {
+                return check; //? returns id of existing conversation
+            }
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
@@ -133,9 +155,9 @@ public class DbInterface {
     public String delConversation(String cid) { //* delete conversation given cid
         try {
             if (conversationExists(cid).equals("0")) {
-                Statement stmt = conn.createStatement();
-                String sql = String.format("DELETE FROM conversations WHERE cid='%s'", cid);
-                stmt.executeUpdate(sql);
+                PreparedStatement stmt = conn.prepareStatement("DELETE FROM conversations WHERE cid=?");
+                stmt.setString(1, cid);
+                stmt.executeUpdate();
                 return "0";
             }
             return "1";
@@ -186,15 +208,17 @@ public class DbInterface {
     public String addConversationUser(String cid, String user) { //* add user to conversation given cid and user
         try {
             if (conversationExists(cid).equals("0")) {
-                Statement stmt = conn.createStatement();
-                String sql = String.format("SELECT * FROM conversations WHERE cid='%s'", cid);
-                ResultSet res = stmt.executeQuery(sql);
+                PreparedStatement stmt = conn.prepareStatement("SELECT * FROM conversations WHERE cid=?");
+                stmt.setString(1, cid);
+                ResultSet res = stmt.executeQuery();
                 res.next();
                 JSONArray users = (JSONArray)new JSONParser().parse(res.getString("users"));
                 if (!users.contains(user)) {
                     users.add(user);
-                    sql = String.format("UPDATE conversations SET users='%s' WHERE cid='%s'", users.toJSONString(), cid);
-                    stmt.executeUpdate(sql);
+                    PreparedStatement stmt2 = conn.prepareStatement("UPDATE conversations SET users=? WHERE cid=?");
+                    stmt2.setString(1, users.toJSONString());
+                    stmt2.setString(2, cid);
+                    stmt2.executeUpdate();
                     return "0";
                 }
                 return "1";
@@ -213,15 +237,17 @@ public class DbInterface {
     public String removeConversationUser(String cid, String user) { //* add user to conversation given cid and user
         try {
             if (conversationExists(cid).equals("0")) {
-                Statement stmt = conn.createStatement();
-                String sql = String.format("SELECT * FROM conversations WHERE cid='%s'", cid);
-                ResultSet res = stmt.executeQuery(sql);
+                PreparedStatement stmt = conn.prepareStatement("SELECT * FROM conversations WHERE cid=?");
+                stmt.setString(1, cid);
+                ResultSet res = stmt.executeQuery();
                 res.next();
                 JSONArray users = (JSONArray)new JSONParser().parse(res.getString("users"));
                 if (users.contains(user)) {
                     users.remove(user);
-                    sql = String.format("UPDATE conversations SET users='%s' WHERE cid='%s'", users.toJSONString(), cid);
-                    stmt.executeUpdate(sql);
+                    PreparedStatement stmt2 = conn.prepareStatement("UPDATE conversations SET users=? WHERE cid=?");
+                    stmt2.setString(1, users.toJSONString());
+                    stmt2.setString(2, cid);
+                    stmt.executeUpdate();
                     return "0";
                 }
                 return "1";
@@ -236,9 +262,9 @@ public class DbInterface {
     //? Returns list of messages.
     public String getConversationMessages(String cid) { //* get list of messages in conversation given cid
         try {
-            Statement stmt = conn.createStatement();
-            String sql = String.format("SELECT * FROM messages WHERE cid='%s'", cid);
-            ResultSet res = stmt.executeQuery(sql);
+            PreparedStatement stmt = conn.prepareStatement("SELECT * FROM messages WHERE cid=?");
+            stmt.setString(1, cid);
+            ResultSet res = stmt.executeQuery();
             JSONArray messages = new JSONArray();
             while (res.next()) {
                 JSONObject json = new JSONObject();
@@ -258,9 +284,12 @@ public class DbInterface {
     public String addMessage(String cid, String user, String message) { //* add message to conversation given cid, user, and message
         String mid = UUID.randomUUID().toString();
         try {
-            Statement stmt = conn.createStatement();
-            String sql = String.format("INSERT INTO messages(mid, cid, user, message) VALUES ('%s', '%s', '%s', '%s')", mid, cid, user, message);
-            stmt.executeUpdate(sql);
+            PreparedStatement stmt = conn.prepareStatement("INSERT INTO messages (mid, cid, user, message) VALUES (?, ?, ?, ?)");
+            stmt.setString(1, mid);
+            stmt.setString(2, cid);
+            stmt.setString(3, user);
+            stmt.setString(4, message);
+            stmt.executeUpdate();
             return mid;
         } catch (SQLException e) {
             e.printStackTrace();
