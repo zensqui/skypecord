@@ -151,14 +151,16 @@ public class messageInput extends JFrame implements ActionListener {
       }
    }
 
-    public void getMsg(String fileName){
-      fileName = fileName + ".txt";
-      
-      //client.getConvoMessages(convoID);
-         //while(hasNext()){
-            
-         //   model.addElement();
-         //}
+    public void getMsgs(String convoID){
+      try {
+         client.getConvoMessages(convoID);
+      } catch (IOException e) {
+         e.printStackTrace();
+      }
+   }
+
+   public void getConvos(){
+
    }
 
 
