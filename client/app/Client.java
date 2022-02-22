@@ -72,7 +72,7 @@ public class Client {
         return getResponse();
     }
 
-    public JSONObject message(String cid, String data) throws IOException, ParseException {
+    public void message(String cid, String data) throws IOException, ParseException {
         JSONObject json = new JSONObject();
         json.put("type", "msg");
         json.put("user", user);
@@ -80,11 +80,9 @@ public class Client {
         json.put("data", data);
         out.append(json.toJSONString() + "\n");
         out.flush();
-
-        return getResponse();
     }
 
-    public JSONObject addConvo(String users) throws IOException {
+    public String addConvo(String users) throws IOException {
         String[] userarray = users.split(", ");
         JSONArray userjson = new JSONArray();
         for (String user : userarray) {
@@ -97,7 +95,9 @@ public class Client {
         out.append(json.toJSONString() + "\n");
         out.flush();
 
-        return getResponse();
+        JSONObject jsonOut = getResponse();
+        String cid = (String)jsonOut.get("data");
+        return cid;
     }
 
     public JSONObject delConvo(String cid) throws IOException {
@@ -182,7 +182,7 @@ class InputEventHandler implements InputEventListener {
     public void onInputEvent(JSONObject json) {
         if(json.get("type").equals("msg")) {
             System.out.println("[" + json.get("user") + "] " + json.get("data"));
-            messageUi.addMessage(json.get("data").toString());
+            messageUi.addMessage(json.get("user").toString() ,json.get("data").toString());
         } else {
             try {
                 this.queue.put(json);

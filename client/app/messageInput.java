@@ -1,39 +1,32 @@
 import java.awt.*;
 import java.awt.event.*;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 
 import javax.swing.*;
+public class messageInput extends JFrame implements ActionListener {
 
-import org.json.simple.JSONObject;
+   JPanel panel;
 
-import java.util.*;
-public class messageInput extends JFrame implements ActionListener{
-
-    JPanel panel;
-    
     //for sending messages
-    JButton send;
-    JTextField message;
-    JList<String> list;
-    JScrollPane scrollPane;
-    DefaultListModel<String> model;
-    int maxSize;
+   JButton send;
+   JTextField message;
+   JList<String> list;
+   JScrollPane scrollPane;
+   DefaultListModel<String> model;
+   int maxSize;
 
     //directory
-    JButton create;
-    JList<String> dList;
-    JScrollPane dScrollPane;
-    DefaultListModel<String> dmodel;
+   JButton create;
+   JList<String> dList;
+   JScrollPane dScrollPane;
+   DefaultListModel<String> dmodel;
 
-    String user;
-    String targetUser;
-    Client client;
-    String convoID;
-    HashMap<String, String> convo;
+   // convo info 
+   String user;
+   Client client;
+   String convoID;
+   HashMap<String, String> convo;
 
     public messageInput(Client client) throws IOException {
       this.client = client;
@@ -53,13 +46,11 @@ public class messageInput extends JFrame implements ActionListener{
 
          user = client.getUser();
 
-         targetUser = "bradyap";
-
          send = new JButton();
          send.setText("Send");
         
          //the first element should have the user you are talking to
-         model.addElement("Chat with " + targetUser);
+         model.addElement("No conversation selected.");
          model.addElement("   ");
          list = new JList<>(model);
          list.setFont(list.getFont().deriveFont(16.0f));
@@ -118,15 +109,14 @@ public class messageInput extends JFrame implements ActionListener{
          MouseListener mousedListener = new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
                if (e.getClickCount() == 1) {
-      
                   String selectedItem = (String) dList.getSelectedValue();
                   System.out.println(selectedItem);
-                  convoID = convo.get(selectedItem + ", ");
+                  convoID = convo.get(selectedItem);
+
                   model.clear();
                   model.addElement("Chat With " + selectedItem);
                   
-                  getMsg(selectedItem);
-                  
+
                }
             }
          };
@@ -153,13 +143,13 @@ public class messageInput extends JFrame implements ActionListener{
          setResizable(false);
          setVisible(true);
          setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    }
+   }
 
-    public void addMessage(String input){
+   public void addMessage(String user, String input){
       if(message.getText() == null){
-         model.addElement(targetUser + ": " + input);
+         model.addElement(user + ": " + input);
       }
-    }
+   }
 
     public void getMsg(String fileName){
       fileName = fileName + ".txt";
@@ -172,7 +162,7 @@ public class messageInput extends JFrame implements ActionListener{
    }
 
 
-    @Override
+   @Override
    public void actionPerformed(ActionEvent e){
 
       if((JButton)e.getSource() == send){
@@ -187,26 +177,24 @@ public class messageInput extends JFrame implements ActionListener{
       }
 
       if((JButton)e.getSource() == create){
-         String test1 = JOptionPane.showInputDialog("UserName of Person you want to chat with");
+         String test1 = JOptionPane.showInputDialog("Please enter a comma separated list of users you would like to chat with:");
          if(!(test1 == null)){
-             try {
+            try {
                dmodel.addElement(test1);
-               test1+= ", " + user;
-               JSONObject json = client.addConvo(test1);
-               convoID = (String)json.get("cid");
+               String test2 = test1 + ", " + user;
+               convoID = client.addConvo(test2);
                convo.put(test1, convoID);
             } catch (IOException e1) {
                e1.printStackTrace();
             }
-             
          }
-       }
+      }
 
       System.out.println(message.getText());
       message.setText("");
    }
 
-private class keyListener implements KeyListener{
+private class keyListener implements KeyListener {
 
    @Override
    public void keyTyped(KeyEvent e) {
@@ -226,15 +214,12 @@ private class keyListener implements KeyListener{
          }  
          System.out.println(message.getText());
          message.setText("");
-
-     }
-     
+      }
    }
 
    @Override
    public void keyReleased(KeyEvent e) {
       
    }
- }
-
+}
 }
