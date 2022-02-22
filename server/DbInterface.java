@@ -11,6 +11,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.*;
 
 public class DbInterface {
+    //seborah was here ()
     private static final String url = "jdbc:mysql://localhost:3306/skypecord?autoReconnect=true";
     private static final String user = "skypecord";
     private static final String password = "skypecord";
