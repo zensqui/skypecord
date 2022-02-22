@@ -118,12 +118,17 @@ public class DbInterface {
     //? 2 = Conversation check failed.
     public String userConversationExists(JSONArray users) {
         try {
-            PreparedStatement stmt = conn.prepareStatement("SELECT * FROM conversations WHERE users=?");
-            stmt.setString(1, users.toJSONString());
-            ResultSet res = stmt.executeQuery();
-            System.out.println(res);
-            return res.next() ? res.getString("cid") : "1";
-        } catch (SQLException e) {
+            Statement stmt = conn.createStatement();
+            String sql = String.format("SELECT * FROM conversations");
+            ResultSet res = stmt.executeQuery(sql);
+            while (res.next()) {
+                JSONArray convoUsers = (JSONArray)new JSONParser().parse(res.getString("users"));
+                if (convoUsers.containsAll(users) && users.containsAll(convoUsers)) {
+                    return res.getString("cid");
+                }
+            }
+            return "1";
+        } catch (Exception e) {
             e.printStackTrace();
             return "2";
         }
@@ -132,10 +137,10 @@ public class DbInterface {
     //? Returns id of conversation.
     //? Returns id of existing conversation with userlist if it exists.
     public String addConversation(JSONArray users) { //* add conversation given arraylist of users
-        String cid = UUID.randomUUID().toString();
         try {
             String check = userConversationExists(users);
             if (check.equals("1")) {
+                String cid = UUID.randomUUID().toString();
                 PreparedStatement stmt = conn.prepareStatement("INSERT INTO conversations (cid, users) VALUES (?, ?)");
                 stmt.setString(1, cid);
                 stmt.setString(2, users.toJSONString());
