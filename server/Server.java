@@ -107,11 +107,13 @@ class EventHandler implements ServerEventListener {
                 try {
                     db.addMessage((String)json.get("cid"), (String)json.get("user"), (String)json.get("data"));
                     JSONArray users = (JSONArray)new JSONParser().parse(db.getConversationUsers((String)json.get("cid")));
-                    for(Object user : users) {
-                        ConnectionHandler c = connections.get((String)user);
-                        if(c != null) {
-                            c.add(json);
-                            System.out.println(json.toJSONString() + " --> " + json.toJSONString());
+                    for(Object u : users) {
+                        if (!u.equals((String)json.get("user"))) {
+                            ConnectionHandler c = connections.get((String)u);
+                            if(c != null) {
+                                c.add(json);
+                                System.out.println(json.toJSONString() + " --> " + json.toJSONString());
+                            }
                         }
                     }
                 } catch (Exception e) {
