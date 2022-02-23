@@ -161,7 +161,7 @@ public class Client {
         return getResponse();
     }
 
-    public String[] getConvoMessages(String cid) throws IOException {
+    public JSONArray getConvoMessages(String cid) throws IOException {
         JSONObject json = new JSONObject();
         json.put("type", "getConvoMessages");
         json.put("cid", cid);
@@ -170,11 +170,7 @@ public class Client {
 
         JSONObject jsonOut = getResponse();
         JSONArray messages = (JSONArray)jsonOut.get("data");
-        String[] msgs = new String[messages.size()];
-        for (int i = 0; i < messages.size(); i++) {
-            msgs[i] = (String)messages.get(i);
-        }
-        return msgs;
+        return messages;
     }
 }
 
