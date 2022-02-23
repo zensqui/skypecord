@@ -1,9 +1,13 @@
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.swing.*;
+
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 public class messageInput extends JFrame implements ActionListener {
 
    JPanel panel;
@@ -29,6 +33,7 @@ public class messageInput extends JFrame implements ActionListener {
    HashMap<String, String> convo;
 
     public messageInput(Client client) throws IOException {
+
       this.client = client;
       client.setMessageUi(this);
       
@@ -74,15 +79,13 @@ public class messageInput extends JFrame implements ActionListener {
          layout.putConstraint(SpringLayout.NORTH, scrollPane, 10, SpringLayout.NORTH, panel);
          scrollPane.setPreferredSize(new Dimension(800, 600));
          panel.add(scrollPane);
-        
+
          message = new JTextField();
          layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, message, 35, SpringLayout.HORIZONTAL_CENTER, panel);
          layout.putConstraint(SpringLayout.NORTH, message, 625, SpringLayout.NORTH, panel);
          message.setPreferredSize(new Dimension(725, 50));
          message.addKeyListener(new keyListener());
          panel.add(message);
-         
-         
 
          send = new JButton("Send");
          layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, send, 435, SpringLayout.HORIZONTAL_CENTER, panel);
@@ -96,9 +99,9 @@ public class messageInput extends JFrame implements ActionListener {
 
          create = new JButton();
          create.setText("create");
-        
+
          dList = new JList<>(dmodel);
-        
+         
          dList.setFont(dList.getFont().deriveFont(18.0f));
          dList.setFixedCellHeight(40);
 
@@ -116,6 +119,7 @@ public class messageInput extends JFrame implements ActionListener {
                   model.clear();
                   model.addElement("Chat With " + selectedItem);
                   
+                  getMsgs(convoID);
 
                }
             }
@@ -135,7 +139,7 @@ public class messageInput extends JFrame implements ActionListener {
          create.addActionListener(this);
          panel.add(create);
       //////////////////************************************************************************************* */
-
+         getConvos();
 
          add(panel, BorderLayout.CENTER);
          setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
@@ -151,16 +155,45 @@ public class messageInput extends JFrame implements ActionListener {
       }
    }
 
-    public void getMsgs(String convoID){
-      try {
-         client.getConvoMessages(convoID);
-      } catch (IOException e) {
+   public void getMsgs(String convoID){
+      try { 
+         JSONArray msgs; 
+         msgs = client.getConvoMessages(convoID);
+         for(int i = 0; i < msgs.size(); i++){
+            JSONObject msg = (JSONObject) msgs.get(i);
+            String user = (String) msg.get("user");
+            String data = (String) msg.get("message");
+            System.out.println(user + ": " + data);
+            model.addElement(user + ": " + data);
+         }
+      } catch (Exception e) {
          e.printStackTrace();
       }
    }
 
    public void getConvos(){
+      try {
+         String[] convos;
+         convos = client.getUserConvos();
+         for(int i = 0; i < convos.length; i++){
+            String convoID = convos[i];
 
+            String[]users = client.getConvoUsers(convoID);
+            String name = "";
+            for(String u : users) {
+               u = u.substring(1, u.length() -1);
+               if(!u.equals(user)){
+                  name += u + ", ";
+               }
+            }
+            name = name.substring(0, name.length() - 2);
+
+            convo.put(name, convoID);
+            dmodel.addElement(name);
+         }
+      } catch (Exception e) {
+         e.printStackTrace();
+      }
    }
 
 

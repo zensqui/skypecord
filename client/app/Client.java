@@ -119,11 +119,11 @@ public class Client {
         out.flush();
 
         JSONObject jsonOut = getResponse();
-        String[] users = jsonOut.get("data").toString().split(", ");
+        String[] users = jsonOut.get("data").toString().substring(1, jsonOut.get("data").toString().length() - 1).split(", ");
         return users;
     }
 
-    public String[] getUserConvos() throws IOException {
+    public String[] getUserConvos() throws IOException, ParseException {
         JSONObject json = new JSONObject();
         json.put("type", "getUserConvos");
         json.put("user", user);
@@ -131,7 +131,7 @@ public class Client {
         out.flush();
 
         JSONObject jsonOut = getResponse();
-        JSONArray convos = (JSONArray)jsonOut.get("data");
+        JSONArray convos = (JSONArray)new JSONParser().parse(jsonOut.get("data").toString());
         String[] cids = new String[convos.size()];
         for (int i = 0; i < convos.size(); i++) {
             cids[i] = (String)convos.get(i);
@@ -161,7 +161,7 @@ public class Client {
         return getResponse();
     }
 
-    public String[] getConvoMessages(String cid) throws IOException {
+    public JSONArray getConvoMessages(String cid) throws IOException, ParseException {
         JSONObject json = new JSONObject();
         json.put("type", "getConvoMessages");
         json.put("cid", cid);
@@ -169,12 +169,8 @@ public class Client {
         out.flush();
 
         JSONObject jsonOut = getResponse();
-        JSONArray messages = (JSONArray)jsonOut.get("data");
-        String[] msgs = new String[messages.size()];
-        for (int i = 0; i < messages.size(); i++) {
-            msgs[i] = (String)messages.get(i);
-        }
-        return msgs;
+        JSONArray messages = (JSONArray)new JSONParser().parse(jsonOut.get("data").toString());
+        return messages;
     }
 }
 
