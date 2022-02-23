@@ -1,6 +1,7 @@
 import java.net.*;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
@@ -110,24 +111,32 @@ public class Client {
         return getResponse();
     }
 
-    public JSONObject getConvoUsers(String cid) throws IOException {
+    public String[] getConvoUsers(String cid) throws IOException {
         JSONObject json = new JSONObject();
         json.put("type", "getConvoUsers");
         json.put("cid", cid);
         out.append(json.toJSONString() + "\n");
         out.flush();
 
-        return getResponse();
+        JSONObject jsonOut = getResponse();
+        String[] users = jsonOut.get("data").toString().split(", ");
+        return users;
     }
 
-    public JSONObject getUserConvos() throws IOException {
+    public String[] getUserConvos() throws IOException {
         JSONObject json = new JSONObject();
         json.put("type", "getUserConvos");
         json.put("user", user);
         out.append(json.toJSONString() + "\n");
         out.flush();
 
-        return getResponse();
+        JSONObject jsonOut = getResponse();
+        JSONArray convos = (JSONArray)jsonOut.get("data");
+        String[] cids = new String[convos.size()];
+        for (int i = 0; i < convos.size(); i++) {
+            cids[i] = (String)convos.get(i);
+        }
+        return cids;
     }
 
     public JSONObject addConvoUser(String cid, String user) throws IOException {
@@ -152,14 +161,20 @@ public class Client {
         return getResponse();
     }
 
-    public JSONObject getConvoMessages(String cid) throws IOException {
+    public String[] getConvoMessages(String cid) throws IOException {
         JSONObject json = new JSONObject();
         json.put("type", "getConvoMessages");
         json.put("cid", cid);
         out.append(json.toJSONString() + "\n");
         out.flush();
 
-        return getResponse();
+        JSONObject jsonOut = getResponse();
+        JSONArray messages = (JSONArray)jsonOut.get("data");
+        String[] msgs = new String[messages.size()];
+        for (int i = 0; i < messages.size(); i++) {
+            msgs[i] = (String)messages.get(i);
+        }
+        return msgs;
     }
 }
 
