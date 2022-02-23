@@ -1,7 +1,6 @@
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.swing.*;
@@ -32,7 +31,7 @@ public class messageInput extends JFrame implements ActionListener {
    String convoID;
    HashMap<String, String> convo;
 
-    public messageInput(Client client) throws IOException {
+   public messageInput(Client client) throws IOException {
 
       this.client = client;
       client.setMessageUi(this);
@@ -113,14 +112,11 @@ public class messageInput extends JFrame implements ActionListener {
             public void mouseClicked(MouseEvent e) {
                if (e.getClickCount() == 1) {
                   String selectedItem = (String) dList.getSelectedValue();
-                  System.out.println(selectedItem);
                   convoID = convo.get(selectedItem);
 
                   model.clear();
-                  model.addElement("Chat With " + selectedItem);
-                  
-                  getMsgs(convoID);
 
+                  getMsgs(convoID);
                }
             }
          };
@@ -144,14 +140,37 @@ public class messageInput extends JFrame implements ActionListener {
          add(panel, BorderLayout.CENTER);
          setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
          setSize(screenSize.width, screenSize.height);
+         //! RESIZABLE
          setResizable(false);
          setVisible(true);
          setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
    }
 
-   public void addMessage(String user, String input){
-      if(message.getText() == null){
-         model.addElement(user + ": " + input);
+   public void addMessage(String user, String message, String cid) {
+      if (cid.equals(convoID)) {
+         model.addElement(user + ": " + message);
+      } else if (!convo.containsValue(cid)) {
+         System.out.println("dasjf;lkdsjflkas;jfldsklf;j");
+         addConvo(cid);
+      }
+   }
+
+   public void addConvo(String cid) {
+      try {
+         String[] users = client.getConvoUsers(cid);
+         String name = "";
+         for(String u : users) {
+            u = u.substring(1, u.length() -1);
+            if(!u.equals(user)){
+               name += u + ", ";
+            }
+         }
+         name = name.substring(0, name.length() - 2);
+
+         convo.put(name, cid);
+         dmodel.addElement(name);
+      } catch (IOException e) {
+         e.printStackTrace();
       }
    }
 
@@ -177,19 +196,7 @@ public class messageInput extends JFrame implements ActionListener {
          convos = client.getUserConvos();
          for(int i = 0; i < convos.length; i++){
             String convoID = convos[i];
-
-            String[]users = client.getConvoUsers(convoID);
-            String name = "";
-            for(String u : users) {
-               u = u.substring(1, u.length() -1);
-               if(!u.equals(user)){
-                  name += u + ", ";
-               }
-            }
-            name = name.substring(0, name.length() - 2);
-
-            convo.put(name, convoID);
-            dmodel.addElement(name);
+            addConvo(convoID);
          }
       } catch (Exception e) {
          e.printStackTrace();
@@ -225,7 +232,6 @@ public class messageInput extends JFrame implements ActionListener {
          }
       }
 
-      System.out.println(message.getText());
       message.setText("");
    }
 
