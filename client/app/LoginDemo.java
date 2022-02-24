@@ -50,6 +50,7 @@ public class LoginDemo extends JFrame implements ActionListener {
       layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, userName_text, 50, SpringLayout.HORIZONTAL_CENTER, panel);
       layout.putConstraint(SpringLayout.NORTH, userName_text, 300, SpringLayout.NORTH, panel);
       userName_text.setPreferredSize(new Dimension(150, 45));
+      userName_text.addKeyListener(new keyListener());
 
       password_label = new JLabel();
       password_label.setText("Password :");
@@ -63,6 +64,7 @@ public class LoginDemo extends JFrame implements ActionListener {
       layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, password_text, 50, SpringLayout.HORIZONTAL_CENTER, panel);
       layout.putConstraint(SpringLayout.NORTH, password_text, 350, SpringLayout.NORTH, panel);
       password_text.setPreferredSize(new Dimension(150, 45));
+      password_text.addKeyListener(new keyListener());
 
       message = new JLabel();
 
@@ -122,6 +124,51 @@ public class LoginDemo extends JFrame implements ActionListener {
          }
       } catch (Exception e) {
          e.printStackTrace();
+      }
+   }
+
+   private class keyListener implements KeyListener {
+
+      @Override
+      public void keyTyped(KeyEvent e) {
+         
+      }
+   
+      @Override
+      public void keyPressed(KeyEvent e) {
+         if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+            String userName = userName_text.getText();
+            String password = password_text.getText();        
+            u = userName.trim();
+            p = password.trim();
+            try {
+               JSONObject res = client.login(u, p);
+               String exit = res.get("data").toString();
+               switch (exit) {
+                  case "0":
+                     message.setText("Login successful.");
+                     setVisible(false);
+                     new messageInput(client);
+                     break;
+                  case "1":
+                     message.setText("Invalid user.");
+                     break;
+                  case "2":
+                     message.setText("Invalid password.");
+                     break;
+                  case "3":
+                     message.setText("Login failed. Please try again.");
+                     break;
+               }
+            } catch (Exception ae) {
+               ae.printStackTrace();
+            }
+         }
+      }
+   
+      @Override
+      public void keyReleased(KeyEvent e) {
+         
       }
    }
 }
