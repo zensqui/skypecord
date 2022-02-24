@@ -161,7 +161,13 @@ public class messageInput extends JFrame implements ActionListener {
    }
 
    public void addMessage(String user, String input){
+      if(getChatSelected()){
          model.addElement(user + ": " + input);
+      }
+   }
+
+   public boolean getChatSelected(){
+      return this.chatSelected;
    }
 
    public void getMsgs(String convoID){
