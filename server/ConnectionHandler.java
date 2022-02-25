@@ -59,10 +59,8 @@ public class ConnectionHandler implements Runnable {
 
 interface InputEventListener {
     void onInputEvent(JSONObject json);
-}
 
-interface QueueEventListener {
-    void onOutputEvent(JSONObject json);
+    void onDisconnect();
 }
 
 class InputEventHandler implements InputEventListener {
@@ -77,6 +75,14 @@ class InputEventHandler implements InputEventListener {
     public void onInputEvent(JSONObject json) {
         listener.onServerEvent(connection, json);
     }
+
+    public void onDisconnect() {
+        listener.onConnectionClosed(connection);
+    }
+}
+
+interface QueueEventListener {
+    void onOutputEvent(JSONObject json);
 }
 
 class QueueEventHandler implements QueueEventListener {

@@ -17,11 +17,18 @@ public class ThreadedBufferedReader implements Runnable {
             String input = "";
             while ((input = in.readLine()) != null) {
                 JSONObject jsonIn = new JSONObject();
+                try {
+                    jsonIn = (JSONObject) new JSONParser().parse(input);
+                } catch (ParseException e) {
+                    System.out.println("error parsing JSON: " + input);
+                }
                 jsonIn = (JSONObject)new JSONParser().parse(input);
                 listener.onInputEvent(jsonIn);
             }
         } catch (Exception e) {
             e.printStackTrace();
+            //System.out.println("disconnected");
+            //listener.onDisconnect();
         }
     }
 }

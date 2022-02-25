@@ -29,13 +29,15 @@ public class Server {
 
             
             connections.put(user, connection);
-            System.out.println("connection " + user + " --> new connection from " + socket.getInetAddress() + ":" + socket.getPort());
+            System.out.println("connection [" + user + "] --> new connection from " + socket.getInetAddress() + ":" + socket.getPort());
         }
     }
 }
 
 interface ServerEventListener {
     void onServerEvent(ConnectionHandler connection, JSONObject json);
+    
+    void onConnectionClosed(ConnectionHandler connection);
 }
 
 class EventHandler implements ServerEventListener {
@@ -71,7 +73,7 @@ class EventHandler implements ServerEventListener {
                     connection.setUser((String)json.get("user"));
                     connections.remove(user);
                     connections.put((String)json.get("user"), connection);
-                    System.out.println("connection " + user + " --> user " + connection.getUser());
+                    System.out.println("connection [" + user + "] --> user [" + connection.getUser() + "]");
                 }
                 break;
             case "addConvo":
@@ -123,6 +125,11 @@ class EventHandler implements ServerEventListener {
             default:
                 System.out.println("unhandled event: " + type);
         }
-        
+    }
+
+    public void onConnectionClosed(ConnectionHandler connection) {
+        String user = connection.getUser();
+        connections.remove(user);
+        System.out.println("connection from [" + user + "] --> connection closed");
     }
 }

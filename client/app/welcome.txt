@@ -3,7 +3,7 @@
 //info you want the user to see when he opens the application goes on this file
 
 Welcome to Skypecord!!!
-Version: 0.1
+Version: 1.0
  
 A not whatsoever fully funtional messaging service.
  
