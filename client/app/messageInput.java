@@ -348,7 +348,27 @@ public class messageInput extends JFrame implements ActionListener {
                System.out.println("Chat Deleted");
             }
             else if(choice == 1){
+               String addUser = JOptionPane.showInputDialog("Enter User you want to add to the conversation");
+               String cid = convo.get(chatInput);
+
+               try {
+                  client.addConvoUser(cid, addUser);
+               } catch (IOException e1) {
+                  e1.printStackTrace();
+               }
+
+               for(int i = 0; i < dmodel.size(); i++){
+                  if(dmodel.elementAt(i).equals(chatInput)){
+                     String test = dmodel.remove(i);
+                     dmodel.add(i, test + ", " + addUser);
+                     convo.remove(test);
+                     convo.put(test + ", " + addUser, cid);
+                     break;
+                  }  
+               }
+
                System.out.println("User Added");
+
             } 
             else if(choice == 2){
                System.out.println("User Removed");
