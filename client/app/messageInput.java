@@ -295,8 +295,11 @@ public class messageInput extends JFrame implements ActionListener {
       }
 
       if((JButton)e.getSource() == create){
-         String test1 = JOptionPane.showInputDialog("Please enter a comma separated list of users you would like to chat with:");
-         if(!(test1 == null)){
+         String test1 = "";
+         while(test1.equals("")){
+            test1 = JOptionPane.showInputDialog("Please enter a comma separated list of users you would like to chat with:");
+         }
+         if(!(test1.equals(""))){
             try {
                dmodel.addElement(test1);
                String test2 = test1 + ", " + user;
@@ -321,7 +324,7 @@ public class messageInput extends JFrame implements ActionListener {
 
          if(!chatInput.equals("")){
             String[] options = {"Delete Convorsation", "Add User", "Remove User"};
-        
+         
             int choice = JOptionPane.showOptionDialog(null, "Please choose one",
                "Edit COnversations",
                JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
@@ -330,15 +333,15 @@ public class messageInput extends JFrame implements ActionListener {
                String cid = convo.remove(chatInput);
                try {
                   client.delConvo(cid);
-               } catch (IOException e1) {
                   
+               } catch (IOException e1) {
                   e1.printStackTrace();
                }
 
                for(int i = 0; i < dmodel.size(); i++){
                   if(dmodel.elementAt(i).equals(chatInput)){
                      dmodel.remove(i);
-                     System.out.println(dmodel.get(i));
+                     System.out.print(dmodel.get(i));
                   }  
                }
                
