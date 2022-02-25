@@ -103,6 +103,12 @@ public class LoginDemo extends JFrame implements ActionListener {
       String password = password_text.getText();        
       u = userName.trim();
       p = password.trim();
+
+      if(userName.equals("") || password.equals("")){
+         message.setText("Enter information");
+         return;
+      }
+
       try {
          JSONObject res = client.login(u, p);
          String exit = res.get("data").toString();
@@ -141,6 +147,12 @@ public class LoginDemo extends JFrame implements ActionListener {
             String password = password_text.getText();        
             u = userName.trim();
             p = password.trim();
+
+            if(userName.equals("") || password.equals("")){
+               message.setText("Enter information");
+               return;
+            }
+
             try {
                JSONObject res = client.login(u, p);
                String exit = res.get("data").toString();
