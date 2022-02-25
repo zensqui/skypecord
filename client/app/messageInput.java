@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Set;
 
 import javax.swing.*;
 
@@ -25,6 +26,7 @@ public class messageInput extends JFrame implements ActionListener {
 
     //directory
    JButton create;
+   JButton editConvos;
    JList<String> dList;
    JScrollPane dScrollPane;
    DefaultListModel<String> dmodel;
@@ -36,6 +38,7 @@ public class messageInput extends JFrame implements ActionListener {
    Client client;
    String convoID;
    HashMap<String, String> convo;
+   
 
     public messageInput(Client client) throws IOException {
 
@@ -147,6 +150,13 @@ public class messageInput extends JFrame implements ActionListener {
          create.setPreferredSize(new Dimension(250, 50));
          create.addActionListener(this);
          panel.add(create);
+
+         editConvos = new JButton("Edit Conversation");
+         layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, editConvos, -550, SpringLayout.HORIZONTAL_CENTER, panel);
+         layout.putConstraint(SpringLayout.NORTH, editConvos, 675, SpringLayout.NORTH, panel);
+         editConvos.setPreferredSize(new Dimension(250, 50));
+         editConvos.addActionListener(this);
+         panel.add(editConvos);
       //////////////////************************************************************************************* */
          getConvos();
 
@@ -159,13 +169,11 @@ public class messageInput extends JFrame implements ActionListener {
    }
 
    public void addMessage(String user, String data, String cid){
-      if(getChatSelected()){
-         if (cid.equals(convoID)) {
-            model.addElement(user + ": " + data);
-         } else if (!convo.containsValue(cid)) {
-            System.out.println("dasjf;lkdsjflkas;jfldsklf;j");
-            addConvo(cid);
-         }
+      if (cid.equals(convoID)) {
+         model.addElement(user + ": " + data);
+      } else if (!convo.containsValue(cid)) {
+         System.out.println("dasjf;lkdsjflkas;jfldsklf;j");
+         addConvo(cid);
       }
    }
 
@@ -209,7 +217,6 @@ public class messageInput extends JFrame implements ActionListener {
    }
 
    //text that shows up on start up
-   //if the line in txt file starts with "//" then it will not show up on start up
    public void welcomeText(String fileName){
       BufferedReader in;
       try {
@@ -220,8 +227,32 @@ public class messageInput extends JFrame implements ActionListener {
          {  
             if(line.length() < 2) {
                model.addElement(line);
-            }else 
-            if(!line.substring(0, 2).equals("//")){   //if the line in txt file starts with "//" then it will not show up on start up
+
+            }else if(line.substring(0, 2).equals("/r")){
+               line = "<html><font color=\"red\">" + line.substring(2) + "</font></html>";
+               model.addElement(line);
+
+            }else if(line.substring(0, 2).equals("/g")){
+               line = "<html><font color=\"green\">" + line.substring(2) + "</font></html>";
+               model.addElement(line);
+
+            }else if(line.substring(0, 2).equals("/b")){
+               line = "<html><font color=\"blue\">" + line.substring(2) + "</font></html>";
+               model.addElement(line);
+
+            }else if(line.substring(0, 2).equals("/o")){
+               line = "<html><font color=\"orange\">" + line.substring(2) + "</font></html>";
+               model.addElement(line);
+
+            }else if(line.substring(0, 2).equals("/y")){
+               line = "<html><font color=\"yellow\">" + line.substring(2) + "</font></html>";
+               model.addElement(line);
+
+            }else if(line.substring(0, 2).equals("/p")){
+               line = "<html><font color=\"purple\">" + line.substring(2) + "</font></html>";
+               model.addElement(line);
+
+            }else if(!line.substring(0, 2).equals("//")){  
                model.addElement(line);
             }
             line = in.readLine();
@@ -259,6 +290,8 @@ public class messageInput extends JFrame implements ActionListener {
                   ex.printStackTrace();
                }
          }
+         //System.out.println(message.getText());
+         message.setText("");
       }
 
       if((JButton)e.getSource() == create){
@@ -274,9 +307,52 @@ public class messageInput extends JFrame implements ActionListener {
             }
          }
       }
+      
+      if((JButton)e.getSource() == editConvos){
+         String chatInput = "";
+         String[] choices = new String[dmodel.size()];
 
-      //System.out.println(message.getText());
-      message.setText("");
+         for(int i = 0; i < dmodel.size(); i++){
+            choices[i] = dmodel.get(i);
+         }
+
+         chatInput = (String) JOptionPane.showInputDialog(null, "Choose Conversation you want to edit", 
+            "Edit Conversations", JOptionPane.QUESTION_MESSAGE, null, choices, choices[0]); 
+
+         if(!chatInput.equals("")){
+            String[] options = {"Delete Convorsation", "Add User", "Remove User"};
+        
+            int choice = JOptionPane.showOptionDialog(null, "Please choose one",
+               "Edit COnversations",
+               JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
+            
+            if(choice == 0){
+               String cid = convo.remove(chatInput);
+               try {
+                  client.delConvo(cid);
+               } catch (IOException e1) {
+                  
+                  e1.printStackTrace();
+               }
+
+               for(int i = 0; i < dmodel.size(); i++){
+                  if(dmodel.elementAt(i).equals(chatInput)){
+                     dmodel.remove(i);
+                     System.out.println(dmodel.get(i));
+                  }  
+               }
+               
+               System.out.println("Chat Deleted");
+            }
+            else if(choice == 1){
+               System.out.println("User Added");
+            } 
+            else if(choice == 2){
+               System.out.println("User Removed");
+            }
+         }
+      }
+      
    }
 
 private class keyListener implements KeyListener {
