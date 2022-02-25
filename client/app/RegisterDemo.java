@@ -127,6 +127,11 @@ public class RegisterDemo extends JFrame implements ActionListener {
          String password = password_text.getText();
          String confirmPassword = confirmPassword_text.getText(); 
 
+         if(userName.equals("") || password.equals("") || confirmPassword.equals("")){
+            message.setText("Enter information");
+            return;
+         }
+
          if(password.trim().equals(confirmPassword.trim())) {
             u = userName.trim();
             p = password.trim();
@@ -167,6 +172,11 @@ public class RegisterDemo extends JFrame implements ActionListener {
             String password = password_text.getText();
             String confirmPassword = confirmPassword_text.getText(); 
 
+            if(userName.equals("") || password.equals("") || confirmPassword.equals("")){
+               message.setText("Enter information");
+               return;
+            }
+            
             if(password.trim().equals(confirmPassword.trim())) {
                u = userName.trim();
                p = password.trim();
