@@ -1,6 +1,10 @@
 import java.awt.*;
 import java.awt.event.*;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.swing.*;
@@ -25,13 +29,17 @@ public class messageInput extends JFrame implements ActionListener {
    JScrollPane dScrollPane;
    DefaultListModel<String> dmodel;
 
+   //true if a chat has been selected
+   boolean chatSelected;
    // convo info 
    String user;
    Client client;
    String convoID;
    HashMap<String, String> convo;
 
-   public messageInput(Client client) throws IOException {
+    public messageInput(Client client) throws IOException {
+
+      chatSelected = false;
 
       this.client = client;
       client.setMessageUi(this);
@@ -54,8 +62,10 @@ public class messageInput extends JFrame implements ActionListener {
          send.setText("Send");
         
          //the first element should have the user you are talking to
-         model.addElement("No conversation selected.");
-         model.addElement("   ");
+         //model.addElement("No conversation selected.");
+         //model.addElement("   ");
+         welcomeText("./client/app/welcome.txt");
+
          list = new JList<>(model);
          list.setFont(list.getFont().deriveFont(16.0f));
 
@@ -112,11 +122,16 @@ public class messageInput extends JFrame implements ActionListener {
             public void mouseClicked(MouseEvent e) {
                if (e.getClickCount() == 1) {
                   String selectedItem = (String) dList.getSelectedValue();
+                  System.out.println(selectedItem);
                   convoID = convo.get(selectedItem);
 
                   model.clear();
-
+                  model.addElement("Chat With " + selectedItem);
+                  
                   getMsgs(convoID);
+                  
+                  chatSelected = true;
+
                }
             }
          };
@@ -140,38 +155,19 @@ public class messageInput extends JFrame implements ActionListener {
          add(panel, BorderLayout.CENTER);
          setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
          setSize(screenSize.width, screenSize.height);
-         //! RESIZABLE
          setResizable(false);
          setVisible(true);
          setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
    }
 
-   public void addMessage(String user, String message, String cid) {
-      if (cid.equals(convoID)) {
-         model.addElement(user + ": " + message);
-      } else if (!convo.containsValue(cid)) {
-         System.out.println("dasjf;lkdsjflkas;jfldsklf;j");
-         addConvo(cid);
+   public void addMessage(String user, String input){
+      if(getChatSelected()){
+         model.addElement(user + ": " + input);
       }
    }
 
-   public void addConvo(String cid) {
-      try {
-         String[] users = client.getConvoUsers(cid);
-         String name = "";
-         for(String u : users) {
-            u = u.substring(1, u.length() -1);
-            if(!u.equals(user)){
-               name += u + ", ";
-            }
-         }
-         name = name.substring(0, name.length() - 2);
-
-         convo.put(name, cid);
-         dmodel.addElement(name);
-      } catch (IOException e) {
-         e.printStackTrace();
-      }
+   public boolean getChatSelected(){
+      return this.chatSelected;
    }
 
    public void getMsgs(String convoID){
@@ -190,13 +186,50 @@ public class messageInput extends JFrame implements ActionListener {
       }
    }
 
+   //text that shows up on start up
+   //if the line in txt file starts with "//" then it will not show up on start up
+   public void welcomeText(String fileName){
+      BufferedReader in;
+      try {
+         in = new BufferedReader(new FileReader(fileName));
+       
+         String line = in.readLine();
+         while(line != null)
+         {  
+            if(line.length() < 2) {
+               model.addElement(line);
+            }else 
+            if(!line.substring(0, 2).equals("//")){   //if the line in txt file starts with "//" then it will not show up on start up
+               model.addElement(line);
+            }
+            line = in.readLine();
+         }
+         in.close();
+      }   
+      catch (Exception e) {
+        e.printStackTrace();
+      }
+   }
+
    public void getConvos(){
       try {
          String[] convos;
          convos = client.getUserConvos();
          for(int i = 0; i < convos.length; i++){
             String convoID = convos[i];
-            addConvo(convoID);
+
+            String[]users = client.getConvoUsers(convoID);
+            String name = "";
+            for(String u : users) {
+               u = u.substring(1, u.length() -1);
+               if(!u.equals(user)){
+                  name += u + ", ";
+               }
+            }
+            name = name.substring(0, name.length() - 2);
+
+            convo.put(name, convoID);
+            dmodel.addElement(name);
          }
       } catch (Exception e) {
          e.printStackTrace();
@@ -208,7 +241,7 @@ public class messageInput extends JFrame implements ActionListener {
    public void actionPerformed(ActionEvent e){
 
       if((JButton)e.getSource() == send){
-         if(!(message.getText() == null)){
+         if(!message.getText().equals("") && chatSelected){
             model.addElement(user + ": " + message.getText());
             try { 
                client.message(convoID, message.getText());
@@ -232,6 +265,7 @@ public class messageInput extends JFrame implements ActionListener {
          }
       }
 
+      //System.out.println(message.getText());
       message.setText("");
    }
 
@@ -245,7 +279,7 @@ private class keyListener implements KeyListener {
    @Override
    public void keyPressed(KeyEvent e) {
       if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-         if(!(message.getText().equals(""))){
+         if(!message.getText().equals("") && chatSelected){
             model.addElement(user + ": " + message.getText());
             try { 
                client.message(convoID, message.getText());
@@ -253,7 +287,7 @@ private class keyListener implements KeyListener {
                   ex.printStackTrace();
                }
          }  
-         System.out.println(message.getText());
+         //System.out.println(message.getText());
          message.setText("");
       }
    }
