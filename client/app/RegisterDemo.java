@@ -10,7 +10,7 @@ public class RegisterDemo extends JFrame implements ActionListener {
    JTextField userName_text;
    JPasswordField password_text;
    JPasswordField confirmPassword_text;
-   JButton submit, cancel;
+   JButton submit;
 
    Client client;
    
@@ -46,6 +46,7 @@ public class RegisterDemo extends JFrame implements ActionListener {
       layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, user_label, 75, SpringLayout.HORIZONTAL_CENTER, panel);
       layout.putConstraint(SpringLayout.NORTH, user_label, 300, SpringLayout.NORTH, panel);
       user_label.setPreferredSize(new Dimension(360, 50));
+      userName_text.addKeyListener(new keyListener());
 
       layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, userName_text, 50, SpringLayout.HORIZONTAL_CENTER, panel);
       layout.putConstraint(SpringLayout.NORTH, userName_text, 300, SpringLayout.NORTH, panel);
@@ -58,6 +59,7 @@ public class RegisterDemo extends JFrame implements ActionListener {
       layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, password_label, 75, SpringLayout.HORIZONTAL_CENTER, panel);
       layout.putConstraint(SpringLayout.NORTH, password_label, 350, SpringLayout.NORTH, panel);
       password_label.setPreferredSize(new Dimension(360, 50));
+      password_text.addKeyListener(new keyListener());
 
       layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, password_text, 50, SpringLayout.HORIZONTAL_CENTER, panel);
       layout.putConstraint(SpringLayout.NORTH, password_text, 350, SpringLayout.NORTH, panel);
@@ -70,6 +72,7 @@ public class RegisterDemo extends JFrame implements ActionListener {
       layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, confirmPassword_label, 75, SpringLayout.HORIZONTAL_CENTER, panel);
       layout.putConstraint(SpringLayout.NORTH, confirmPassword_label, 400, SpringLayout.NORTH, panel);
       confirmPassword_label.setPreferredSize(new Dimension(360, 50));
+      confirmPassword_text.addKeyListener(new keyListener());
 
       layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, confirmPassword_text, 50, SpringLayout.HORIZONTAL_CENTER, panel);
       layout.putConstraint(SpringLayout.NORTH, confirmPassword_text, 400, SpringLayout.NORTH, panel);
@@ -86,10 +89,7 @@ public class RegisterDemo extends JFrame implements ActionListener {
       submit.setOpaque(false);
       submit.setContentAreaFilled(false);
       submit.setBorderPainted(false);
-      submit.setFocusPainted(false);
-
-      cancel = new JButton();
-      
+      submit.setFocusPainted(false);  
       
       panel.add(user_label);
       panel.add(userName_text);
@@ -151,10 +151,53 @@ public class RegisterDemo extends JFrame implements ActionListener {
          } else {
             message.setText("Passwords don't match.");
          }
-      } else if((JButton)ae.getSource() == cancel){
+      }
+   }
+   private class keyListener implements KeyListener {
+
+      @Override
+      public void keyTyped(KeyEvent e) {
+         
+      }
+   
+      @Override
+      public void keyPressed(KeyEvent e) {
+         if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+            String userName = userName_text.getText();
+            String password = password_text.getText();
+            String confirmPassword = confirmPassword_text.getText(); 
+
+            if(password.trim().equals(confirmPassword.trim())) {
+               u = userName.trim();
+               p = password.trim();
+               try {
+                  JSONObject res = client.register(u, p);
+                  String exit = res.get("data").toString();
+                  switch (exit) {
+                     case "0":
+                        message.setText("Registration successful.");
+                        setVisible(false);
+                        break;
+                     case "1":
+                        message.setText("User already exists.");
+                        break;
+                     case "2":
+                        message.setText("Registration failed. Please try again.");
+                        break;
+                  }
+               } catch (Exception ae) {
+                  ae.printStackTrace();
+               }
+            } else {
+               message.setText("Passwords don't match.");
+            }
+         }
+      }
+   
+      @Override
+      public void keyReleased(KeyEvent e) {
          
       }
    }
-
-   
 }
+   
