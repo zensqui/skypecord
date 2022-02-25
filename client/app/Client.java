@@ -192,7 +192,8 @@ class InputEventHandler implements InputEventListener {
 
     public void onInputEvent(JSONObject json) {
         if(json.get("type").equals("msg")) {
-            messageUi.addMessage(json.get("user").toString(), json.get("data").toString(), json.get("cid").toString());
+            System.out.println("[" + json.get("user") + "] " + json.get("data"));
+            messageUi.addMessage(json.get("user").toString() ,json.get("data").toString(), json.get("cid").toString());
         } else {
             try {
                 this.queue.put(json);
