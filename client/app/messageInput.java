@@ -338,13 +338,15 @@ public class messageInput extends JFrame implements ActionListener {
          }  
 
          //list of conversations to edit
+         //chat input = conversation the user chooses
          chatInput = (String) JOptionPane.showInputDialog(null, "Choose Conversation you want to edit", 
             "Edit Conversations", JOptionPane.QUESTION_MESSAGE, null, choices, choices[0]); 
 
          //asks you what you want to edit
+         //options the user gets
          if(!chatInput.equals("")){
             String[] options = {"Delete Convorsation", "Add User", "Remove User"};
-         
+            //choice = index of options array the user chooses
             int choice = JOptionPane.showOptionDialog(null, "Please choose one",
                "Edit COnversations",
                JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
@@ -358,7 +360,12 @@ public class messageInput extends JFrame implements ActionListener {
                } catch (IOException e1) {
                   e1.printStackTrace();
                }
-               
+               //updates the list of messages the user sees if the chat selected was the one deleted
+               if(chatInput.equals((String) dList.getSelectedValue())){
+                  model.clear();
+                  welcomeText("./client/app/welcome.txt");
+                  convo.remove(chatInput);
+               }
                //updates directory
                for(int i = 0; i < dmodel.size(); i++){
                   if(dmodel.elementAt(i).equals(chatInput)){
@@ -369,6 +376,7 @@ public class messageInput extends JFrame implements ActionListener {
                
                System.out.println("Chat Deleted");
             }
+
             //adds a user to the conversation
             else if(choice == 1){
                String addUser = "";
@@ -393,6 +401,15 @@ public class messageInput extends JFrame implements ActionListener {
                      break;
                   }  
                }
+
+               //adds a update message in the conversation for the users to see who was added
+               String chatUpdate = "Added " + addUser + " to the conversation.";
+               try {
+                  client.message(cid, chatUpdate);
+               } catch (Exception ex) {
+                  ex.printStackTrace();
+               }
+               
                System.out.println("User Added");
             } 
 
