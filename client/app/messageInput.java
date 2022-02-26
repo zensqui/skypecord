@@ -128,9 +128,9 @@ public class messageInput extends JFrame implements ActionListener {
                   String selectedItem = (String) dList.getSelectedValue();
                   System.out.println(selectedItem);
                   convoID = convo.get(selectedItem);
-
                   model.clear();
-                  
+                  model.addElement("Conversation with " + selectedItem);
+                  model.addElement(" ");
                   getMsgs(convoID);
                   
                   chatSelected = true;
