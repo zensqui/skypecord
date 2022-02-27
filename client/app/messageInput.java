@@ -39,6 +39,10 @@ public class messageInput extends JFrame implements ActionListener {
    String convoID;
    HashMap<String, String> convo;
    
+   //skypcord colors
+   Color lightBlue;
+   Color purple;
+   Color blueish;
 
    public messageInput(Client client) throws IOException {
       
@@ -48,6 +52,11 @@ public class messageInput extends JFrame implements ActionListener {
       this.client = client;
       client.setMessageUi(this);
       
+      //Skypcord colors
+      lightBlue = new Color(154, 217, 234);
+      purple = new Color(63, 72, 204);
+      blueish = new Color(0, 162, 232);
+
       //stores name and id of conversations
       convo = new HashMap<String, String>();
 
@@ -90,7 +99,11 @@ public class messageInput extends JFrame implements ActionListener {
          layout.putConstraint(SpringLayout.NORTH, scrollPane, 10, SpringLayout.NORTH, panel);
          scrollPane.setPreferredSize(new Dimension(800, 600));
          panel.add(scrollPane);
-
+         //list.setBackground(lightBlue);
+         //list.setSelectionBackground(lightBlue);
+         
+         
+         
          //place and size of message JTextField
          message = new JTextField();
          layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, message, 35, SpringLayout.HORIZONTAL_CENTER, panel);
@@ -116,6 +129,9 @@ public class messageInput extends JFrame implements ActionListener {
          //sets size of each indevidual cell in list
          dList.setFont(dList.getFont().deriveFont(18.0f));
          dList.setFixedCellHeight(40);
+         //dList.setBackground(lightBlue);
+         //dList.setSelectionBackground(lightBlue);
+         //dList.setSelectionForeground(purple);
 
          dScrollPane = new JScrollPane();
          dScrollPane.setViewportView(dList);
