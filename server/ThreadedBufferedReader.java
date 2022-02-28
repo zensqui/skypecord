@@ -26,9 +26,8 @@ public class ThreadedBufferedReader implements Runnable {
                 listener.onInputEvent(jsonIn);
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            //System.out.println("disconnected");
-            //listener.onDisconnect();
+            //e.printStackTrace();
+            listener.onDisconnect();
         }
     }
 }

@@ -27,7 +27,6 @@ public class Server {
             Thread t = new Thread(connection);
             t.start();
 
-            
             connections.put(user, connection);
             System.out.println("connection [" + user + "] --> new connection from " + socket.getInetAddress() + ":" + socket.getPort());
         }
