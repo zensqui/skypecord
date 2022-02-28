@@ -148,6 +148,12 @@ public class messageInput extends JFrame implements ActionListener {
                   getMsgs(convoID);
                   chatSelected = true;
                }
+               else if(e.getClickCount() == 2){
+                  dList.clearSelection();
+                  model.clear();
+                  welcomeText("./client/app/welcome.txt");
+                  editConvos.setVisible(false);
+               }
             }
          };
 
@@ -359,10 +365,10 @@ public class messageInput extends JFrame implements ActionListener {
 
          //asks you what you want to edit
          //options the user gets
-            String[] options = {"Delete Convorsation", "Add User", "Remove User"};
+            String[] options = {"Delete Conversation", "Add User", "Remove User"};
             //choice = index of options array the user chooses
             int choice = JOptionPane.showOptionDialog(null, "Please choose one",
-               "Edit COnversations",
+               "Edit Conversations",
                JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
             
             //deletes a conversation
@@ -446,8 +452,8 @@ public class messageInput extends JFrame implements ActionListener {
                   e1.printStackTrace();
                }
                System.out.println("User Removed");
-
             }
+            //dList.clearSelection();
       }
       
    }
