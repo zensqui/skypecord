@@ -122,13 +122,9 @@ public class messageInput extends JFrame implements ActionListener {
             public void mouseClicked(MouseEvent e) {
                if (e.getClickCount() == 1) {
                   String selectedItem = (String) dList.getSelectedValue();
-                  System.out.println(selectedItem);
                   convoID = convo.get(selectedItem);
-
                   model.clear();
-                  
                   getMsgs(convoID);
-                  
                   chatSelected = true;
                }
             }
@@ -159,18 +155,17 @@ public class messageInput extends JFrame implements ActionListener {
    }
 
    public void addMessage(String user, String data, String cid){
-      if(getChatSelected()){
-         if (cid.equals(convoID)) {
-            model.addElement(user + ": " + data);
-         } else if (!convo.containsValue(cid)) {
-            System.out.println("dasjf;lkdsjflkas;jfldsklf;j");
-            addConvo(cid);
-         }
+      if (cid.equals(convoID)) {
+         model.addElement(user + ": " + data);
+      } else if (!convo.containsValue(cid)) {
+         System.out.println("CONVO DOESN'T EXIST YET, TRYING TO CREATE..");
+         addConvo(cid);
       }
    }
 
    public void addConvo(String cid) {
       try {
+         System.out.println("REQUESTING CONVO INFO FOR " + cid);
          String[] users = client.getConvoUsers(cid);
          String name = "";
          for(String u : users) {
@@ -200,7 +195,6 @@ public class messageInput extends JFrame implements ActionListener {
             JSONObject msg = (JSONObject) msgs.get(i);
             String user = (String) msg.get("user");
             String data = (String) msg.get("message");
-            System.out.println(user + ": " + data);
             model.addElement(user + ": " + data);
          }
       } catch (Exception e) {
@@ -274,8 +268,6 @@ public class messageInput extends JFrame implements ActionListener {
             }
          }
       }
-
-      //System.out.println(message.getText());
       message.setText("");
    }
 
@@ -296,8 +288,7 @@ private class keyListener implements KeyListener {
                } catch (Exception ex) {
                   ex.printStackTrace();
                }
-         }  
-         //System.out.println(message.getText());
+         }
          message.setText("");
       }
    }
