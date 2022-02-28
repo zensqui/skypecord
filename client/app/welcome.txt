@@ -1,8 +1,9 @@
 //if line starts with "//" it will not show up on start up of the program
 //if you want a space between lines add a " " instead of leaving the line blank
 //info you want the user to see when he opens the application goes on this file
+//type /r to make line red, /g to make line green, /b to make line blue, /o to make line orange, /y to make line yellow, /p to make line purple
 
-Welcome to Skypecord!!!
+/bWelcome to Skypecord!!!
 Version: 1.0
  
 A not whatsoever fully funtional messaging service.
@@ -15,4 +16,4 @@ Cooler looking UI coming soon!
 If there are any issues please forget about it because we will not fix them.
 I hope you didn't use your actual password because your password is not secure right now.
  
-Please select or create a new chat to start chatting.
+/r*************Please select or create a new chat to start chatting.*************
