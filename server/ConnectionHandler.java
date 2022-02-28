@@ -95,6 +95,7 @@ class QueueEventHandler implements QueueEventListener {
     public void onOutputEvent(JSONObject json){
         try {
             out.write(json.toJSONString() + "\n");
+            System.out.println("QEVENT SENDING: " + json.toJSONString());
             out.flush();
         } catch (IOException e) {
             e.printStackTrace();
