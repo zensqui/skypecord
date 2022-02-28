@@ -14,7 +14,7 @@ public class ThreadedQueueReader implements Runnable {
         while (true) {
             if (!queue.isEmpty()) {
                 JSONObject jsonOut = queue.poll();
-                System.out.println("ThreadedQueueReader: " + jsonOut);
+                //System.out.println("ThreadedQueueReader: " + jsonOut);
                 listener.onOutputEvent(jsonOut);
             }
         }
