@@ -144,9 +144,15 @@ public class messageInput extends JFrame implements ActionListener {
                   String selectedItem = (String) dList.getSelectedValue();
                   convoID = convo.get(selectedItem);
                   model.clear();
-                 
+                  editConvos.setVisible(true);
                   getMsgs(convoID);
                   chatSelected = true;
+               }
+               else if(e.getClickCount() == 2){
+                  dList.clearSelection();
+                  model.clear();
+                  welcomeText("./client/app/welcome.txt");
+                  editConvos.setVisible(false);
                }
             }
          };
@@ -174,7 +180,7 @@ public class messageInput extends JFrame implements ActionListener {
          editConvos.setPreferredSize(new Dimension(250, 50));
          editConvos.addActionListener(this);
          panel.add(editConvos);
-
+         editConvos.setVisible(false);
          //gets all the conversations on your account and puts them in directory
          getConvos();
 
@@ -343,25 +349,26 @@ public class messageInput extends JFrame implements ActionListener {
       //pops up edit convo window
       //user selects the convo they want to edit
       if((JButton)e.getSource() == editConvos){
-         String chatInput = "";
+         //if nothing in directory has been selected
+         if(dList.getSelectedValue() == null){
+            JOptionPane.showMessageDialog(null, "Please select the conversation you want to edit", 
+            "Edit Conversations", JOptionPane.QUESTION_MESSAGE, null); 
+            return;
+         }
+
+         String chatInput = dList.getSelectedValue();
          String[] choices = new String[dmodel.size()];
 
          for(int i = 0; i < dmodel.size(); i++){
             choices[i] = dmodel.get(i);
          }  
 
-         //list of conversations to edit
-         //chat input = conversation the user chooses
-         chatInput = (String) JOptionPane.showInputDialog(null, "Choose Conversation you want to edit", 
-            "Edit Conversations", JOptionPane.QUESTION_MESSAGE, null, choices, choices[0]); 
-
          //asks you what you want to edit
          //options the user gets
-         if(!chatInput.equals("")){
-            String[] options = {"Delete Convorsation", "Add User", "Remove User"};
+            String[] options = {"Delete Conversation", "Add User", "Remove User"};
             //choice = index of options array the user chooses
             int choice = JOptionPane.showOptionDialog(null, "Please choose one",
-               "Edit COnversations",
+               "Edit Conversations",
                JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
             
             //deletes a conversation
@@ -379,6 +386,7 @@ public class messageInput extends JFrame implements ActionListener {
                   welcomeText("./client/app/welcome.txt");
                   convo.remove(chatInput);
                }
+               editConvos.setVisible(false);
                //updates directory
                for(int i = 0; i < dmodel.size(); i++){
                   if(dmodel.elementAt(i).equals(chatInput)){
@@ -437,15 +445,15 @@ public class messageInput extends JFrame implements ActionListener {
                   "Edit Conversations", JOptionPane.QUESTION_MESSAGE, null, selected, selected[0]);
 
                try {
-                  client.delConvoUser(cid, userRemoved.trim());
+                  System.out.println("it tried");
+                  client.delConvoUser(cid, userRemoved);
                   System.out.println("it worked maybe");
                } catch (IOException e1) {
                   e1.printStackTrace();
                }
                System.out.println("User Removed");
-
             }
-         }
+            //dList.clearSelection();
       }
       
    }

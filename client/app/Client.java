@@ -83,6 +83,17 @@ public class Client {
         out.flush();
     }
 
+    public String userExists(String user) throws IOException {
+        JSONObject json = new JSONObject();
+        json.put("type", "userexists");
+        json.put("user", user);
+        out.append(json.toJSONString() + "\n");
+        out.flush();
+
+        JSONObject res = getResponse();
+        return (String)res.get("data");
+    }
+
     public String addConvo(String users) throws IOException {
         String[] userarray = users.split(", ");
         JSONArray userjson = new JSONArray();
