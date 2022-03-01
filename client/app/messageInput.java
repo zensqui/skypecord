@@ -327,14 +327,27 @@ public class messageInput extends JFrame implements ActionListener {
          //System.out.println(message.getText());
          message.setText("");
       }
-
+      
       //creates new conversation
       if((JButton)e.getSource() == create){
          String test1 = "";
          while(test1.equals("")){
             test1 = JOptionPane.showInputDialog("Please enter a comma separated list of users you would like to chat with:");
          }
-         if(!(test1.equals(""))){
+
+         String[] names = test1.split(", ");
+         for(int i = 0; i < names.length; i++){
+            try {
+               if(!client.userExists(names[i])){
+                  JOptionPane.showMessageDialog(null, "Please enter valid user names.", 
+                     "User doesn't exist", JOptionPane.QUESTION_MESSAGE, null);
+                  return;
+               }
+            } catch (IOException e1) {
+               e1.printStackTrace();
+            }
+         }
+
             try {
                dmodel.addElement(test1);
                String test2 = test1 + ", " + user;
@@ -343,7 +356,6 @@ public class messageInput extends JFrame implements ActionListener {
             } catch (IOException e1) {
                e1.printStackTrace();
             }
-         }
       }
       
       //pops up edit convo window
