@@ -253,7 +253,7 @@ public class DbInterface {
                     PreparedStatement stmt2 = conn.prepareStatement("UPDATE conversations SET users=? WHERE cid=?");
                     stmt2.setString(1, users.toJSONString());
                     stmt2.setString(2, cid);
-                    stmt.executeUpdate();
+                    stmt2.executeUpdate();
                     return "0";
                 }
                 return "1";

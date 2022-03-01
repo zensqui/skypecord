@@ -75,6 +75,10 @@ class EventHandler implements ServerEventListener {
                     System.out.println("connection [" + user + "] --> user [" + connection.getUser() + "]");
                 }
                 break;
+            case "userexists":
+                res = db.userExists((String)json.get("user"));
+                sendExit(connection, json, res);
+                break;
             case "addConvo":
                 JSONArray userlist = (JSONArray)json.get("users");
                 res = (db.addConversation(userlist));
