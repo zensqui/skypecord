@@ -441,7 +441,7 @@ public class messageInput extends JFrame implements ActionListener {
                String[] selected = chatInput.split(", ");
                
                //list of conversations to edit
-               userRemoved = (String) JOptionPane.showInputDialog(null, "Choose Conversation you want to edit", 
+               userRemoved = (String) JOptionPane.showInputDialog(null, "Choose user you want to remove.", 
                   "Edit Conversations", JOptionPane.QUESTION_MESSAGE, null, selected, selected[0]);
 
                try {
@@ -452,8 +452,36 @@ public class messageInput extends JFrame implements ActionListener {
                   e1.printStackTrace();
                }
                System.out.println("User Removed");
+               
+               String finalName = "";
+
+               for(int i = 0; i < selected.length; i++){
+                  int x = 0;
+                  if(!selected[i].equals(userRemoved)){
+                     finalName = finalName + selected[i] + ", ";
+                     x++;
+                  }
+               }
+               
+               //updates directory
+               for(int i = 0; i < dmodel.size(); i++){
+                  if(dmodel.elementAt(i).equals(chatInput)){
+                     dmodel.remove(i);
+                     dmodel.add(i, finalName.substring(0, finalName.length() - 2));
+                     convo.remove(chatInput);
+                     convo.put(finalName.substring(0, finalName.length() - 2), cid);
+                     break;
+                  }  
+               }
+               //adds a update message in the conversation for the users to see who was added
+               String chatUpdate = "Removed " + userRemoved + " from the conversation.";
+               try {
+                  client.message(cid, chatUpdate);
+               } catch (Exception ex) {
+                  ex.printStackTrace();
+               }
             }
-            //dList.clearSelection();
+            
       }
       
    }
