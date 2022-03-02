@@ -153,6 +153,7 @@ public class messageInput extends JFrame implements ActionListener {
                   model.clear();
                   welcomeText("./client/app/welcome.txt");
                   editConvos.setVisible(false);
+                  chatSelected = false;
                }
             }
          };
