@@ -8,8 +8,6 @@ Version: 1.0
  
 A not whatsoever fully funtional messaging service.
  
-Adding and Removing users from conversations coming soon!
-Deleting whole conversations coming soon!
 Ability to see who in your conversation is online comign soon!
 Cooler looking UI coming soon!
  

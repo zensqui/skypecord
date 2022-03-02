@@ -26,7 +26,9 @@ public class messageInput extends JFrame implements ActionListener {
 
    //directory
    JButton create;
-   JButton editConvos;
+   JButton deleteConvo;
+   JButton addToConvo;
+   JButton removeFromConvo;
    JList<String> dList;
    JScrollPane dScrollPane;
    DefaultListModel<String> dmodel;
@@ -106,7 +108,7 @@ public class messageInput extends JFrame implements ActionListener {
          
          //place and size of message JTextField
          message = new JTextField();
-         layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, message, 35, SpringLayout.HORIZONTAL_CENTER, panel);
+         layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, message, 38, SpringLayout.HORIZONTAL_CENTER, panel);
          layout.putConstraint(SpringLayout.NORTH, message, 625, SpringLayout.NORTH, panel);
          message.setPreferredSize(new Dimension(725, 50));
          message.addKeyListener(new keyListener());
@@ -114,7 +116,7 @@ public class messageInput extends JFrame implements ActionListener {
 
          //place and size of send JButton
          send = new JButton("Send");
-         layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, send, 435, SpringLayout.HORIZONTAL_CENTER, panel);
+         layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, send, 438, SpringLayout.HORIZONTAL_CENTER, panel);
          layout.putConstraint(SpringLayout.NORTH, send, 625, SpringLayout.NORTH, panel);
          send.setPreferredSize(new Dimension(75, 50));
          send.addActionListener(this);
@@ -144,7 +146,11 @@ public class messageInput extends JFrame implements ActionListener {
                   String selectedItem = (String) dList.getSelectedValue();
                   convoID = convo.get(selectedItem);
                   model.clear();
-                  editConvos.setVisible(true);
+                  deleteConvo.setVisible(true);
+                  addToConvo.setVisible(true);
+                  removeFromConvo.setVisible(true);
+                  model.addElement("Chat with " + selectedItem);
+                  model.addElement(" ");
                   getMsgs(convoID);
                   chatSelected = true;
                }
@@ -152,7 +158,9 @@ public class messageInput extends JFrame implements ActionListener {
                   dList.clearSelection();
                   model.clear();
                   welcomeText("./client/app/welcome.txt");
-                  editConvos.setVisible(false);
+                  deleteConvo.setVisible(false);
+                  addToConvo.setVisible(false);
+                  removeFromConvo.setVisible(false);
                   chatSelected = false;
                }
             }
@@ -175,13 +183,32 @@ public class messageInput extends JFrame implements ActionListener {
          panel.add(create);
 
          //size and shape of the editConvos JButton
-         editConvos = new JButton("Edit Conversation");
-         layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, editConvos, -550, SpringLayout.HORIZONTAL_CENTER, panel);
-         layout.putConstraint(SpringLayout.NORTH, editConvos, 675, SpringLayout.NORTH, panel);
-         editConvos.setPreferredSize(new Dimension(250, 50));
-         editConvos.addActionListener(this);
-         panel.add(editConvos);
-         editConvos.setVisible(false);
+         deleteConvo = new JButton("Delete Conversation");
+         layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, deleteConvo, -200, SpringLayout.HORIZONTAL_CENTER, panel);
+         layout.putConstraint(SpringLayout.NORTH, deleteConvo, 675, SpringLayout.NORTH, panel);
+         deleteConvo.setPreferredSize(new Dimension(250, 50));
+         deleteConvo.addActionListener(this);
+         panel.add(deleteConvo);
+         deleteConvo.setVisible(false);
+
+         //size and shape of the editConvos JButton
+         addToConvo = new JButton("Add User");
+         layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, addToConvo, 75, SpringLayout.HORIZONTAL_CENTER, panel);
+         layout.putConstraint(SpringLayout.NORTH, addToConvo, 675, SpringLayout.NORTH, panel);
+         addToConvo.setPreferredSize(new Dimension(250, 50));
+         addToConvo.addActionListener(this);
+         panel.add(addToConvo);
+         addToConvo.setVisible(false);
+
+         //size and shape of the editConvos JButton
+         removeFromConvo= new JButton("Remove User");
+         layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, removeFromConvo, 350, SpringLayout.HORIZONTAL_CENTER, panel);
+         layout.putConstraint(SpringLayout.NORTH, removeFromConvo, 675, SpringLayout.NORTH, panel);
+         removeFromConvo.setPreferredSize(new Dimension(250, 50));
+         removeFromConvo.addActionListener(this);
+         panel.add(removeFromConvo);
+         removeFromConvo.setVisible(false);
+
          //gets all the conversations on your account and puts them in directory
          getConvos();
 
@@ -358,143 +385,131 @@ public class messageInput extends JFrame implements ActionListener {
                e1.printStackTrace();
             }
       }
+
+      if((JButton)e.getSource() == deleteConvo){
+         String chatInput = dList.getSelectedValue();
+
+         String cid = convo.remove(chatInput);
+         try {
+            client.delConvo(cid);
+               
+         } catch (IOException e1) {
+            e1.printStackTrace();
+         }
+         //updates the list of messages the user sees if the chat selected was the one deleted
+         if(chatInput.equals((String) dList.getSelectedValue())){
+            model.clear();
+            welcomeText("./client/app/welcome.txt");
+            convo.remove(chatInput);
+            chatSelected = false;
+         }
+         deleteConvo.setVisible(false);
+         addToConvo.setVisible(false);
+         removeFromConvo.setVisible(false);
+         //updates directory
+         for(int i = 0; i < dmodel.size(); i++){
+            if(dmodel.elementAt(i).equals(chatInput)){
+               dmodel.remove(i);
+               System.out.print(dmodel.get(i));
+            }  
+         }
+               
+         System.out.println("Chat Deleted");
+      }
       
-      //pops up edit convo window
-      //user selects the convo they want to edit
-      if((JButton)e.getSource() == editConvos){
-         //if nothing in directory has been selected
-         if(dList.getSelectedValue() == null){
-            JOptionPane.showMessageDialog(null, "Please select the conversation you want to edit", 
-            "Edit Conversations", JOptionPane.QUESTION_MESSAGE, null); 
-            return;
+      if((JButton)e.getSource() == addToConvo){
+         String chatInput = dList.getSelectedValue();
+
+         String addUser = "";
+            while(addUser.equals("")){
+               addUser = JOptionPane.showInputDialog("Enter User you want to add to the conversation");
+            }
+
+            try {
+               if(!client.userExists(addUser)){
+                  JOptionPane.showMessageDialog(null, "Please enter valid user names.", 
+                     "User doesn't exist", JOptionPane.QUESTION_MESSAGE, null);
+                  return;
+               }
+            } catch (IOException e1) {
+               e1.printStackTrace();
+            }
+
+            String cid = convo.get(chatInput);
+
+            try {
+               client.addConvoUser(cid, addUser);
+            } catch (IOException e1) {
+               e1.printStackTrace();
+            }
+
+            //updates directory
+            for(int i = 0; i < dmodel.size(); i++){
+               if(dmodel.elementAt(i).equals(chatInput)){
+                  String test = dmodel.remove(i);
+                  dmodel.add(i, test + ", " + addUser);
+                  convo.remove(test);
+                  convo.put(test + ", " + addUser, cid);
+                  break;
+               }  
+            }
+
+            //adds a update message in the conversation for the users to see who was added
+            String chatUpdate = "Added " + addUser + " to the conversation.";
+            try {
+               client.message(cid, chatUpdate);
+            } catch (Exception ex) {
+               ex.printStackTrace();
+            }
+               
+            System.out.println("User Added");
+      }
+      
+      if((JButton)e.getSource() == removeFromConvo){
+         String chatInput = dList.getSelectedValue();
+
+         String userRemoved = "";
+         String cid = convo.get(chatInput);
+         String[] selected = chatInput.split(", ");
+
+         //list of conversations to edit
+         userRemoved = (String) JOptionPane.showInputDialog(null, "Choose user you want to remove.", 
+            "Edit Conversations", JOptionPane.QUESTION_MESSAGE, null, selected, selected[0]);
+            
+         try {
+            System.out.println("it tried");
+            client.delConvoUser(cid, userRemoved);
+            System.out.println("it worked maybe");
+         } catch (IOException e1) {
+            e1.printStackTrace();
+         }
+         System.out.println("User Removed");
+
+         String finalName = "";
+
+         for(int i = 0; i < selected.length; i++){
+            if(!selected[i].equals(userRemoved)){
+               finalName = finalName + selected[i] + ", ";
+            }
          }
 
-         String chatInput = dList.getSelectedValue();
-         String[] choices = new String[dmodel.size()];
-
+         //updates directory
          for(int i = 0; i < dmodel.size(); i++){
-            choices[i] = dmodel.get(i);
-         }  
-
-         //asks you what you want to edit
-         //options the user gets
-            String[] options = {"Delete Conversation", "Add User", "Remove User"};
-            //choice = index of options array the user chooses
-            int choice = JOptionPane.showOptionDialog(null, "Please choose one",
-               "Edit Conversations",
-               JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
-            
-            //deletes a conversation
-            if(choice == 0){
-               String cid = convo.remove(chatInput);
-               try {
-                  client.delConvo(cid);
-                  
-               } catch (IOException e1) {
-                  e1.printStackTrace();
-               }
-               //updates the list of messages the user sees if the chat selected was the one deleted
-               if(chatInput.equals((String) dList.getSelectedValue())){
-                  model.clear();
-                  welcomeText("./client/app/welcome.txt");
-                  convo.remove(chatInput);
-               }
-               editConvos.setVisible(false);
-               //updates directory
-               for(int i = 0; i < dmodel.size(); i++){
-                  if(dmodel.elementAt(i).equals(chatInput)){
-                     dmodel.remove(i);
-                     System.out.print(dmodel.get(i));
-                  }  
-               }
-               
-               System.out.println("Chat Deleted");
-            }
-
-            //adds a user to the conversation
-            else if(choice == 1){
-               String addUser = "";
-               while(addUser.equals("")){
-                  addUser = JOptionPane.showInputDialog("Enter User you want to add to the conversation");
-               }
-               String cid = convo.get(chatInput);
-
-               try {
-                  client.addConvoUser(cid, addUser);
-               } catch (IOException e1) {
-                  e1.printStackTrace();
-               }
-
-               //updates directory
-               for(int i = 0; i < dmodel.size(); i++){
-                  if(dmodel.elementAt(i).equals(chatInput)){
-                     String test = dmodel.remove(i);
-                     dmodel.add(i, test + ", " + addUser);
-                     convo.remove(test);
-                     convo.put(test + ", " + addUser, cid);
-                     break;
-                  }  
-               }
-
-               //adds a update message in the conversation for the users to see who was added
-               String chatUpdate = "Added " + addUser + " to the conversation.";
-               try {
-                  client.message(cid, chatUpdate);
-               } catch (Exception ex) {
-                  ex.printStackTrace();
-               }
-               
-               System.out.println("User Added");
-            } 
-
-            //removes user from a conversation
-            else if(choice == 2){
-               String userRemoved = "";
-               String cid = convo.get(chatInput);
-               String[] selected = chatInput.split(", ");
-               
-               //list of conversations to edit
-               userRemoved = (String) JOptionPane.showInputDialog(null, "Choose user you want to remove.", 
-                  "Edit Conversations", JOptionPane.QUESTION_MESSAGE, null, selected, selected[0]);
-
-               try {
-                  System.out.println("it tried");
-                  client.delConvoUser(cid, userRemoved);
-                  System.out.println("it worked maybe");
-               } catch (IOException e1) {
-                  e1.printStackTrace();
-               }
-               System.out.println("User Removed");
-               
-               String finalName = "";
-
-               for(int i = 0; i < selected.length; i++){
-                  int x = 0;
-                  if(!selected[i].equals(userRemoved)){
-                     finalName = finalName + selected[i] + ", ";
-                     x++;
-                  }
-               }
-               
-               //updates directory
-               for(int i = 0; i < dmodel.size(); i++){
-                  if(dmodel.elementAt(i).equals(chatInput)){
-                     dmodel.remove(i);
-                     dmodel.add(i, finalName.substring(0, finalName.length() - 2));
-                     convo.remove(chatInput);
-                     convo.put(finalName.substring(0, finalName.length() - 2), cid);
-                     break;
-                  }  
-               }
-               //adds a update message in the conversation for the users to see who was added
-               String chatUpdate = "Removed " + userRemoved + " from the conversation.";
-               try {
-                  client.message(cid, chatUpdate);
-               } catch (Exception ex) {
-                  ex.printStackTrace();
-               }
-            }
-            
+            if(dmodel.elementAt(i).equals(chatInput)){
+               dmodel.remove(i);
+               dmodel.add(i, finalName.substring(0, finalName.length() - 2));
+               convo.remove(chatInput);
+               convo.put(finalName.substring(0, finalName.length() - 2), cid);
+               break;
+            }  
+         }
+         //adds a update message in the conversation for the users to see who was added
+         String chatUpdate = "Removed " + userRemoved + " from the conversation.";
+         try {
+            client.message(cid, chatUpdate);
+         } catch (Exception ex) {
+            ex.printStackTrace();
+         }
       }
       
    }
