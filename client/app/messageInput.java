@@ -386,8 +386,22 @@ public class messageInput extends JFrame implements ActionListener {
             }
       }
 
+      //deletes conversation
       if((JButton)e.getSource() == deleteConvo){
          String chatInput = dList.getSelectedValue();
+
+         String[] options = {"Yes", "No"};
+         
+         
+            //choice = index of options array the user chooses
+            int n = JOptionPane.showOptionDialog(null, "Are you sure you want to delete this conversation",
+               "Edit Conversations",
+               JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
+         
+
+         if(n != 0){
+            return;
+         }
 
          String cid = convo.remove(chatInput);
          try {
