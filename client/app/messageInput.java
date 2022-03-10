@@ -1,14 +1,16 @@
 import java.awt.*;
 import java.awt.event.*;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
-
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -33,6 +35,15 @@ public class messageInput extends JFrame implements ActionListener {
    JScrollPane dScrollPane;
    DefaultListModel<String> dmodel;
 
+   //settings
+   JLabel settings;
+   JButton logout;
+   JLabel goodBye;
+   JLabel about;
+
+   Boolean isDark;
+   JButton darkMode;
+
    //true if a chat has been selected
    boolean chatSelected;
    // convo info 
@@ -40,7 +51,7 @@ public class messageInput extends JFrame implements ActionListener {
    Client client;
    String convoID;
    HashMap<String, String> convo;
-   
+
    //skypcord colors
    Color lightBlue;
    Color purple;
@@ -50,6 +61,9 @@ public class messageInput extends JFrame implements ActionListener {
       
       //true if chat is selected
       chatSelected = false;
+
+      //if dark mode is on it is true
+      isDark = false;
 
       this.client = client;
       client.setMessageUi(this);
@@ -66,6 +80,7 @@ public class messageInput extends JFrame implements ActionListener {
       Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
       SpringLayout layout = new SpringLayout();
+     
 
       panel = new JPanel(layout);
       panel.setBackground(Color.WHITE);
@@ -97,18 +112,18 @@ public class messageInput extends JFrame implements ActionListener {
             maxSize = scrollPane.getVerticalScrollBar().getMaximum();
          });
          
-         layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, scrollPane, 75, SpringLayout.HORIZONTAL_CENTER, panel);
+         layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, scrollPane, 0, SpringLayout.HORIZONTAL_CENTER, panel);
          layout.putConstraint(SpringLayout.NORTH, scrollPane, 10, SpringLayout.NORTH, panel);
          scrollPane.setPreferredSize(new Dimension(800, 600));
          panel.add(scrollPane);
          //list.setBackground(lightBlue);
          //list.setSelectionBackground(lightBlue);
-         
+         list.setSelectionBackground(Color.LIGHT_GRAY);
          
          
          //place and size of message JTextField
          message = new JTextField();
-         layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, message, 38, SpringLayout.HORIZONTAL_CENTER, panel);
+         layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, message, -37, SpringLayout.HORIZONTAL_CENTER, panel);
          layout.putConstraint(SpringLayout.NORTH, message, 625, SpringLayout.NORTH, panel);
          message.setPreferredSize(new Dimension(725, 50));
          message.addKeyListener(new keyListener());
@@ -116,7 +131,7 @@ public class messageInput extends JFrame implements ActionListener {
 
          //place and size of send JButton
          send = new JButton("Send");
-         layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, send, 438, SpringLayout.HORIZONTAL_CENTER, panel);
+         layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, send, 363, SpringLayout.HORIZONTAL_CENTER, panel);
          layout.putConstraint(SpringLayout.NORTH, send, 625, SpringLayout.NORTH, panel);
          send.setPreferredSize(new Dimension(75, 50));
          send.addActionListener(this);
@@ -173,7 +188,7 @@ public class messageInput extends JFrame implements ActionListener {
          layout.putConstraint(SpringLayout.NORTH, dScrollPane, 10, SpringLayout.NORTH, panel);
          dScrollPane.setPreferredSize(new Dimension(250, 600));
          panel.add(dScrollPane);
-         
+         dList.setSelectionBackground(Color.LIGHT_GRAY);
          //size and shape of the create JButton
          create = new JButton("create");
          layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, create, -550, SpringLayout.HORIZONTAL_CENTER, panel);
@@ -184,7 +199,7 @@ public class messageInput extends JFrame implements ActionListener {
 
          //size and shape of the editConvos JButton
          deleteConvo = new JButton("Delete Conversation");
-         layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, deleteConvo, -200, SpringLayout.HORIZONTAL_CENTER, panel);
+         layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, deleteConvo, -275, SpringLayout.HORIZONTAL_CENTER, panel);
          layout.putConstraint(SpringLayout.NORTH, deleteConvo, 675, SpringLayout.NORTH, panel);
          deleteConvo.setPreferredSize(new Dimension(250, 50));
          deleteConvo.addActionListener(this);
@@ -193,7 +208,7 @@ public class messageInput extends JFrame implements ActionListener {
 
          //size and shape of the editConvos JButton
          addToConvo = new JButton("Add User");
-         layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, addToConvo, 75, SpringLayout.HORIZONTAL_CENTER, panel);
+         layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, addToConvo, 0, SpringLayout.HORIZONTAL_CENTER, panel);
          layout.putConstraint(SpringLayout.NORTH, addToConvo, 675, SpringLayout.NORTH, panel);
          addToConvo.setPreferredSize(new Dimension(250, 50));
          addToConvo.addActionListener(this);
@@ -202,16 +217,56 @@ public class messageInput extends JFrame implements ActionListener {
 
          //size and shape of the editConvos JButton
          removeFromConvo= new JButton("Remove User");
-         layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, removeFromConvo, 350, SpringLayout.HORIZONTAL_CENTER, panel);
+         layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, removeFromConvo, 275, SpringLayout.HORIZONTAL_CENTER, panel);
          layout.putConstraint(SpringLayout.NORTH, removeFromConvo, 675, SpringLayout.NORTH, panel);
          removeFromConvo.setPreferredSize(new Dimension(250, 50));
          removeFromConvo.addActionListener(this);
          panel.add(removeFromConvo);
          removeFromConvo.setVisible(false);
 
+         //settings**************************************************************************************
+
+         settings = new JLabel("Settings");
+         layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, settings, 550, SpringLayout.HORIZONTAL_CENTER, panel);
+         layout.putConstraint(SpringLayout.NORTH, settings, 5, SpringLayout.NORTH, panel);
+         settings.setPreferredSize(new Dimension(250, 50));
+         panel.add(settings);
+         
+         logout = new JButton("Logout");
+         layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, logout, 550, SpringLayout.HORIZONTAL_CENTER, panel);
+         layout.putConstraint(SpringLayout.NORTH, logout, 100, SpringLayout.NORTH, panel);
+         logout.setPreferredSize(new Dimension(250, 50));
+         logout.addActionListener(this);
+         panel.add(logout);
+
+         goodBye = new JLabel("Good-Bye!");
+         layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, goodBye, 0, SpringLayout.HORIZONTAL_CENTER, panel);
+         layout.putConstraint(SpringLayout.NORTH, goodBye, 300, SpringLayout.NORTH, panel);
+         goodBye.setPreferredSize(new Dimension(500, 100));
+         panel.add(goodBye);
+         goodBye.setVisible(false);
+
+         about = new JLabel();
+         about.setFont(new Font("font", Font.PLAIN, 20));
+         about.setText("<html>This project was created by<br>" + 
+            "Brady Pettengill and Morgan Wagner<br>" + 
+            "as a revolutionary replacement for<br>" +
+            "your current communication technology.</html>");
+         layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, about, 550, SpringLayout.HORIZONTAL_CENTER, panel);
+         layout.putConstraint(SpringLayout.NORTH, about, 300, SpringLayout.NORTH, panel);
+         about.setPreferredSize(new Dimension(250, 300));
+         panel.add(about);
+         
+         darkMode = new JButton("dark mode");
+         layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, darkMode, 550, SpringLayout.HORIZONTAL_CENTER, panel);
+         layout.putConstraint(SpringLayout.NORTH, darkMode, 175, SpringLayout.NORTH, panel);
+         darkMode.setPreferredSize(new Dimension(250, 50));
+         darkMode.addActionListener(this);
+         panel.add(darkMode);
+         
          //gets all the conversations on your account and puts them in directory
          getConvos();
-
+         
          //frame set up
          add(panel, BorderLayout.CENTER);
          setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
@@ -525,7 +580,51 @@ public class messageInput extends JFrame implements ActionListener {
             ex.printStackTrace();
          }
       }
-      
+
+      if((JButton)e.getSource() == logout){
+         System.exit(0);
+      }
+
+      if((JButton)e.getSource() == darkMode){
+
+         isDark = !isDark;
+
+         if(isDark){
+            panel.setBackground(Color.DARK_GRAY);
+
+            dList.setBackground(Color.GRAY);
+            dList.setForeground(Color.WHITE);
+            dList.setSelectionBackground(Color.BLACK);
+            dList.setSelectionForeground(Color.WHITE);
+
+            list.setBackground(Color.GRAY);
+            list.setForeground(Color.WHITE);
+            list.setSelectionBackground(Color.BLACK);
+            list.setSelectionForeground(Color.WHITE);
+
+            about.setForeground(Color.WHITE);
+
+            settings.setForeground(Color.WHITE);
+         }
+         else if(!isDark){
+            panel.setBackground(Color.WHITE);
+
+            dList.setBackground(Color.WHITE);
+            dList.setForeground(Color.BLACK);
+            dList.setSelectionBackground(Color.LIGHT_GRAY);
+            dList.setSelectionForeground(Color.BLACK);
+
+            list.setBackground(Color.WHITE);
+            list.setForeground(Color.BLACK);
+            list.setSelectionBackground(Color.LIGHT_GRAY);
+            list.setSelectionForeground(Color.BLACK);
+
+            about.setForeground(Color.BLACK);
+
+            settings.setForeground(Color.BLACK);
+         }
+
+      }
    }
 
    //keylistener
