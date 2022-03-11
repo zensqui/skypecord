@@ -133,7 +133,13 @@ public class messageInput extends JFrame implements ActionListener {
          panel.add(message);
          
          //place and size of send JButton
-         send = new JButton("Send");
+         ImageIcon sendPic = new ImageIcon("./client/app/content/sendbutton.jpg");
+
+         send = new JButton(sendPic);
+         send.setOpaque(false);
+         send.setContentAreaFilled(false);
+         send.setBorderPainted(false);
+         send.setFocusPainted(false);
          layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, send, 363, SpringLayout.HORIZONTAL_CENTER, panel);
          layout.putConstraint(SpringLayout.NORTH, send, 625, SpringLayout.NORTH, panel);
          send.setPreferredSize(new Dimension(75, 50));
@@ -236,7 +242,12 @@ public class messageInput extends JFrame implements ActionListener {
          settings.setPreferredSize(new Dimension(250, 50));
          panel.add(settings);
          
-         logout = new JButton("Logout");
+         ImageIcon logoutPic = new ImageIcon("./client/app/content/logoutbutton.jpg");
+         logout = new JButton(logoutPic);
+         logout.setOpaque(false);
+         logout.setContentAreaFilled(false);
+         logout.setBorderPainted(false);
+         logout.setFocusPainted(false);
          layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, logout, 550, SpringLayout.HORIZONTAL_CENTER, panel);
          layout.putConstraint(SpringLayout.NORTH, logout, 100, SpringLayout.NORTH, panel);
          logout.setPreferredSize(new Dimension(250, 50));
@@ -615,6 +626,12 @@ public class messageInput extends JFrame implements ActionListener {
             message.setForeground(Color.WHITE);
             message.setCaretColor(Color.WHITE);
 
+            ImageIcon sendPic = new ImageIcon("./client/app/content/sendbuttondark.jpg");
+            send.setIcon(sendPic);
+
+            ImageIcon logoutPic = new ImageIcon("./client/app/content/logoutbuttondark.jpg");
+            logout.setIcon(logoutPic);
+
             about.setForeground(Color.WHITE);
 
             settings.setForeground(Color.WHITE);
@@ -635,6 +652,12 @@ public class messageInput extends JFrame implements ActionListener {
             message.setBackground(Color.WHITE);
             message.setForeground(Color.BLACK);
             message.setCaretColor(Color.BLACK);
+
+            ImageIcon sendPic = new ImageIcon("./client/app/content/sendbutton.jpg");
+            send.setIcon(sendPic);
+
+            ImageIcon logoutPic = new ImageIcon("./client/app/content/logoutbutton.jpg");
+            logout.setIcon(logoutPic);
 
             about.setForeground(Color.BLACK);
 
