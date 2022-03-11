@@ -9,6 +9,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
+import java.util.stream.Stream;
+
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 
@@ -123,12 +125,13 @@ public class messageInput extends JFrame implements ActionListener {
          
          //place and size of message JTextField
          message = new JTextField();
+         message.setFont(new Font("SansSerif", Font.BOLD, 18));
          layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, message, -37, SpringLayout.HORIZONTAL_CENTER, panel);
          layout.putConstraint(SpringLayout.NORTH, message, 625, SpringLayout.NORTH, panel);
          message.setPreferredSize(new Dimension(725, 50));
          message.addKeyListener(new keyListener());
          panel.add(message);
-
+         
          //place and size of send JButton
          send = new JButton("Send");
          layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, send, 363, SpringLayout.HORIZONTAL_CENTER, panel);
@@ -227,6 +230,7 @@ public class messageInput extends JFrame implements ActionListener {
          //settings**************************************************************************************
 
          settings = new JLabel("Settings");
+         settings.setFont(new Font("SansSerif", Font.BOLD, 20));
          layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, settings, 550, SpringLayout.HORIZONTAL_CENTER, panel);
          layout.putConstraint(SpringLayout.NORTH, settings, 5, SpringLayout.NORTH, panel);
          settings.setPreferredSize(new Dimension(250, 50));
@@ -582,6 +586,11 @@ public class messageInput extends JFrame implements ActionListener {
       }
 
       if((JButton)e.getSource() == logout){
+         try {
+            Thread.sleep(1000);
+         } catch (InterruptedException e1) {
+            e1.printStackTrace();
+         }
          System.exit(0);
       }
 
@@ -590,17 +599,21 @@ public class messageInput extends JFrame implements ActionListener {
          isDark = !isDark;
 
          if(isDark){
-            panel.setBackground(Color.DARK_GRAY);
+            panel.setBackground(Color.BLACK);
 
-            dList.setBackground(Color.GRAY);
+            dList.setBackground(Color.DARK_GRAY);
             dList.setForeground(Color.WHITE);
             dList.setSelectionBackground(Color.BLACK);
             dList.setSelectionForeground(Color.WHITE);
 
-            list.setBackground(Color.GRAY);
+            list.setBackground(Color.DARK_GRAY);
             list.setForeground(Color.WHITE);
             list.setSelectionBackground(Color.BLACK);
             list.setSelectionForeground(Color.WHITE);
+
+            message.setBackground(Color.DARK_GRAY);
+            message.setForeground(Color.WHITE);
+            message.setCaretColor(Color.WHITE);
 
             about.setForeground(Color.WHITE);
 
@@ -618,6 +631,10 @@ public class messageInput extends JFrame implements ActionListener {
             list.setForeground(Color.BLACK);
             list.setSelectionBackground(Color.LIGHT_GRAY);
             list.setSelectionForeground(Color.BLACK);
+
+            message.setBackground(Color.WHITE);
+            message.setForeground(Color.BLACK);
+            message.setCaretColor(Color.BLACK);
 
             about.setForeground(Color.BLACK);
 
