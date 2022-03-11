@@ -198,8 +198,14 @@ public class messageInput extends JFrame implements ActionListener {
          dScrollPane.setPreferredSize(new Dimension(250, 600));
          panel.add(dScrollPane);
          dList.setSelectionBackground(Color.LIGHT_GRAY);
+
          //size and shape of the create JButton
-         create = new JButton("create");
+         ImageIcon createPic = new ImageIcon("./client/app/content/createbutton.jpg");
+         create = new JButton(createPic);
+         create.setOpaque(false);
+         create.setContentAreaFilled(false);
+         create.setBorderPainted(false);
+         create.setFocusPainted(false);
          layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, create, -550, SpringLayout.HORIZONTAL_CENTER, panel);
          layout.putConstraint(SpringLayout.NORTH, create, 625, SpringLayout.NORTH, panel);
          create.setPreferredSize(new Dimension(250, 50));
@@ -207,7 +213,13 @@ public class messageInput extends JFrame implements ActionListener {
          panel.add(create);
 
          //size and shape of the editConvos JButton
-         deleteConvo = new JButton("Delete Conversation");
+         ImageIcon deletePic = new ImageIcon("./client/app/content/deletebutton.jpg");
+
+         deleteConvo = new JButton(deletePic);
+         deleteConvo.setOpaque(false);
+         deleteConvo.setContentAreaFilled(false);
+         deleteConvo.setBorderPainted(false);
+         deleteConvo.setFocusPainted(false);
          layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, deleteConvo, -275, SpringLayout.HORIZONTAL_CENTER, panel);
          layout.putConstraint(SpringLayout.NORTH, deleteConvo, 675, SpringLayout.NORTH, panel);
          deleteConvo.setPreferredSize(new Dimension(250, 50));
@@ -216,7 +228,13 @@ public class messageInput extends JFrame implements ActionListener {
          deleteConvo.setVisible(false);
 
          //size and shape of the editConvos JButton
-         addToConvo = new JButton("Add User");
+         ImageIcon addPic = new ImageIcon("./client/app/content/addbutton.jpg");
+
+         addToConvo = new JButton(addPic);
+         addToConvo.setOpaque(false);
+         addToConvo.setContentAreaFilled(false);
+         addToConvo.setBorderPainted(false);
+         addToConvo.setFocusPainted(false);
          layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, addToConvo, 0, SpringLayout.HORIZONTAL_CENTER, panel);
          layout.putConstraint(SpringLayout.NORTH, addToConvo, 675, SpringLayout.NORTH, panel);
          addToConvo.setPreferredSize(new Dimension(250, 50));
@@ -225,7 +243,13 @@ public class messageInput extends JFrame implements ActionListener {
          addToConvo.setVisible(false);
 
          //size and shape of the editConvos JButton
-         removeFromConvo= new JButton("Remove User");
+         ImageIcon removePic = new ImageIcon("./client/app/content/removebutton.jpg");
+
+         removeFromConvo = new JButton(removePic);
+         removeFromConvo.setOpaque(false);
+         removeFromConvo.setContentAreaFilled(false);
+         removeFromConvo.setBorderPainted(false);
+         removeFromConvo.setFocusPainted(false);
          layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, removeFromConvo, 275, SpringLayout.HORIZONTAL_CENTER, panel);
          layout.putConstraint(SpringLayout.NORTH, removeFromConvo, 675, SpringLayout.NORTH, panel);
          removeFromConvo.setPreferredSize(new Dimension(250, 50));
@@ -272,7 +296,12 @@ public class messageInput extends JFrame implements ActionListener {
          about.setPreferredSize(new Dimension(250, 300));
          panel.add(about);
          
-         darkMode = new JButton("dark mode");
+         ImageIcon darkModePic = new ImageIcon("./client/app/content/darkmodebutton.jpg");
+         darkMode = new JButton(darkModePic);
+         darkMode.setOpaque(false);
+         darkMode.setContentAreaFilled(false);
+         darkMode.setBorderPainted(false);
+         darkMode.setFocusPainted(false);
          layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, darkMode, 550, SpringLayout.HORIZONTAL_CENTER, panel);
          layout.putConstraint(SpringLayout.NORTH, darkMode, 175, SpringLayout.NORTH, panel);
          darkMode.setPreferredSize(new Dimension(250, 50));
@@ -632,6 +661,21 @@ public class messageInput extends JFrame implements ActionListener {
             ImageIcon logoutPic = new ImageIcon("./client/app/content/logoutbuttondark.jpg");
             logout.setIcon(logoutPic);
 
+            ImageIcon createPic = new ImageIcon("./client/app/content/createbuttondark.jpg");
+            create.setIcon(createPic);
+
+            ImageIcon deletePic = new ImageIcon("./client/app/content/deletebuttondark.jpg");
+            deleteConvo.setIcon(deletePic);
+
+            ImageIcon addPic = new ImageIcon("./client/app/content/addbuttondark.jpg");
+            addToConvo.setIcon(addPic);
+
+            ImageIcon removePic = new ImageIcon("./client/app/content/removebuttondark.jpg");
+            removeFromConvo.setIcon(removePic);
+
+            ImageIcon darkModePic = new ImageIcon("./client/app/content/darkmodebuttondark.jpg");
+            darkMode.setIcon(darkModePic);
+
             about.setForeground(Color.WHITE);
 
             settings.setForeground(Color.WHITE);
@@ -658,6 +702,21 @@ public class messageInput extends JFrame implements ActionListener {
 
             ImageIcon logoutPic = new ImageIcon("./client/app/content/logoutbutton.jpg");
             logout.setIcon(logoutPic);
+
+            ImageIcon createPic = new ImageIcon("./client/app/content/createbutton.jpg");
+            create.setIcon(createPic);
+
+            ImageIcon deletePic = new ImageIcon("./client/app/content/deletebutton.jpg");
+            deleteConvo.setIcon(deletePic);
+
+            ImageIcon addPic = new ImageIcon("./client/app/content/addbutton.jpg");
+            addToConvo.setIcon(addPic);
+
+            ImageIcon removePic = new ImageIcon("./client/app/content/removebutton.jpg");
+            removeFromConvo.setIcon(removePic);
+
+            ImageIcon darkModePic = new ImageIcon("./client/app/content/darkmodebutton.jpg");
+            darkMode.setIcon(darkModePic);
 
             about.setForeground(Color.BLACK);
 

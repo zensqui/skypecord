@@ -8,8 +8,7 @@ Version: 1.0
  
 A not whatsoever fully funtional messaging service.
  
-Ability to see who in your conversation is online comign soon!
-Cooler looking UI coming soon!
+Voice Chats coming soon!
  
 If there are any issues please forget about it because we will not fix them.
 I hope you didn't use your actual password because your password is not secure right now.
