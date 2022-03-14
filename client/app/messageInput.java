@@ -465,7 +465,7 @@ public class messageInput extends JFrame implements ActionListener {
          String[] names = test1.split(", ");
          for(int i = 0; i < names.length; i++){
             try {
-               if(!client.userExists(names[i])){
+               if(client.userExists(names[i]).equals("1")){
                   JOptionPane.showMessageDialog(null, "Please enter valid user names.", 
                      "User doesn't exist", JOptionPane.QUESTION_MESSAGE, null);
                   return;
@@ -539,7 +539,7 @@ public class messageInput extends JFrame implements ActionListener {
             }
 
             try {
-               if(!client.userExists(addUser)){
+               if(client.userExists(addUser).equals("1")){
                   JOptionPane.showMessageDialog(null, "Please enter valid user names.", 
                      "User doesn't exist", JOptionPane.QUESTION_MESSAGE, null);
                   return;
