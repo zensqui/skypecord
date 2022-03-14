@@ -1,13 +1,13 @@
 import java.net.*;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.*;
+
 public class Client {
     private Socket client;
     private ThreadedBufferedReader in;
@@ -91,7 +91,7 @@ public class Client {
         out.flush();
 
         JSONObject res = getResponse();
-        return (String)res.get("data");
+        return (String) res.get("data");
     }
 
     public String addConvo(String users) throws IOException {
@@ -108,7 +108,7 @@ public class Client {
         out.flush();
 
         JSONObject jsonOut = getResponse();
-        String cid = (String)jsonOut.get("data");
+        String cid = (String) jsonOut.get("data");
         return cid;
     }
 
@@ -132,7 +132,8 @@ public class Client {
 
         JSONObject jsonOut = getResponse();
         System.out.println("RECIEVING GETUSERS RES (CLIENT.JAVA:123) | " + jsonOut.toJSONString());
-        String[] users = jsonOut.get("data").toString().substring(1, jsonOut.get("data").toString().length() - 1).split(", ");
+        String[] users = jsonOut.get("data").toString().substring(1, jsonOut.get("data").toString().length() - 1)
+                .split(", ");
         return users;
     }
 
@@ -144,10 +145,10 @@ public class Client {
         out.flush();
 
         JSONObject jsonOut = getResponse();
-        JSONArray convos = (JSONArray)new JSONParser().parse(jsonOut.get("data").toString());
+        JSONArray convos = (JSONArray) new JSONParser().parse(jsonOut.get("data").toString());
         String[] cids = new String[convos.size()];
         for (int i = 0; i < convos.size(); i++) {
-            cids[i] = (String)convos.get(i);
+            cids[i] = (String) convos.get(i);
         }
         return cids;
     }
@@ -182,7 +183,7 @@ public class Client {
         out.flush();
 
         JSONObject jsonOut = getResponse();
-        JSONArray messages = (JSONArray)new JSONParser().parse(jsonOut.get("data").toString());
+        JSONArray messages = (JSONArray) new JSONParser().parse(jsonOut.get("data").toString());
         return messages;
     }
 }
@@ -205,9 +206,9 @@ class InputEventHandler implements InputEventListener {
 
     public void onInputEvent(JSONObject json) {
         System.out.println("RECIEVING EVENT (CLIENT.JAVA:156) | " + json.toJSONString());
-        if(json.get("type").equals("msg")) {
+        if (json.get("type").equals("msg")) {
             System.out.println("MESSAGE RECIEVED (CLIENT.JAVA:195) | [" + json.get("user") + "] " + json.get("data"));
-            messageUi.addMessage(json.get("user").toString() ,json.get("data").toString(), json.get("cid").toString());
+            messageUi.addMessage(json.get("user").toString(), json.get("data").toString(), json.get("cid").toString());
         } else {
             try {
                 System.out.println("OTHER RESPONSE RECIEVED (CLIENT.JAVA:201) | " + json.toJSONString());
