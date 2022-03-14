@@ -1,14 +1,12 @@
 import java.io.IOException;
 
-import com.mysql.cj.conf.PropertyDefinitions.SslMode;
-
 import org.json.simple.parser.ParseException;
 
 public class test {
     public static void main(String[] args) throws IOException, ParseException {
         Client client = new Client();
         client.login("test", "test");
-        
+
         String[] convos = client.getUserConvos();
         String convo = convos[0];
         System.out.println("cid: " + convo);
@@ -18,7 +16,7 @@ public class test {
         }
 
         client.message(convo, "testingtesting123");
-        
+
         String[] convosToo = client.getUserConvos();
         String convoToo = convosToo[0];
         System.out.println("cidToo: " + convoToo);
