@@ -1,14 +1,18 @@
 import java.awt.*;
 import java.awt.event.*;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -26,10 +30,21 @@ public class messageInput extends JFrame implements ActionListener {
 
    //directory
    JButton create;
-   JButton editConvos;
+   JButton deleteConvo;
+   JButton addToConvo;
+   JButton removeFromConvo;
    JList<String> dList;
    JScrollPane dScrollPane;
    DefaultListModel<String> dmodel;
+
+   //settings
+   JLabel settings;
+   JButton logout;
+   JLabel goodBye;
+   JLabel about;
+
+   Boolean isDark;
+   JButton darkMode;
 
    //true if a chat has been selected
    boolean chatSelected;
@@ -38,7 +53,7 @@ public class messageInput extends JFrame implements ActionListener {
    Client client;
    String convoID;
    HashMap<String, String> convo;
-   
+
    //skypcord colors
    Color lightBlue;
    Color purple;
@@ -48,6 +63,9 @@ public class messageInput extends JFrame implements ActionListener {
       
       //true if chat is selected
       chatSelected = false;
+
+      //if dark mode is on it is true
+      isDark = false;
 
       this.client = client;
       client.setMessageUi(this);
@@ -64,6 +82,7 @@ public class messageInput extends JFrame implements ActionListener {
       Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
       SpringLayout layout = new SpringLayout();
+     
 
       panel = new JPanel(layout);
       panel.setBackground(Color.WHITE);
@@ -95,26 +114,33 @@ public class messageInput extends JFrame implements ActionListener {
             maxSize = scrollPane.getVerticalScrollBar().getMaximum();
          });
          
-         layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, scrollPane, 75, SpringLayout.HORIZONTAL_CENTER, panel);
+         layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, scrollPane, 0, SpringLayout.HORIZONTAL_CENTER, panel);
          layout.putConstraint(SpringLayout.NORTH, scrollPane, 10, SpringLayout.NORTH, panel);
          scrollPane.setPreferredSize(new Dimension(800, 600));
          panel.add(scrollPane);
          //list.setBackground(lightBlue);
          //list.setSelectionBackground(lightBlue);
-         
+         list.setSelectionBackground(Color.LIGHT_GRAY);
          
          
          //place and size of message JTextField
          message = new JTextField();
-         layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, message, 35, SpringLayout.HORIZONTAL_CENTER, panel);
+         message.setFont(new Font("SansSerif", Font.BOLD, 18));
+         layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, message, -37, SpringLayout.HORIZONTAL_CENTER, panel);
          layout.putConstraint(SpringLayout.NORTH, message, 625, SpringLayout.NORTH, panel);
          message.setPreferredSize(new Dimension(725, 50));
          message.addKeyListener(new keyListener());
          panel.add(message);
-
+         
          //place and size of send JButton
-         send = new JButton("Send");
-         layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, send, 435, SpringLayout.HORIZONTAL_CENTER, panel);
+         ImageIcon sendPic = new ImageIcon("./client/app/content/sendbutton.jpg");
+
+         send = new JButton(sendPic);
+         send.setOpaque(false);
+         send.setContentAreaFilled(false);
+         send.setBorderPainted(false);
+         send.setFocusPainted(false);
+         layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, send, 363, SpringLayout.HORIZONTAL_CENTER, panel);
          layout.putConstraint(SpringLayout.NORTH, send, 625, SpringLayout.NORTH, panel);
          send.setPreferredSize(new Dimension(75, 50));
          send.addActionListener(this);
@@ -144,7 +170,11 @@ public class messageInput extends JFrame implements ActionListener {
                   String selectedItem = (String) dList.getSelectedValue();
                   convoID = convo.get(selectedItem);
                   model.clear();
-                  editConvos.setVisible(true);
+                  deleteConvo.setVisible(true);
+                  addToConvo.setVisible(true);
+                  removeFromConvo.setVisible(true);
+                  model.addElement("Chat with " + selectedItem);
+                  model.addElement(" ");
                   getMsgs(convoID);
                   chatSelected = true;
                }
@@ -152,7 +182,10 @@ public class messageInput extends JFrame implements ActionListener {
                   dList.clearSelection();
                   model.clear();
                   welcomeText("./client/app/welcome.txt");
-                  editConvos.setVisible(false);
+                  deleteConvo.setVisible(false);
+                  addToConvo.setVisible(false);
+                  removeFromConvo.setVisible(false);
+                  chatSelected = false;
                }
             }
          };
@@ -164,9 +197,15 @@ public class messageInput extends JFrame implements ActionListener {
          layout.putConstraint(SpringLayout.NORTH, dScrollPane, 10, SpringLayout.NORTH, panel);
          dScrollPane.setPreferredSize(new Dimension(250, 600));
          panel.add(dScrollPane);
-         
+         dList.setSelectionBackground(Color.LIGHT_GRAY);
+
          //size and shape of the create JButton
-         create = new JButton("create");
+         ImageIcon createPic = new ImageIcon("./client/app/content/createbutton.jpg");
+         create = new JButton(createPic);
+         create.setOpaque(false);
+         create.setContentAreaFilled(false);
+         create.setBorderPainted(false);
+         create.setFocusPainted(false);
          layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, create, -550, SpringLayout.HORIZONTAL_CENTER, panel);
          layout.putConstraint(SpringLayout.NORTH, create, 625, SpringLayout.NORTH, panel);
          create.setPreferredSize(new Dimension(250, 50));
@@ -174,16 +213,104 @@ public class messageInput extends JFrame implements ActionListener {
          panel.add(create);
 
          //size and shape of the editConvos JButton
-         editConvos = new JButton("Edit Conversation");
-         layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, editConvos, -550, SpringLayout.HORIZONTAL_CENTER, panel);
-         layout.putConstraint(SpringLayout.NORTH, editConvos, 675, SpringLayout.NORTH, panel);
-         editConvos.setPreferredSize(new Dimension(250, 50));
-         editConvos.addActionListener(this);
-         panel.add(editConvos);
-         editConvos.setVisible(false);
+         ImageIcon deletePic = new ImageIcon("./client/app/content/deletebutton.jpg");
+
+         deleteConvo = new JButton(deletePic);
+         deleteConvo.setOpaque(false);
+         deleteConvo.setContentAreaFilled(false);
+         deleteConvo.setBorderPainted(false);
+         deleteConvo.setFocusPainted(false);
+         layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, deleteConvo, -275, SpringLayout.HORIZONTAL_CENTER, panel);
+         layout.putConstraint(SpringLayout.NORTH, deleteConvo, 675, SpringLayout.NORTH, panel);
+         deleteConvo.setPreferredSize(new Dimension(250, 50));
+         deleteConvo.addActionListener(this);
+         panel.add(deleteConvo);
+         deleteConvo.setVisible(false);
+
+         //size and shape of the editConvos JButton
+         ImageIcon addPic = new ImageIcon("./client/app/content/addbutton.jpg");
+
+         addToConvo = new JButton(addPic);
+         addToConvo.setOpaque(false);
+         addToConvo.setContentAreaFilled(false);
+         addToConvo.setBorderPainted(false);
+         addToConvo.setFocusPainted(false);
+         layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, addToConvo, 0, SpringLayout.HORIZONTAL_CENTER, panel);
+         layout.putConstraint(SpringLayout.NORTH, addToConvo, 675, SpringLayout.NORTH, panel);
+         addToConvo.setPreferredSize(new Dimension(250, 50));
+         addToConvo.addActionListener(this);
+         panel.add(addToConvo);
+         addToConvo.setVisible(false);
+
+         //size and shape of the editConvos JButton
+         ImageIcon removePic = new ImageIcon("./client/app/content/removebutton.jpg");
+
+         removeFromConvo = new JButton(removePic);
+         removeFromConvo.setOpaque(false);
+         removeFromConvo.setContentAreaFilled(false);
+         removeFromConvo.setBorderPainted(false);
+         removeFromConvo.setFocusPainted(false);
+         layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, removeFromConvo, 275, SpringLayout.HORIZONTAL_CENTER, panel);
+         layout.putConstraint(SpringLayout.NORTH, removeFromConvo, 675, SpringLayout.NORTH, panel);
+         removeFromConvo.setPreferredSize(new Dimension(250, 50));
+         removeFromConvo.addActionListener(this);
+         panel.add(removeFromConvo);
+         removeFromConvo.setVisible(false);
+
+         //settings**************************************************************************************
+
+         settings = new JLabel("Settings");
+         settings.setFont(new Font("SansSerif", Font.BOLD, 20));
+         layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, settings, 550, SpringLayout.HORIZONTAL_CENTER, panel);
+         layout.putConstraint(SpringLayout.NORTH, settings, 5, SpringLayout.NORTH, panel);
+         settings.setPreferredSize(new Dimension(250, 50));
+         panel.add(settings);
+         
+         ImageIcon logoutPic = new ImageIcon("./client/app/content/logoutbutton.jpg");
+         logout = new JButton(logoutPic);
+         logout.setOpaque(false);
+         logout.setContentAreaFilled(false);
+         logout.setBorderPainted(false);
+         logout.setFocusPainted(false);
+         layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, logout, 550, SpringLayout.HORIZONTAL_CENTER, panel);
+         layout.putConstraint(SpringLayout.NORTH, logout, 100, SpringLayout.NORTH, panel);
+         logout.setPreferredSize(new Dimension(250, 50));
+         logout.addActionListener(this);
+         panel.add(logout);
+
+         goodBye = new JLabel("Good-Bye!");
+         layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, goodBye, 0, SpringLayout.HORIZONTAL_CENTER, panel);
+         layout.putConstraint(SpringLayout.NORTH, goodBye, 300, SpringLayout.NORTH, panel);
+         goodBye.setPreferredSize(new Dimension(500, 100));
+         panel.add(goodBye);
+         goodBye.setVisible(false);
+
+         about = new JLabel();
+         about.setFont(new Font("font", Font.PLAIN, 20));
+         about.setText("<html>This project was created by<br>" + 
+            "Brady Pettengill and Morgan Wagner<br>" + 
+            "as a revolutionary replacement for<br>" +
+            "your current communication technology.</html>");
+         layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, about, 550, SpringLayout.HORIZONTAL_CENTER, panel);
+         layout.putConstraint(SpringLayout.NORTH, about, 300, SpringLayout.NORTH, panel);
+         about.setPreferredSize(new Dimension(250, 300));
+         panel.add(about);
+         
+         ImageIcon darkModePic = new ImageIcon("./client/app/content/darkmodebutton.jpg");
+         darkMode = new JButton(darkModePic);
+         darkMode.setOpaque(false);
+         darkMode.setContentAreaFilled(false);
+         darkMode.setBorderPainted(false);
+         darkMode.setFocusPainted(false);
+         layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, darkMode, 550, SpringLayout.HORIZONTAL_CENTER, panel);
+         layout.putConstraint(SpringLayout.NORTH, darkMode, 175, SpringLayout.NORTH, panel);
+         darkMode.setPreferredSize(new Dimension(250, 50));
+         darkMode.addActionListener(this);
+         panel.add(darkMode);
+         
          //gets all the conversations on your account and puts them in directory
          getConvos();
-
+         
          //frame set up
          add(panel, BorderLayout.CENTER);
          setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
@@ -357,145 +484,246 @@ public class messageInput extends JFrame implements ActionListener {
                e1.printStackTrace();
             }
       }
-      
-      //pops up edit convo window
-      //user selects the convo they want to edit
-      if((JButton)e.getSource() == editConvos){
-         //if nothing in directory has been selected
-         if(dList.getSelectedValue() == null){
-            JOptionPane.showMessageDialog(null, "Please select the conversation you want to edit", 
-            "Edit Conversations", JOptionPane.QUESTION_MESSAGE, null); 
+
+      //deletes conversation
+      if((JButton)e.getSource() == deleteConvo){
+         String chatInput = dList.getSelectedValue();
+
+         String[] options = {"Yes", "No"};
+         
+         
+            //choice = index of options array the user chooses
+            int n = JOptionPane.showOptionDialog(null, "Are you sure you want to delete this conversation",
+               "Edit Conversations",
+               JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
+         
+
+         if(n != 0){
             return;
          }
 
-         String chatInput = dList.getSelectedValue();
-         String[] choices = new String[dmodel.size()];
-
+         String cid = convo.remove(chatInput);
+         try {
+            client.delConvo(cid);
+               
+         } catch (IOException e1) {
+            e1.printStackTrace();
+         }
+         //updates the list of messages the user sees if the chat selected was the one deleted
+         if(chatInput.equals((String) dList.getSelectedValue())){
+            model.clear();
+            welcomeText("./client/app/welcome.txt");
+            convo.remove(chatInput);
+            chatSelected = false;
+         }
+         deleteConvo.setVisible(false);
+         addToConvo.setVisible(false);
+         removeFromConvo.setVisible(false);
+         //updates directory
          for(int i = 0; i < dmodel.size(); i++){
-            choices[i] = dmodel.get(i);
-         }  
-
-         //asks you what you want to edit
-         //options the user gets
-            String[] options = {"Delete Conversation", "Add User", "Remove User"};
-            //choice = index of options array the user chooses
-            int choice = JOptionPane.showOptionDialog(null, "Please choose one",
-               "Edit Conversations",
-               JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
-            
-            //deletes a conversation
-            if(choice == 0){
-               String cid = convo.remove(chatInput);
-               try {
-                  client.delConvo(cid);
-                  
-               } catch (IOException e1) {
-                  e1.printStackTrace();
-               }
-               //updates the list of messages the user sees if the chat selected was the one deleted
-               if(chatInput.equals((String) dList.getSelectedValue())){
-                  model.clear();
-                  welcomeText("./client/app/welcome.txt");
-                  convo.remove(chatInput);
-               }
-               editConvos.setVisible(false);
-               //updates directory
-               for(int i = 0; i < dmodel.size(); i++){
-                  if(dmodel.elementAt(i).equals(chatInput)){
-                     dmodel.remove(i);
-                     System.out.print(dmodel.get(i));
-                  }  
-               }
+            if(dmodel.elementAt(i).equals(chatInput)){
+               dmodel.remove(i);
+               System.out.print(dmodel.get(i));
+            }  
+         }
                
-               System.out.println("Chat Deleted");
-            }
-
-            //adds a user to the conversation
-            else if(choice == 1){
-               String addUser = "";
-               while(addUser.equals("")){
-                  addUser = JOptionPane.showInputDialog("Enter User you want to add to the conversation");
-               }
-               String cid = convo.get(chatInput);
-
-               try {
-                  client.addConvoUser(cid, addUser);
-               } catch (IOException e1) {
-                  e1.printStackTrace();
-               }
-
-               //updates directory
-               for(int i = 0; i < dmodel.size(); i++){
-                  if(dmodel.elementAt(i).equals(chatInput)){
-                     String test = dmodel.remove(i);
-                     dmodel.add(i, test + ", " + addUser);
-                     convo.remove(test);
-                     convo.put(test + ", " + addUser, cid);
-                     break;
-                  }  
-               }
-
-               //adds a update message in the conversation for the users to see who was added
-               String chatUpdate = "Added " + addUser + " to the conversation.";
-               try {
-                  client.message(cid, chatUpdate);
-               } catch (Exception ex) {
-                  ex.printStackTrace();
-               }
-               
-               System.out.println("User Added");
-            } 
-
-            //removes user from a conversation
-            else if(choice == 2){
-               String userRemoved = "";
-               String cid = convo.get(chatInput);
-               String[] selected = chatInput.split(", ");
-               
-               //list of conversations to edit
-               userRemoved = (String) JOptionPane.showInputDialog(null, "Choose user you want to remove.", 
-                  "Edit Conversations", JOptionPane.QUESTION_MESSAGE, null, selected, selected[0]);
-
-               try {
-                  System.out.println("it tried");
-                  client.delConvoUser(cid, userRemoved);
-                  System.out.println("it worked maybe");
-               } catch (IOException e1) {
-                  e1.printStackTrace();
-               }
-               System.out.println("User Removed");
-               
-               String finalName = "";
-
-               for(int i = 0; i < selected.length; i++){
-                  int x = 0;
-                  if(!selected[i].equals(userRemoved)){
-                     finalName = finalName + selected[i] + ", ";
-                     x++;
-                  }
-               }
-               
-               //updates directory
-               for(int i = 0; i < dmodel.size(); i++){
-                  if(dmodel.elementAt(i).equals(chatInput)){
-                     dmodel.remove(i);
-                     dmodel.add(i, finalName.substring(0, finalName.length() - 2));
-                     convo.remove(chatInput);
-                     convo.put(finalName.substring(0, finalName.length() - 2), cid);
-                     break;
-                  }  
-               }
-               //adds a update message in the conversation for the users to see who was added
-               String chatUpdate = "Removed " + userRemoved + " from the conversation.";
-               try {
-                  client.message(cid, chatUpdate);
-               } catch (Exception ex) {
-                  ex.printStackTrace();
-               }
-            }
-            
+         System.out.println("Chat Deleted");
       }
       
+      if((JButton)e.getSource() == addToConvo){
+         String chatInput = dList.getSelectedValue();
+
+         String addUser = "";
+            while(addUser.equals("")){
+               addUser = JOptionPane.showInputDialog("Enter User you want to add to the conversation");
+            }
+
+            try {
+               if(!client.userExists(addUser)){
+                  JOptionPane.showMessageDialog(null, "Please enter valid user names.", 
+                     "User doesn't exist", JOptionPane.QUESTION_MESSAGE, null);
+                  return;
+               }
+            } catch (IOException e1) {
+               e1.printStackTrace();
+            }
+
+            String cid = convo.get(chatInput);
+
+            try {
+               client.addConvoUser(cid, addUser);
+            } catch (IOException e1) {
+               e1.printStackTrace();
+            }
+
+            //updates directory
+            for(int i = 0; i < dmodel.size(); i++){
+               if(dmodel.elementAt(i).equals(chatInput)){
+                  String test = dmodel.remove(i);
+                  dmodel.add(i, test + ", " + addUser);
+                  convo.remove(test);
+                  convo.put(test + ", " + addUser, cid);
+                  break;
+               }  
+            }
+
+            //adds a update message in the conversation for the users to see who was added
+            String chatUpdate = "Added " + addUser + " to the conversation.";
+            try {
+               client.message(cid, chatUpdate);
+            } catch (Exception ex) {
+               ex.printStackTrace();
+            }
+               
+            System.out.println("User Added");
+      }
+      
+      if((JButton)e.getSource() == removeFromConvo){
+         String chatInput = dList.getSelectedValue();
+
+         String userRemoved = "";
+         String cid = convo.get(chatInput);
+         String[] selected = chatInput.split(", ");
+
+         //list of conversations to edit
+         userRemoved = (String) JOptionPane.showInputDialog(null, "Choose user you want to remove.", 
+            "Edit Conversations", JOptionPane.QUESTION_MESSAGE, null, selected, selected[0]);
+            
+         try {
+            System.out.println("it tried");
+            client.delConvoUser(cid, userRemoved);
+            System.out.println("it worked maybe");
+         } catch (IOException e1) {
+            e1.printStackTrace();
+         }
+         System.out.println("User Removed");
+
+         String finalName = "";
+
+         for(int i = 0; i < selected.length; i++){
+            if(!selected[i].equals(userRemoved)){
+               finalName = finalName + selected[i] + ", ";
+            }
+         }
+
+         //updates directory
+         for(int i = 0; i < dmodel.size(); i++){
+            if(dmodel.elementAt(i).equals(chatInput)){
+               dmodel.remove(i);
+               dmodel.add(i, finalName.substring(0, finalName.length() - 2));
+               convo.remove(chatInput);
+               convo.put(finalName.substring(0, finalName.length() - 2), cid);
+               break;
+            }  
+         }
+         //adds a update message in the conversation for the users to see who was added
+         String chatUpdate = "Removed " + userRemoved + " from the conversation.";
+         try {
+            client.message(cid, chatUpdate);
+         } catch (Exception ex) {
+            ex.printStackTrace();
+         }
+      }
+
+      if((JButton)e.getSource() == logout){
+         try {
+            Thread.sleep(1000);
+         } catch (InterruptedException e1) {
+            e1.printStackTrace();
+         }
+         System.exit(0);
+      }
+
+      if((JButton)e.getSource() == darkMode){
+
+         isDark = !isDark;
+
+         if(isDark){
+            panel.setBackground(Color.BLACK);
+
+            dList.setBackground(Color.DARK_GRAY);
+            dList.setForeground(Color.WHITE);
+            dList.setSelectionBackground(Color.BLACK);
+            dList.setSelectionForeground(Color.WHITE);
+
+            list.setBackground(Color.DARK_GRAY);
+            list.setForeground(Color.WHITE);
+            list.setSelectionBackground(Color.BLACK);
+            list.setSelectionForeground(Color.WHITE);
+
+            message.setBackground(Color.DARK_GRAY);
+            message.setForeground(Color.WHITE);
+            message.setCaretColor(Color.WHITE);
+
+            ImageIcon sendPic = new ImageIcon("./client/app/content/sendbuttondark.jpg");
+            send.setIcon(sendPic);
+
+            ImageIcon logoutPic = new ImageIcon("./client/app/content/logoutbuttondark.jpg");
+            logout.setIcon(logoutPic);
+
+            ImageIcon createPic = new ImageIcon("./client/app/content/createbuttondark.jpg");
+            create.setIcon(createPic);
+
+            ImageIcon deletePic = new ImageIcon("./client/app/content/deletebuttondark.jpg");
+            deleteConvo.setIcon(deletePic);
+
+            ImageIcon addPic = new ImageIcon("./client/app/content/addbuttondark.jpg");
+            addToConvo.setIcon(addPic);
+
+            ImageIcon removePic = new ImageIcon("./client/app/content/removebuttondark.jpg");
+            removeFromConvo.setIcon(removePic);
+
+            ImageIcon darkModePic = new ImageIcon("./client/app/content/darkmodebuttondark.jpg");
+            darkMode.setIcon(darkModePic);
+
+            about.setForeground(Color.WHITE);
+
+            settings.setForeground(Color.WHITE);
+         }
+         else if(!isDark){
+            panel.setBackground(Color.WHITE);
+
+            dList.setBackground(Color.WHITE);
+            dList.setForeground(Color.BLACK);
+            dList.setSelectionBackground(Color.LIGHT_GRAY);
+            dList.setSelectionForeground(Color.BLACK);
+
+            list.setBackground(Color.WHITE);
+            list.setForeground(Color.BLACK);
+            list.setSelectionBackground(Color.LIGHT_GRAY);
+            list.setSelectionForeground(Color.BLACK);
+
+            message.setBackground(Color.WHITE);
+            message.setForeground(Color.BLACK);
+            message.setCaretColor(Color.BLACK);
+
+            ImageIcon sendPic = new ImageIcon("./client/app/content/sendbutton.jpg");
+            send.setIcon(sendPic);
+
+            ImageIcon logoutPic = new ImageIcon("./client/app/content/logoutbutton.jpg");
+            logout.setIcon(logoutPic);
+
+            ImageIcon createPic = new ImageIcon("./client/app/content/createbutton.jpg");
+            create.setIcon(createPic);
+
+            ImageIcon deletePic = new ImageIcon("./client/app/content/deletebutton.jpg");
+            deleteConvo.setIcon(deletePic);
+
+            ImageIcon addPic = new ImageIcon("./client/app/content/addbutton.jpg");
+            addToConvo.setIcon(addPic);
+
+            ImageIcon removePic = new ImageIcon("./client/app/content/removebutton.jpg");
+            removeFromConvo.setIcon(removePic);
+
+            ImageIcon darkModePic = new ImageIcon("./client/app/content/darkmodebutton.jpg");
+            darkMode.setIcon(darkModePic);
+
+            about.setForeground(Color.BLACK);
+
+            settings.setForeground(Color.BLACK);
+         }
+
+      }
    }
 
    //keylistener
