@@ -631,11 +631,7 @@ public class messageInput extends JFrame implements ActionListener {
       }
 
       if((JButton)e.getSource() == logout){
-         try {
-            Thread.sleep(1000);
-         } catch (InterruptedException e1) {
-            e1.printStackTrace();
-         }
+
          System.exit(0);
       }
 
