@@ -58,6 +58,7 @@ public class messageInput extends JFrame implements ActionListener {
    Color lightBlue;
    Color purple;
    Color blueish;
+   Color darkDarkGray;
 
    public messageInput(Client client) throws IOException {
       
@@ -74,7 +75,7 @@ public class messageInput extends JFrame implements ActionListener {
       lightBlue = new Color(154, 217, 234);
       purple = new Color(63, 72, 204);
       blueish = new Color(0, 162, 232);
-
+      darkDarkGray = new Color(20, 20, 20);
       //stores name and id of conversations
       convo = new HashMap<String, String>();
 
@@ -104,6 +105,7 @@ public class messageInput extends JFrame implements ActionListener {
          scrollPane = new JScrollPane();
          scrollPane.setViewportView(list);
          list.setLayoutOrientation(JList.VERTICAL);
+         //list.setBorder(BorderFactory.createEmptyBorder());
 
          //scroll pane scrolls to the bottem when model is updated
          maxSize = scrollPane.getVerticalScrollBar().getMaximum();
@@ -125,7 +127,8 @@ public class messageInput extends JFrame implements ActionListener {
          
          //place and size of message JTextField
          message = new JTextField();
-         message.setFont(new Font("SansSerif", Font.BOLD, 18));
+         //message.setBorder(BorderFactory.createEmptyBorder());
+         message.setFont(new Font("SansSerif", Font.PLAIN, 18));
          layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, message, -37, SpringLayout.HORIZONTAL_CENTER, panel);
          layout.putConstraint(SpringLayout.NORTH, message, 625, SpringLayout.NORTH, panel);
          message.setPreferredSize(new Dimension(725, 50));
@@ -326,7 +329,9 @@ public class messageInput extends JFrame implements ActionListener {
          model.addElement(user + ": " + data);
       } else if (!convo.containsValue(cid)) {
          System.out.println("CONVO DOESN'T EXIST YET, TRYING TO CREATE..");
-         addConvo(cid);
+         //addConvo(cid);
+         //dmodel.clear();
+         //getConvos();
       }
    }
 
@@ -626,11 +631,7 @@ public class messageInput extends JFrame implements ActionListener {
       }
 
       if((JButton)e.getSource() == logout){
-         try {
-            Thread.sleep(1000);
-         } catch (InterruptedException e1) {
-            e1.printStackTrace();
-         }
+
          System.exit(0);
       }
 
@@ -641,17 +642,17 @@ public class messageInput extends JFrame implements ActionListener {
          if(isDark){
             panel.setBackground(Color.BLACK);
 
-            dList.setBackground(Color.DARK_GRAY);
+            dList.setBackground(darkDarkGray);
             dList.setForeground(Color.WHITE);
             dList.setSelectionBackground(Color.BLACK);
             dList.setSelectionForeground(Color.WHITE);
 
-            list.setBackground(Color.DARK_GRAY);
+            list.setBackground(darkDarkGray);
             list.setForeground(Color.WHITE);
             list.setSelectionBackground(Color.BLACK);
             list.setSelectionForeground(Color.WHITE);
 
-            message.setBackground(Color.DARK_GRAY);
+            message.setBackground(darkDarkGray);
             message.setForeground(Color.WHITE);
             message.setCaretColor(Color.WHITE);
 
