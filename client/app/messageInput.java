@@ -465,6 +465,8 @@ public class messageInput extends JFrame implements ActionListener {
          String test1 = "";
          while(test1.equals("")){
             test1 = JOptionPane.showInputDialog("Please enter a comma separated list of users you would like to chat with:");
+            if(test1 == null)
+               return;
          }
 
          String[] names = test1.split(", ");
