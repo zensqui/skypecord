@@ -338,7 +338,7 @@ public class messageInput extends JFrame implements ActionListener {
    //adds conversations to the directory
    public void addConvo(String cid) {
       try {
-         System.out.println("REQUESTING CONVO INFO FOR " + cid);
+         //System.out.println("REQUESTING CONVO INFO FOR " + cid);
          String[] users = client.getConvoUsers(cid);
          String name = "";
          for(String u : users) {
