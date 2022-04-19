@@ -329,9 +329,9 @@ public class messageInput extends JFrame implements ActionListener {
          model.addElement(user + ": " + data);
       } else if (!convo.containsValue(cid)) {
          System.out.println("CONVO DOESN'T EXIST YET, TRYING TO CREATE..");
-         //addConvo(cid);
-         //dmodel.clear();
-         //getConvos();
+         addConvo(cid);
+         dmodel.clear();
+         getConvos();
       }
    }
 
@@ -347,7 +347,8 @@ public class messageInput extends JFrame implements ActionListener {
                name += u + ", ";
             }
          }
-         name = name.substring(0, name.length() - 2);
+         if(name.length() >= 2)
+            name = name.substring(0, name.length() - 2);
 
          convo.put(name, cid);
          dmodel.addElement(name);
@@ -449,7 +450,8 @@ public class messageInput extends JFrame implements ActionListener {
       //sets message JTextField = to "";
       if((JButton)e.getSource() == send){
          if(!message.getText().equals("") && chatSelected){
-            model.addElement(user + ": " + message.getText());
+            //model.addElement(user + ": " + message.getText());
+            addMessage(user, message.getText(), convoID);
             try { 
                client.message(convoID, message.getText());
                } catch (Exception ex) {
@@ -465,6 +467,8 @@ public class messageInput extends JFrame implements ActionListener {
          String test1 = "";
          while(test1.equals("")){
             test1 = JOptionPane.showInputDialog("Please enter a comma separated list of users you would like to chat with:");
+            if(test1 == null)
+               return;
          }
 
          String[] names = test1.split(", ");
@@ -740,7 +744,8 @@ public class messageInput extends JFrame implements ActionListener {
          //when enter is pressed it sends a message
          if (e.getKeyCode() == KeyEvent.VK_ENTER) {
             if(!message.getText().equals("") && chatSelected){
-               model.addElement(user + ": " + message.getText());
+               //model.addElement(user + ": " + message.getText());
+               addMessage(user, message.getText(), convoID);
                try { 
                   client.message(convoID, message.getText());
                   } catch (Exception ex) {
