@@ -489,8 +489,8 @@ public class messageInput extends JFrame implements ActionListener {
          // until the queue is empty.
          synthesizer.speakPlainText(
                 str, null);
-         synthesizer.waitEngineState(
-                Synthesizer.QUEUE_EMPTY);
+         //synthesizer.waitEngineState(
+         //       Synthesizer.QUEUE_EMPTY);
       
          // Deallocate the Synthesizer.
          //synthesizer.deallocate();
