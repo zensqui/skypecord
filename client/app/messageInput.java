@@ -11,6 +11,11 @@ import java.util.HashMap;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import java.util.Locale;
+import javax.speech.Central;
+import javax.speech.synthesis.Synthesizer;
+import javax.speech.synthesis.SynthesizerModeDesc;
+
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 
@@ -42,6 +47,8 @@ public class messageInput extends JFrame implements ActionListener {
    JButton logout;
    JLabel goodBye;
    JLabel about;
+   JButton textToSpeek;
+
 
    Boolean isDark;
    JButton darkMode;
@@ -106,6 +113,21 @@ public class messageInput extends JFrame implements ActionListener {
          scrollPane.setViewportView(list);
          list.setLayoutOrientation(JList.VERTICAL);
          //list.setBorder(BorderFactory.createEmptyBorder());
+
+         //mouse listener for when you click on the text
+         MouseListener mouseListener = new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+               if (e.getClickCount() == 1) {
+                  String selectedItem = (String) list.getSelectedValue();
+                  textSpeech(selectedItem);
+               }
+               else if(e.getClickCount() == 2){
+                  list.clearSelection();
+               }
+            }
+         };
+
+         list.addMouseListener(mouseListener);
 
          //scroll pane scrolls to the bottem when model is updated
          maxSize = scrollPane.getVerticalScrollBar().getMaximum();
@@ -438,6 +460,45 @@ public class messageInput extends JFrame implements ActionListener {
       }
    }
 
+   //reads out the string you input
+   public void textSpeech(String str){
+      try {
+         // Set property as Kevin Dictionary
+         System.setProperty(
+                "freetts.voices",
+                "com.sun.speech.freetts.en.us"
+                    + ".cmu_us_kal.KevinVoiceDirectory");
+      
+         // Register Engine
+         Central.registerEngineCentral(
+                "com.sun.speech.freetts"
+                + ".jsapi.FreeTTSEngineCentral");
+      
+         // Create a Synthesizer
+         Synthesizer synthesizer
+                = Central.createSynthesizer(
+                    new SynthesizerModeDesc(Locale.US));
+      
+         // Allocate synthesizer
+         synthesizer.allocate();
+      
+         // Resume Synthesizer
+         synthesizer.resume();
+      
+         // Speaks the given text
+         // until the queue is empty.
+         synthesizer.speakPlainText(
+                str, null);
+         synthesizer.waitEngineState(
+                Synthesizer.QUEUE_EMPTY);
+      
+         // Deallocate the Synthesizer.
+         //synthesizer.deallocate();
+      } catch (Exception e) {
+         e.printStackTrace();
+      }
+   }
+
    //text that shows up on start up
    // "//" at start of line = don't show
    // "/ + first letter of a color" = make line that color
@@ -601,7 +662,7 @@ public class messageInput extends JFrame implements ActionListener {
       
       if((JButton)e.getSource() == addToConvo){
          String chatInput = dList.getSelectedValue();
-
+         
          String addUser = "";
             while(addUser.equals("")){
                addUser = JOptionPane.showInputDialog("Enter User you want to add to the conversation");
@@ -648,6 +709,7 @@ public class messageInput extends JFrame implements ActionListener {
       }
       
       if((JButton)e.getSource() == removeFromConvo){
+         
          String chatInput = dList.getSelectedValue();
 
          String userRemoved = "";
@@ -700,7 +762,7 @@ public class messageInput extends JFrame implements ActionListener {
       }
 
       if((JButton)e.getSource() == darkMode){
-
+         
          isDark = !isDark;
 
          if(isDark){
@@ -746,6 +808,7 @@ public class messageInput extends JFrame implements ActionListener {
             settings.setForeground(Color.WHITE);
          }
          else if(!isDark){
+
             panel.setBackground(Color.WHITE);
 
             dList.setBackground(Color.WHITE);
