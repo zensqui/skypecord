@@ -16,10 +16,13 @@ public class ThreadedBufferedReader implements Runnable {
         try {
             String input = "";
             while ((input = in.readLine()) != null) {
-                // System.out.println("INCOMING PACKET RECIEVED (TBUFFER.JAVA:19) | " + input);
                 JSONObject jsonIn = new JSONObject();
+                try {
+                    jsonIn = (JSONObject) new JSONParser().parse(input);
+                } catch (ParseException e) {
+                    System.out.println("error parsing JSON: " + input);
+                }
                 jsonIn = (JSONObject) new JSONParser().parse(input);
-                // System.out.println("INCOMING PACKET PARSED (TBUFFER.JAVA:22) | " + jsonIn);
                 listener.onInputEvent(jsonIn);
             }
         } catch (Exception e) {
