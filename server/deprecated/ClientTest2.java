@@ -1,4 +1,5 @@
 package deprecated;
+
 import java.net.*;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -10,7 +11,8 @@ public class ClientTest2 {
     public static void main(String[] args) throws IOException, ParseException {
         Socket client = new Socket("sc.zenithproject.xyz", 5050);
 
-        BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));;
+        BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
+        ;
         BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
         OutputStreamWriter out = new OutputStreamWriter(client.getOutputStream(), StandardCharsets.UTF_8);
 
@@ -24,11 +26,11 @@ public class ClientTest2 {
 
         String input = "";
         while (true) {
-            //change to while loop for this, stdin is blocking and only for testing
+            // change to while loop for this, stdin is blocking and only for testing
             if ((input = in.readLine()) != null) {
-                JSONObject jsonIn = (JSONObject)new JSONParser().parse(input);
+                JSONObject jsonIn = (JSONObject) new JSONParser().parse(input);
                 System.out.println(jsonIn.toJSONString());
-            } 
+            }
             if ((input = stdIn.readLine()) != null) {
                 JSONObject jsonOut = new JSONObject();
                 System.out.println("Type:");
@@ -42,9 +44,11 @@ public class ClientTest2 {
                 out.flush();
             }
         }
-        /*while ((input = in.readLine()) != null) {
-            JSONObject jsonIn = (JSONObject)new JSONParser().parse(input);
-            System.out.println(jsonIn.toJSONString());
-        }*/
-    }    
+        /*
+         * while ((input = in.readLine()) != null) {
+         * JSONObject jsonIn = (JSONObject)new JSONParser().parse(input);
+         * System.out.println(jsonIn.toJSONString());
+         * }
+         */
+    }
 }
