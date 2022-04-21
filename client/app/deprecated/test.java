@@ -1,7 +1,10 @@
+package deprecated;
 import java.io.IOException;
 import java.util.UUID;
 
 import org.json.simple.parser.ParseException;
+
+/*import Client;
 
 public class test {
     public static void checkForConvos(Client client) throws IOException, ParseException {
@@ -33,10 +36,10 @@ public class test {
         client.login(uid, uid);
         clientToo.login(uidToo, uidToo);
 
-        /*System.out.println("\nConvos for client 1:");
+        System.out.println("\nConvos for client 1:");
         checkForConvos(client);
         System.out.println("\nConvos for client 2:");
-        checkForConvos(clientToo);*/
+        checkForConvos(clientToo);
 
         System.out.println("\nCreating convo and sending message from client 1 to user bradyap");
         
@@ -47,7 +50,7 @@ public class test {
         //String temp = clientToo.addConvo("test");
         //client.message(temp, "test");
 
-        /*System.out.println("\nCreating convo from client 1 --> client 2");
+        System.out.println("\nCreating convo from client 1 --> client 2");
         String temp1 = client.addConvo(uidToo);
         System.out.println(temp1);
 
@@ -57,8 +60,8 @@ public class test {
         System.out.println("\nConvos for client 1:");
         checkForConvos(client);
         System.out.println("\nConvos for client 2:");
-        checkForConvos(clientToo);*/
+        checkForConvos(clientToo);
 
         System.exit(0);
     }
-}
+}*/

@@ -1,15 +1,9 @@
 import java.awt.*;
 import java.awt.event.*;
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Set;
-import java.util.stream.Stream;
 
 import java.util.Locale;
 import javax.speech.Central;
@@ -17,7 +11,6 @@ import javax.speech.synthesis.Synthesizer;
 import javax.speech.synthesis.SynthesizerModeDesc;
 
 import javax.swing.*;
-import javax.swing.border.LineBorder;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -50,7 +43,6 @@ public class messageInput extends JFrame implements ActionListener {
    JLabel about;
    JButton textToSpeek;
 
-
    Boolean isDark;
    JButton darkMode;
 
@@ -62,8 +54,6 @@ public class messageInput extends JFrame implements ActionListener {
    String convoID;
    HashMap<String, String> convo;
 
-   String temp;
-
    // skypcord colors
    Color lightBlue;
    Color purple;
@@ -71,8 +61,6 @@ public class messageInput extends JFrame implements ActionListener {
    Color darkDarkGray;
 
    public messageInput(Client client) throws IOException {
-      temp = "";
-
       // true if chat is selected
       chatSelected = false;
 
@@ -118,21 +106,20 @@ public class messageInput extends JFrame implements ActionListener {
       list.setLayoutOrientation(JList.VERTICAL);
       // list.setBorder(BorderFactory.createEmptyBorder());
 
-         //mouse listener for when you click on the text
-         MouseListener mouseListener = new MouseAdapter() {
-            public void mouseClicked(MouseEvent e) {
-               if (e.getClickCount() == 1) {
-                  String selectedItem = (String) list.getSelectedValue();
-                  textSpeech(selectedItem);
-               }
-               else if(e.getClickCount() == 2){
-                  list.clearSelection();
-               }
+      // mouse listener for when you click on the text
+      MouseListener mouseListener = new MouseAdapter() {
+         public void mouseClicked(MouseEvent e) {
+            if (e.getClickCount() == 1) {
+               String selectedItem = (String) list.getSelectedValue();
+               textSpeech(selectedItem);
+            } else if (e.getClickCount() == 2) {
+               list.clearSelection();
             }
-         };
+         }
+      };
 
-         list.addMouseListener(mouseListener);
-     
+      list.addMouseListener(mouseListener);
+
       // scroll pane scrolls to the bottem when model is updated
       maxSize = scrollPane.getVerticalScrollBar().getMaximum();
       scrollPane.getVerticalScrollBar().addAdjustmentListener(e -> {
@@ -140,7 +127,7 @@ public class messageInput extends JFrame implements ActionListener {
             return;
          }
          e.getAdjustable().setValue(e.getAdjustable().getMaximum());
-        
+
          maxSize = scrollPane.getVerticalScrollBar().getMaximum();
       });
 
@@ -352,72 +339,68 @@ public class messageInput extends JFrame implements ActionListener {
    // adds message to conversation
    public void addMessage(String user, String data, String cid) {
       if (cid.equals(convoID)) {
-         
-         //the first line should have the username
+
+         // the first line should have the username
          boolean lineStarted = false;
-         
+
          FontMetrics metrics = getFontMetrics(new Font("SansSerif", Font.PLAIN, 18));
-         
-         //makes an indent of a certain size
+
+         // makes an indent of a certain size
          String userSpace = "";
-         for(int i = 0; i < (user.length() + 2) * 2 + 1; i++){
-            userSpace+= " ";
+         for (int i = 0; i < (user.length() + 2) * 2 + 1; i++) {
+            userSpace += " ";
          }
-         
-         //splits the sentance in to an array of words split by spaces
+
+         // splits the sentance in to an array of words split by spaces
          String[] words = data.trim().split(" ");
-         //for(int i = 0; i < words.length;i++)
-         //   System.out.println(words[i]);
-         if(metrics.stringWidth(user + ": " + data) > 785){
-            
-            //loops through all the words in the message
+         // for(int i = 0; i < words.length;i++)
+         // System.out.println(words[i]);
+         if (metrics.stringWidth(user + ": " + data) > 785) {
+
+            // loops through all the words in the message
             String curr = "";
-            for(int i = 0; i < words.length; i++){
-               
-               //if the word is bigger than the field can hold it splits it up
-               if(metrics.stringWidth(user + ": " + words[i]) > 785){
-                  for(int j = words[i].length() - 1; j >= 0; j--){
-                     if(metrics.stringWidth(user + ": " + words[i].substring(0, j + 1)) < 785){
-                        if(!lineStarted){
-                           model.addElement(user + ": " +  words[i].substring(0, j + 1).trim());
+            for (int i = 0; i < words.length; i++) {
+
+               // if the word is bigger than the field can hold it splits it up
+               if (metrics.stringWidth(user + ": " + words[i]) > 785) {
+                  for (int j = words[i].length() - 1; j >= 0; j--) {
+                     if (metrics.stringWidth(user + ": " + words[i].substring(0, j + 1)) < 785) {
+                        if (!lineStarted) {
+                           model.addElement(user + ": " + words[i].substring(0, j + 1).trim());
                            words[i] = words[i].substring(j + 1);
                            j = words[i].length();
                            lineStarted = true;
-                        }
-                        else{
-                           model.addElement(userSpace +  words[i].substring(0, j + 1).trim());
+                        } else {
+                           model.addElement(userSpace + words[i].substring(0, j + 1).trim());
                            words[i] = words[i].substring(j + 1);
                            j = words[i].length();
-                        } 
+                        }
                      }
                   }
-               } 
-               //if the message is to long for the field it splits it up
-               else if(metrics.stringWidth(user + ": " + curr.trim() + " " + words[i]) > 785){
-                  if(!lineStarted){
+               }
+               // if the message is to long for the field it splits it up
+               else if (metrics.stringWidth(user + ": " + curr.trim() + " " + words[i]) > 785) {
+                  if (!lineStarted) {
                      model.addElement(user + ": " + curr.trim());
-                     //System.out.println(curr);
+                     // System.out.println(curr);
                      lineStarted = true;
-                  }
-                  else
+                  } else
                      model.addElement(userSpace + curr.trim());
                   curr = "";
-               } 
+               }
                curr = curr + " " + words[i].trim();
             }
-            if(curr != "")
+            if (curr != "")
                model.addElement(userSpace + curr.trim());
-            //System.out.println(curr);
+            // System.out.println(curr);
          }
-         //if it is not to big it just adds it
+         // if it is not to big it just adds it
          else
             model.addElement(user + ": " + data);
-        
+
       } else if (!convo.containsValue(cid)) {
          System.out.println("CONVO DOESN'T EXIST YET, TRYING TO CREATE..");
-         temp = cid;
          System.out.println(cid);
-         addConvo(temp);
       }
    }
 
@@ -443,6 +426,19 @@ public class messageInput extends JFrame implements ActionListener {
       }
    }
 
+   public void removeConvo(String cid) {
+      for (String s : convo.keySet()) {
+         if (convo.get(s).equals(cid)) {
+            convo.remove(s);
+            dmodel.removeElement(s);
+         }
+      }
+   }
+
+   public HashMap<String, String> getCurrentConvos() {
+      return convo;
+   }
+
    // returns the chat selected
    public boolean getChatSelected() {
       return this.chatSelected;
@@ -464,46 +460,45 @@ public class messageInput extends JFrame implements ActionListener {
       }
    }
 
-   //reads out the string you input
-   public void textSpeech(String str){
+   // reads out the string you input
+   public void textSpeech(String str) {
       try {
          // Set property as Kevin Dictionary
          System.setProperty(
-                "freetts.voices",
-                "com.sun.speech.freetts.en.us"
-                    + ".cmu_us_kal.KevinVoiceDirectory");
-      
+               "freetts.voices",
+               "com.sun.speech.freetts.en.us"
+                     + ".cmu_us_kal.KevinVoiceDirectory");
+
          // Register Engine
          Central.registerEngineCentral(
-                "com.sun.speech.freetts"
-                + ".jsapi.FreeTTSEngineCentral");
-      
+               "com.sun.speech.freetts"
+                     + ".jsapi.FreeTTSEngineCentral");
+
          // Create a Synthesizer
-         Synthesizer synthesizer
-                = Central.createSynthesizer(
-                    new SynthesizerModeDesc(Locale.US));
-      
+         Synthesizer synthesizer = Central.createSynthesizer(
+               new SynthesizerModeDesc(Locale.US));
+
          // Allocate synthesizer
          synthesizer.allocate();
-      
+
          // Resume Synthesizer
          synthesizer.resume();
-      
+
          // Speaks the given text
          // until the queue is empty.
          synthesizer.speakPlainText(
-                str, null);
-         //synthesizer.waitEngineState(
-         //       Synthesizer.QUEUE_EMPTY);
-      
+               str, null);
+         // synthesizer.waitEngineState(
+         // Synthesizer.QUEUE_EMPTY);
+
          // Deallocate the Synthesizer.
-         //synthesizer.deallocate();
+         // synthesizer.deallocate();
       } catch (Exception e) {
          e.printStackTrace();
       }
    }
 
-   //text that shows up on start up
+   // text that shows up on start up
    // "//" at start of line = don't show
    // "/ + first letter of a color" = make line that color
    public void welcomeText(String fileName) {
@@ -664,7 +659,7 @@ public class messageInput extends JFrame implements ActionListener {
 
       if ((JButton) e.getSource() == addToConvo) {
          String chatInput = dList.getSelectedValue();
-         
+
          String addUser = "";
          while (addUser.equals("")) {
             addUser = JOptionPane.showInputDialog("Enter User you want to add to the conversation");
@@ -759,8 +754,7 @@ public class messageInput extends JFrame implements ActionListener {
       }
 
       if ((JButton) e.getSource() == logout) {
-         addConvo(temp);
-         // System.exit(0);
+         System.exit(0);
       }
       if ((JButton) e.getSource() == darkMode) {
 
@@ -807,7 +801,7 @@ public class messageInput extends JFrame implements ActionListener {
             about.setForeground(Color.WHITE);
 
             settings.setForeground(Color.WHITE);
-           
+
          } else if (!isDark) {
 
             panel.setBackground(Color.WHITE);

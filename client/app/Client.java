@@ -14,6 +14,7 @@ public class Client {
     private OutputStreamWriter out;
     private LinkedBlockingQueue<JSONObject> queue;
     private InputEventHandler inputListener;
+    private BackgroundRefresh backgroundRefresh;
 
     private String user;
 
@@ -30,6 +31,9 @@ public class Client {
 
     public void setMessageUi(messageInput messageUi) throws IOException {
         inputListener.updateMessageUi(messageUi);
+        this.backgroundRefresh = new BackgroundRefresh(this, messageUi, 2);
+        Thread tBg = new Thread(backgroundRefresh);
+        tBg.start();
     }
 
     public String getUser() {
