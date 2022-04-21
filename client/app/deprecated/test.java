@@ -36,13 +36,14 @@ public class test {
         client.login(uid, uid);
         clientToo.login(uidToo, uidToo);
 
+
         System.out.println("\nConvos for client 1:");
         checkForConvos(client);
         System.out.println("\nConvos for client 2:");
         checkForConvos(clientToo);
 
         System.out.println("\nCreating convo and sending message from client 1 to user bradyap");
-        
+
         String cid = client.addConvo(uid + ", bradyap");
         client.message(cid, "hello bradyap");
 
