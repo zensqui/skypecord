@@ -33,31 +33,35 @@ public class test {
         client.login(uid, uid);
         clientToo.login(uidToo, uidToo);
 
-        /*System.out.println("\nConvos for client 1:");
-        checkForConvos(client);
-        System.out.println("\nConvos for client 2:");
-        checkForConvos(clientToo);*/
+        /*
+         * System.out.println("\nConvos for client 1:");
+         * checkForConvos(client);
+         * System.out.println("\nConvos for client 2:");
+         * checkForConvos(clientToo);
+         */
 
         System.out.println("\nCreating convo and sending message from client 1 to user bradyap");
-        
+
         String cid = client.addConvo(uid + ", bradyap");
         client.message(cid, "hello bradyap");
 
-        //System.out.println("\nSending message from client 2 to random person");
-        //String temp = clientToo.addConvo("test");
-        //client.message(temp, "test");
+        // System.out.println("\nSending message from client 2 to random person");
+        // String temp = clientToo.addConvo("test");
+        // client.message(temp, "test");
 
-        /*System.out.println("\nCreating convo from client 1 --> client 2");
-        String temp1 = client.addConvo(uidToo);
-        System.out.println(temp1);
-
-        System.out.println("\nSending message to the new conversation:");
-        client.message(temp1, "test");
-
-        System.out.println("\nConvos for client 1:");
-        checkForConvos(client);
-        System.out.println("\nConvos for client 2:");
-        checkForConvos(clientToo);*/
+        /*
+         * System.out.println("\nCreating convo from client 1 --> client 2");
+         * String temp1 = client.addConvo(uidToo);
+         * System.out.println(temp1);
+         * 
+         * System.out.println("\nSending message to the new conversation:");
+         * client.message(temp1, "test");
+         * 
+         * System.out.println("\nConvos for client 1:");
+         * checkForConvos(client);
+         * System.out.println("\nConvos for client 2:");
+         * checkForConvos(clientToo);
+         */
 
         System.exit(0);
     }

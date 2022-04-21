@@ -12,30 +12,31 @@ public class LoginDemo extends JFrame implements ActionListener {
    JButton submit, cancel;
 
    Client client;
-   
-   //final user name and passwords will be stored in here
-   String u;  
+
+   // final user name and passwords will be stored in here
+   String u;
    String p;
-   
+
    public LoginDemo(Client client) {
       this.client = client;
 
       SpringLayout layout = new SpringLayout();
 
-      //panel = new JPanel(new GridLayout(3, 1));
+      // panel = new JPanel(new GridLayout(3, 1));
       panel = new JPanel(layout);
 
       panel.setBackground(Color.white);
       ImageIcon logo = new ImageIcon("./client/app/content/logo.jpg");
 
-      ImageIcon scaledImage = new ImageIcon(logo.getImage().getScaledInstance(logo.getIconWidth() / 3,logo.getIconHeight() / 3, Image.SCALE_SMOOTH));
+      ImageIcon scaledImage = new ImageIcon(
+            logo.getImage().getScaledInstance(logo.getIconWidth() / 3, logo.getIconHeight() / 3, Image.SCALE_SMOOTH));
 
       JLabel scaledLogo = new JLabel(scaledImage);
 
       panel.add(scaledLogo);
       layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, scaledLogo, 0, SpringLayout.HORIZONTAL_CENTER, panel);
       layout.putConstraint(SpringLayout.NORTH, scaledLogo, -50, SpringLayout.NORTH, panel);
-      //scaledLogo.setPreferredSize(new Dimension(1200, 400));
+      // scaledLogo.setPreferredSize(new Dimension(1200, 400));
       scaledLogo.setPreferredSize(new Dimension(525, 400));
 
       user_label = new JLabel();
@@ -44,7 +45,7 @@ public class LoginDemo extends JFrame implements ActionListener {
       layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, user_label, 75, SpringLayout.HORIZONTAL_CENTER, panel);
       layout.putConstraint(SpringLayout.NORTH, user_label, 300, SpringLayout.NORTH, panel);
       user_label.setPreferredSize(new Dimension(360, 50));
-      
+
       userName_text = new JTextField();
       panel.add(userName_text);
       layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, userName_text, 50, SpringLayout.HORIZONTAL_CENTER, panel);
@@ -73,12 +74,11 @@ public class LoginDemo extends JFrame implements ActionListener {
       layout.putConstraint(SpringLayout.NORTH, message, 400, SpringLayout.NORTH, panel);
       message.setPreferredSize(new Dimension(200, 45));
 
-
       ImageIcon submitPic = new ImageIcon("./client/app/content/submitbutton.jpg");
-      
+
       submit = new JButton(submitPic);
       panel.add(submit);
-      
+
       layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, submit, 0, SpringLayout.HORIZONTAL_CENTER, panel);
       layout.putConstraint(SpringLayout.NORTH, submit, 450, SpringLayout.NORTH, panel);
       submit.setPreferredSize(new Dimension(300, 45));
@@ -88,7 +88,7 @@ public class LoginDemo extends JFrame implements ActionListener {
       submit.setBorderPainted(false);
       submit.setFocusPainted(false);
       setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-      
+
       // Adding the listeners to components..
       submit.addActionListener(this);
       add(panel, BorderLayout.CENTER);
@@ -100,11 +100,11 @@ public class LoginDemo extends JFrame implements ActionListener {
    @Override
    public void actionPerformed(ActionEvent ae) {
       String userName = userName_text.getText();
-      String password = password_text.getText();        
+      String password = password_text.getText();
       u = userName.trim();
       p = password.trim();
 
-      if(userName.equals("") || password.equals("")){
+      if (userName.equals("") || password.equals("")) {
          message.setText("Enter information");
          return;
       }
@@ -137,18 +137,18 @@ public class LoginDemo extends JFrame implements ActionListener {
 
       @Override
       public void keyTyped(KeyEvent e) {
-         
+
       }
-   
+
       @Override
       public void keyPressed(KeyEvent e) {
          if (e.getKeyCode() == KeyEvent.VK_ENTER) {
             String userName = userName_text.getText();
-            String password = password_text.getText();        
+            String password = password_text.getText();
             u = userName.trim();
             p = password.trim();
 
-            if(userName.equals("") || password.equals("")){
+            if (userName.equals("") || password.equals("")) {
                message.setText("Enter information");
                return;
             }
@@ -177,10 +177,10 @@ public class LoginDemo extends JFrame implements ActionListener {
             }
          }
       }
-   
+
       @Override
       public void keyReleased(KeyEvent e) {
-         
+
       }
    }
 }

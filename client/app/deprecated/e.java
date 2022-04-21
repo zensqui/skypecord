@@ -16,7 +16,7 @@ public class e {
         frame.setSize(screenSize.width - 100, screenSize.height - 100);
         frame.setContentPane(new e3());
         frame.setVisible(true);
-        //frame.setLocation(null);
+        // frame.setLocation(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
     }
