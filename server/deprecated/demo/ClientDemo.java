@@ -1,4 +1,5 @@
 package deprecated.demo;
+
 import java.net.*;
 import java.io.*;
 
@@ -12,14 +13,14 @@ public class ClientDemo {
         DataOutputStream out = new DataOutputStream(client.getOutputStream());
 
         while (stdIn.available() >= 0) {
-            char c = (char)stdIn.read();
-            out.write((byte)c);
+            char c = (char) stdIn.read();
+            out.write((byte) c);
             if (in.available() >= 0) {
-                c = (char)in.read();
+                c = (char) in.read();
                 System.out.print(c);
             }
         }
 
         client.close();
-    }    
+    }
 }

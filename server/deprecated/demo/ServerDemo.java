@@ -1,4 +1,5 @@
 package deprecated.demo;
+
 import java.net.*;
 import java.io.*;
 
@@ -13,8 +14,8 @@ public class ServerDemo {
         DataOutputStream out = new DataOutputStream(socket.getOutputStream());
 
         while (in.available() >= 0) {
-            char c = (char)in.read();
-            out.write((byte)c);
+            char c = (char) in.read();
+            out.write((byte) c);
         }
 
         server.close();

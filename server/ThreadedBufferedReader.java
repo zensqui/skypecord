@@ -22,11 +22,11 @@ public class ThreadedBufferedReader implements Runnable {
                 } catch (ParseException e) {
                     System.out.println("error parsing JSON: " + input);
                 }
-                jsonIn = (JSONObject)new JSONParser().parse(input);
+                jsonIn = (JSONObject) new JSONParser().parse(input);
                 listener.onInputEvent(jsonIn);
             }
         } catch (Exception e) {
-            //e.printStackTrace();
+            // e.printStackTrace();
             listener.onDisconnect();
         }
     }

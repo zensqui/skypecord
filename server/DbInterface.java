@@ -24,10 +24,10 @@ public class DbInterface {
         }
     }
 
-    //? 0 = User exists.
-    //? 1 = User does not exist.
-    //? 2 = User check failed.
-    public String userExists(String user) { //* utility function to check if a user exists given username
+    // ? 0 = User exists.
+    // ? 1 = User does not exist.
+    // ? 2 = User check failed.
+    public String userExists(String user) { // * utility function to check if a user exists given username
         try {
             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM users WHERE user=?");
             stmt.setString(1, user);
@@ -39,10 +39,10 @@ public class DbInterface {
         }
     }
 
-    //? 0 = User created successfully.
-    //? 1 = User already exists.
-    //? 2 = User creation failed.
-    public String addUser(String user, String pass) { //* add user given username and password
+    // ? 0 = User created successfully.
+    // ? 1 = User already exists.
+    // ? 2 = User creation failed.
+    public String addUser(String user, String pass) { // * add user given username and password
         try {
             if (userExists(user).equals("1")) {
                 PreparedStatement stmt = conn.prepareStatement("INSERT INTO users (user, pass) VALUES (?, ?)");
@@ -58,10 +58,10 @@ public class DbInterface {
         }
     }
 
-    //? 0 = User deleted successfully.
-    //? 1 = User does not exist.
-    //? 2 = User deletion failed.
-    public String delUser(String user) { //* delete user given username
+    // ? 0 = User deleted successfully.
+    // ? 1 = User does not exist.
+    // ? 2 = User deletion failed.
+    public String delUser(String user) { // * delete user given username
         try {
             if (userExists(user).equals("0")) {
                 PreparedStatement stmt = conn.prepareStatement("DELETE FROM users WHERE user=?");
@@ -76,13 +76,13 @@ public class DbInterface {
         }
     }
 
-    //? 0 = User authenticated successfully.
-    //? 1 = User does not exist.
-    //? 2 = User password incorrect.
-    //? 3 = User authentication failed.
-    public String auth(String user, String pass) { //* attempt to authenticate user given username and password
+    // ? 0 = User authenticated successfully.
+    // ? 1 = User does not exist.
+    // ? 2 = User password incorrect.
+    // ? 3 = User authentication failed.
+    public String auth(String user, String pass) { // * attempt to authenticate user given username and password
         try {
-            if(userExists(user).equals("0")) {
+            if (userExists(user).equals("0")) {
                 PreparedStatement stmt = conn.prepareStatement("SELECT * FROM users WHERE user=?");
                 stmt.setString(1, user);
                 ResultSet res = stmt.executeQuery();
@@ -97,10 +97,11 @@ public class DbInterface {
         }
     }
 
-    //? 0 = Conversation exists.
-    //? 1 = Conversation does not exist.
-    //? 2 = Conversation check failed.
-    public String conversationExists(String cid) { //* utility function to check if a conversation exists given conversation id
+    // ? 0 = Conversation exists.
+    // ? 1 = Conversation does not exist.
+    // ? 2 = Conversation check failed.
+    public String conversationExists(String cid) { // * utility function to check if a conversation exists given
+                                                   // conversation id
         try {
             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM conversations WHERE cid=?");
             stmt.setString(1, cid);
@@ -112,16 +113,16 @@ public class DbInterface {
         }
     }
 
-    //? Returns conversation id if conversation exists.
-    //? 1 = Conversation does not exist.
-    //? 2 = Conversation check failed.
+    // ? Returns conversation id if conversation exists.
+    // ? 1 = Conversation does not exist.
+    // ? 2 = Conversation check failed.
     public String userConversationExists(JSONArray users) {
         try {
             Statement stmt = conn.createStatement();
             String sql = String.format("SELECT * FROM conversations");
             ResultSet res = stmt.executeQuery(sql);
             while (res.next()) {
-                JSONArray convoUsers = (JSONArray)new JSONParser().parse(res.getString("users"));
+                JSONArray convoUsers = (JSONArray) new JSONParser().parse(res.getString("users"));
                 if (convoUsers.containsAll(users) && users.containsAll(convoUsers)) {
                     return res.getString("cid");
                 }
@@ -133,9 +134,9 @@ public class DbInterface {
         }
     }
 
-    //? Returns id of conversation.
-    //? Returns id of existing conversation with userlist if it exists.
-    public String addConversation(JSONArray users) { //* add conversation given arraylist of users
+    // ? Returns id of conversation.
+    // ? Returns id of existing conversation with userlist if it exists.
+    public String addConversation(JSONArray users) { // * add conversation given arraylist of users
         try {
             String check = userConversationExists(users);
             if (check.equals("1")) {
@@ -144,9 +145,9 @@ public class DbInterface {
                 stmt.setString(1, cid);
                 stmt.setString(2, users.toJSONString());
                 stmt.executeUpdate();
-                return cid; //? returns conversation id of created conversation
+                return cid; // ? returns conversation id of created conversation
             } else {
-                return check; //? returns id of existing conversation
+                return check; // ? returns id of existing conversation
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -154,10 +155,10 @@ public class DbInterface {
         }
     }
 
-    //? 0 = Conversation deleted successfully.
-    //? 1 = Conversation does not exist.
-    //? 2 = Conversation deletion failed.
-    public String delConversation(String cid) { //* delete conversation given cid
+    // ? 0 = Conversation deleted successfully.
+    // ? 1 = Conversation does not exist.
+    // ? 2 = Conversation deletion failed.
+    public String delConversation(String cid) { // * delete conversation given cid
         try {
             if (conversationExists(cid).equals("0")) {
                 PreparedStatement stmt = conn.prepareStatement("DELETE FROM conversations WHERE cid=?");
@@ -172,8 +173,8 @@ public class DbInterface {
         }
     }
 
-    //? Returns list of users.
-    public String getConversationUsers(String cid) { //* get list of users in conversation given cid
+    // ? Returns list of users.
+    public String getConversationUsers(String cid) { // * get list of users in conversation given cid
         try {
             Statement stmt = conn.createStatement();
             String sql = String.format("SELECT * FROM conversations WHERE cid='%s'", cid);
@@ -186,15 +187,15 @@ public class DbInterface {
         }
     }
 
-    //? Returns list of conversations.
-    public String getUserConversations(String user) { //* get list of conversations for a given user
+    // ? Returns list of conversations.
+    public String getUserConversations(String user) { // * get list of conversations for a given user
         try {
             Statement stmt = conn.createStatement();
             String sql = String.format("SELECT * FROM conversations");
             ResultSet res = stmt.executeQuery(sql);
             JSONArray conversations = new JSONArray();
             while (res.next()) {
-                JSONArray users = (JSONArray)new JSONParser().parse(res.getString("users"));
+                JSONArray users = (JSONArray) new JSONParser().parse(res.getString("users"));
                 if (users.contains(user)) {
                     conversations.add(res.getString("cid"));
                 }
@@ -206,18 +207,18 @@ public class DbInterface {
         }
     }
 
-    //? 0 = User added to conversation successfully.
-    //? 1 = User already in conversation.
-    //? 2 = Conversation does not exist.
-    //? 3 = User addition to conversation failed.
-    public String addConversationUser(String cid, String user) { //* add user to conversation given cid and user
+    // ? 0 = User added to conversation successfully.
+    // ? 1 = User already in conversation.
+    // ? 2 = Conversation does not exist.
+    // ? 3 = User addition to conversation failed.
+    public String addConversationUser(String cid, String user) { // * add user to conversation given cid and user
         try {
             if (conversationExists(cid).equals("0")) {
                 PreparedStatement stmt = conn.prepareStatement("SELECT * FROM conversations WHERE cid=?");
                 stmt.setString(1, cid);
                 ResultSet res = stmt.executeQuery();
                 res.next();
-                JSONArray users = (JSONArray)new JSONParser().parse(res.getString("users"));
+                JSONArray users = (JSONArray) new JSONParser().parse(res.getString("users"));
                 if (!users.contains(user)) {
                     users.add(user);
                     PreparedStatement stmt2 = conn.prepareStatement("UPDATE conversations SET users=? WHERE cid=?");
@@ -235,18 +236,18 @@ public class DbInterface {
         }
     }
 
-    //? 0 = User removed from conversation successfully.
-    //? 1 = User not in conversation.
-    //? 2 = Conversation does not exist.
-    //? 3 = User removal from conversation failed.
-    public String removeConversationUser(String cid, String user) { //* add user to conversation given cid and user
+    // ? 0 = User removed from conversation successfully.
+    // ? 1 = User not in conversation.
+    // ? 2 = Conversation does not exist.
+    // ? 3 = User removal from conversation failed.
+    public String removeConversationUser(String cid, String user) { // * add user to conversation given cid and user
         try {
             if (conversationExists(cid).equals("0")) {
                 PreparedStatement stmt = conn.prepareStatement("SELECT * FROM conversations WHERE cid=?");
                 stmt.setString(1, cid);
                 ResultSet res = stmt.executeQuery();
                 res.next();
-                JSONArray users = (JSONArray)new JSONParser().parse(res.getString("users"));
+                JSONArray users = (JSONArray) new JSONParser().parse(res.getString("users"));
                 if (users.contains(user)) {
                     users.remove(user);
                     PreparedStatement stmt2 = conn.prepareStatement("UPDATE conversations SET users=? WHERE cid=?");
@@ -264,8 +265,8 @@ public class DbInterface {
         }
     }
 
-    //? Returns list of messages.
-    public String getConversationMessages(String cid) { //* get list of messages in conversation given cid
+    // ? Returns list of messages.
+    public String getConversationMessages(String cid) { // * get list of messages in conversation given cid
         try {
             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM messages WHERE cid=?");
             stmt.setString(1, cid);
@@ -285,11 +286,13 @@ public class DbInterface {
         }
     }
 
-    //? Returns message id. 
-    public String addMessage(String cid, String user, String message) { //* add message to conversation given cid, user, and message
+    // ? Returns message id.
+    public String addMessage(String cid, String user, String message) { // * add message to conversation given cid,
+                                                                        // user, and message
         String mid = UUID.randomUUID().toString();
         try {
-            PreparedStatement stmt = conn.prepareStatement("INSERT INTO messages (mid, cid, user, message) VALUES (?, ?, ?, ?)");
+            PreparedStatement stmt = conn
+                    .prepareStatement("INSERT INTO messages (mid, cid, user, message) VALUES (?, ?, ?, ?)");
             stmt.setString(1, mid);
             stmt.setString(2, cid);
             stmt.setString(3, user);

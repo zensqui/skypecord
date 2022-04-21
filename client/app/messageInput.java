@@ -1,15 +1,9 @@
 import java.awt.*;
 import java.awt.event.*;
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Set;
-import java.util.stream.Stream;
 
 import java.util.Locale;
 import javax.speech.Central;
@@ -17,7 +11,6 @@ import javax.speech.synthesis.Synthesizer;
 import javax.speech.synthesis.SynthesizerModeDesc;
 
 import javax.swing.*;
-import javax.swing.border.LineBorder;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -61,8 +54,6 @@ public class messageInput extends JFrame implements ActionListener {
    String convoID;
    HashMap<String, String> convo;
 
-   String temp;
-
    // skypcord colors
    Color lightBlue;
    Color purple;
@@ -70,8 +61,6 @@ public class messageInput extends JFrame implements ActionListener {
    Color darkDarkGray;
 
    public messageInput(Client client) throws IOException {
-      temp = "";
-
       // true if chat is selected
       chatSelected = false;
 
@@ -411,9 +400,7 @@ public class messageInput extends JFrame implements ActionListener {
 
       } else if (!convo.containsValue(cid)) {
          System.out.println("CONVO DOESN'T EXIST YET, TRYING TO CREATE..");
-         temp = cid;
          System.out.println(cid);
-         addConvo(temp);
       }
    }
 
@@ -437,6 +424,19 @@ public class messageInput extends JFrame implements ActionListener {
       } catch (IOException e) {
          e.printStackTrace();
       }
+   }
+
+   public void removeConvo(String cid) {
+      for (String s : convo.keySet()) {
+         if (convo.get(s).equals(cid)) {
+            convo.remove(s);
+            dmodel.removeElement(s);
+         }
+      }
+   }
+
+   public HashMap<String, String> getCurrentConvos() {
+      return convo;
    }
 
    // returns the chat selected
@@ -754,8 +754,7 @@ public class messageInput extends JFrame implements ActionListener {
       }
 
       if ((JButton) e.getSource() == logout) {
-         addConvo(temp);
-         // System.exit(0);
+         System.exit(0);
       }
       if ((JButton) e.getSource() == darkMode) {
 
