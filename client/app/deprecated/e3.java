@@ -1,10 +1,8 @@
 package deprecated;
 
 import javax.swing.*;
-import javax.swing.text.StyledDocument;
 
 import java.awt.*;
-import java.awt.event.*;
 
 public class e3 extends JPanel {
 

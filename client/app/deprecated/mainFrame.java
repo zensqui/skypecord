@@ -2,7 +2,6 @@ package deprecated;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
 
 public class mainFrame {
     public static void main(String[] args) {
