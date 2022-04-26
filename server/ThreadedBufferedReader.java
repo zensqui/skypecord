@@ -4,12 +4,22 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.*;
 
 public class ThreadedBufferedReader implements Runnable {
+    private String name;
+    private Thread t;
+    private boolean exit;
+
     private BufferedReader in;
     private InputEventListener listener;
 
-    public ThreadedBufferedReader(Socket socket, InputEventListener listener) throws IOException {
+    public ThreadedBufferedReader(String name, Socket socket, InputEventListener listener) throws IOException {
+        this.name = name;
+        this.exit = false;
+
         this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         this.listener = listener;
+        
+        this.t = new Thread(this, name + ":tbr");
+        this.t.start();
     }
 
     public void run() {
@@ -18,7 +28,7 @@ public class ThreadedBufferedReader implements Runnable {
         JSONParser parser = new JSONParser();
 
         try {
-            while ((input = in.readLine()) != null) {
+            while (!exit && (input = in.readLine()) != null) {
                 try {
                     jsonIn = (JSONObject) parser.parse(input);
                     listener.onInputEvent(jsonIn);
@@ -30,5 +40,9 @@ public class ThreadedBufferedReader implements Runnable {
             // e.printStackTrace();
             listener.onDisconnect();
         }
+    }
+
+    public void stop() {
+        this.exit = true;
     }
 }

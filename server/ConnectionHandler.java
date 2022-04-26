@@ -5,6 +5,10 @@ import org.json.simple.JSONObject;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class ConnectionHandler implements Runnable {
+    private String name;
+    private Thread t;
+    private boolean exit;
+
     private Socket socket;
     private ServerEventListener listener;
     private LinkedBlockingQueue<JSONObject> queue;
@@ -13,39 +17,52 @@ public class ConnectionHandler implements Runnable {
     private OutputStreamWriter out;
     private ThreadedQueueReader queueReader;
 
-    private String user;
+    public ConnectionHandler(String user, Socket socket, ServerEventListener listener) {
+        this.name = user;
+        this.exit = false;
 
-    public ConnectionHandler(Socket socket, ServerEventListener listener, String user) {
         this.socket = socket;
         this.listener = listener;
         this.queue = new LinkedBlockingQueue<JSONObject>();
-        this.user = user;
+
+        this.t = new Thread(this, user);
+        this.t.start();
     }
 
     public void run() {
         try {
             InputEventListener inputListener = new InputEventHandler(this, listener);
-            in = new ThreadedBufferedReader(socket, inputListener);
+            in = new ThreadedBufferedReader(name, socket, inputListener);
             Thread tIn = new Thread(in);
             tIn.start();
 
             this.out = new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8);
 
             QueueEventListener queueListener = new QueueEventHandler(out);
-            queueReader = new ThreadedQueueReader(queue, queueListener);
-            Thread tQueue = new Thread(queueReader);
-            tQueue.start();
+            queueReader = new ThreadedQueueReader(name, queue, queueListener);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void setUser(String user) {
-        this.user = user;
+    public void stop() {
+        exit = true;
+        try {
+            in.stop();
+            queueReader.stop();
+            socket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    public String getUser() {
-        return this.user;
+    public void setName(String name) {
+        this.name = name;
+        t.setName(name);
+    }
+
+    public String getName() {
+        return this.name;
     }
 
     public void add(JSONObject json) {
