@@ -25,16 +25,16 @@ public class ConnectionHandler implements Runnable {
         this.listener = listener;
         this.queue = new LinkedBlockingQueue<JSONObject>();
 
-        this.t = new Thread(this, user);
+        this.t = new Thread(this, user + ":ch");
         this.t.start();
     }
 
     public void run() {
+        System.out.println("ConnectionHandler: run()");
+
         try {
             InputEventListener inputListener = new InputEventHandler(this, listener);
             in = new ThreadedBufferedReader(name, socket, inputListener);
-            Thread tIn = new Thread(in);
-            tIn.start();
 
             this.out = new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8);
 
@@ -46,6 +46,7 @@ public class ConnectionHandler implements Runnable {
     }
 
     public void stop() {
+        System.out.println("ConnectionHandler: stop()");
         exit = true;
         try {
             in.stop();

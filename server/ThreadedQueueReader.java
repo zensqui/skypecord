@@ -21,6 +21,8 @@ public class ThreadedQueueReader implements Runnable {
     }
 
     public void run() {
+        System.out.println("ThreadedQueueReader: run()");
+
         while (!exit) {
             try {
                 JSONObject jsonOut = queue.take();
@@ -39,6 +41,7 @@ public class ThreadedQueueReader implements Runnable {
     }
 
     public void stop() {
+        System.out.println("ThreadedQueueReader: stop()");
         this.exit = true;
     }
 }

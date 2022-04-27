@@ -17,32 +17,37 @@ public class ThreadedBufferedReader implements Runnable {
 
         this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         this.listener = listener;
-        
+
         this.t = new Thread(this, name + ":tbr");
         this.t.start();
     }
 
     public void run() {
+        System.out.println("ThreadedBufferedReader: run()");
+
         String input = "";
         JSONObject jsonIn = new JSONObject();
         JSONParser parser = new JSONParser();
 
-        try {
-            while (!exit && (input = in.readLine()) != null) {
-                try {
-                    jsonIn = (JSONObject) parser.parse(input);
-                    listener.onInputEvent(jsonIn);
-                } catch (ParseException e) {
-                    e.printStackTrace();
+        while (!exit) {
+            try {
+                while ((input = in.readLine()) != null) {
+                    try {
+                        jsonIn = (JSONObject) parser.parse(input);
+                        listener.onInputEvent(jsonIn);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
                 }
+                listener.onDisconnect();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            // e.printStackTrace();
-            listener.onDisconnect();
         }
     }
 
     public void stop() {
+        System.out.println("ThreadedBufferedReader: stop()");
         this.exit = true;
     }
 }
