@@ -23,9 +23,7 @@ public class Server {
 
             String user = UUID.randomUUID().toString();
 
-            ConnectionHandler connection = new ConnectionHandler(socket, listener, user);
-            Thread t = new Thread(connection);
-            t.start();
+            ConnectionHandler connection = new ConnectionHandler(user, socket, listener);
 
             connections.put(user, connection);
             System.out.println("connection [" + user + "] --> new connection from " + socket.getInetAddress() + ":"
@@ -69,11 +67,11 @@ class EventHandler implements ServerEventListener {
                 res = db.auth((String) json.get("user"), (String) json.get("pass"));
                 sendExit(connection, json, res);
                 if (res.equals("0")) {
-                    String user = connection.getUser();
-                    connection.setUser((String) json.get("user"));
+                    String user = connection.getName();
+                    connection.setName((String) json.get("user"));
                     connections.remove(user);
                     connections.put((String) json.get("user"), connection);
-                    System.out.println("connection [" + user + "] --> user [" + connection.getUser() + "]");
+                    System.out.println("connection [" + user + "] --> user [" + connection.getName() + "]");
                 }
                 break;
             case "userexists":
@@ -131,10 +129,11 @@ class EventHandler implements ServerEventListener {
                 System.out.println("unhandled event: " + type);
         }
     }
-
+    
     public void onConnectionClosed(ConnectionHandler connection) {
-        String user = connection.getUser();
+        String user = connection.getName();
         connections.remove(user);
+        connection.stop();
         System.out.println("connection from [" + user + "] --> connection closed");
     }
 }

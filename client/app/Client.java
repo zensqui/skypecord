@@ -14,7 +14,6 @@ public class Client {
     private OutputStreamWriter out;
     private LinkedBlockingQueue<JSONObject> queue;
     private InputEventHandler inputListener;
-    private BackgroundRefresh backgroundRefresh;
 
     private String user;
 
@@ -31,9 +30,6 @@ public class Client {
 
     public void setMessageUi(messageInput messageUi) throws IOException {
         inputListener.updateMessageUi(messageUi);
-        this.backgroundRefresh = new BackgroundRefresh(this, messageUi, 2);
-        Thread tBg = new Thread(backgroundRefresh);
-        tBg.start();
     }
 
     public String getUser() {
@@ -131,13 +127,11 @@ public class Client {
         json.put("type", "getConvoUsers");
         json.put("cid", cid);
         out.append(json.toJSONString() + "\n");
-        // System.out.println("SENDING GETUSERS REQ (CLIENT.JAVA:119) | " +
-        // json.toJSONString());
+        System.out.println("SENDING GETUSERS REQ (CLIENT.JAVA:119) | " + json.toJSONString());
         out.flush();
 
         JSONObject jsonOut = getResponse();
-        // System.out.println("RECIEVING GETUSERS RES (CLIENT.JAVA:123) | " +
-        // jsonOut.toJSONString());
+        System.out.println("RECIEVING GETUSERS RES (CLIENT.JAVA:123) | " + jsonOut.toJSONString());
         String[] users = jsonOut.get("data").toString().substring(1, jsonOut.get("data").toString().length() - 1)
                 .split(", ");
         return users;
@@ -211,19 +205,18 @@ class InputEventHandler implements InputEventListener {
     }
 
     public void onInputEvent(JSONObject json) {
+        System.out.println("RECIEVING EVENT (CLIENT.JAVA:156) | " + json.toJSONString());
         if (json.get("type").equals("msg")) {
             //System.out.println("MESSAGE RECIEVED (CLIENT.JAVA:195) | [" + json.get("user") + "] " + json.get("data"));
             messageUi.addMessage(json.get("user").toString(), json.get("data").toString(), json.get("cid").toString());
+            messageUi.textSpeech(json.get("user").toString() + " said " + json.get("data").toString());
         } else {
             //System.out.println("EVENT RECIEVED (CLIENT.JAVA:199) | " + json.toJSONString());
             try {
-                // System.out.println("OTHER RESPONSE RECIEVED (CLIENT.JAVA:201) | " +
-                // json.toJSONString());
-                // System.out.println("QUEUE BEFORE ADDING (CLIENT.JAVA:202) | " +
-                // queue.toString());
+                //System.out.println("OTHER RESPONSE RECIEVED (CLIENT.JAVA:201) | " + json.toJSONString());
+                //System.out.println("QUEUE BEFORE ADDING (CLIENT.JAVA:202) | " + queue.toString());
                 this.queue.put(json);
-                // System.out.println("QUEUE AFTER ADDING (CLIENT.JAVA:204) | " +
-                // queue.toString());
+                System.out.println("QUEUE AFTER ADDING (CLIENT.JAVA:204) | " + queue.toString());
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
