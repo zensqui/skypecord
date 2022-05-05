@@ -116,7 +116,7 @@ public class LoginDemo extends JFrame implements ActionListener {
             case "0":
                message.setText("Login successful.");
                setVisible(false);
-               new messageInput(client);
+               new MessageInput(client);
                break;
             case "1":
                message.setText("Invalid user.");
@@ -160,7 +160,7 @@ public class LoginDemo extends JFrame implements ActionListener {
                   case "0":
                      message.setText("Login successful.");
                      setVisible(false);
-                     new messageInput(client);
+                     new MessageInput(client);
                      break;
                   case "1":
                      message.setText("Invalid user.");

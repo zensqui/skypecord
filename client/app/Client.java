@@ -28,7 +28,7 @@ public class Client {
         tIn.start();
     }
 
-    public void setMessageUi(messageInput messageUi) throws IOException {
+    public void setMessageUi(MessageInput messageUi) throws IOException {
         inputListener.updateMessageUi(messageUi);
     }
 
@@ -194,13 +194,13 @@ interface InputEventListener {
 
 class InputEventHandler implements InputEventListener {
     private LinkedBlockingQueue<JSONObject> queue;
-    private messageInput messageUi;
+    private MessageInput messageUi;
 
     public InputEventHandler(LinkedBlockingQueue<JSONObject> queue) {
         this.queue = queue;
     }
 
-    public void updateMessageUi(messageInput messageUi) {
+    public void updateMessageUi(MessageInput messageUi) {
         this.messageUi = messageUi;
     }
 

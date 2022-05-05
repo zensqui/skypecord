@@ -3,10 +3,10 @@ import java.util.HashMap;
 
 public class BackgroundRefresh implements Runnable {
     private Client client;
-    private messageInput messageUi;
+    private MessageInput messageUi;
     private int delay;
 
-    public BackgroundRefresh(Client client, messageInput mIn, int delay) {
+    public BackgroundRefresh(Client client, MessageInput mIn, int delay) {
         this.client = client;
         this.messageUi = mIn;
         this.delay = delay;

@@ -21,7 +21,7 @@ import javax.swing.border.LineBorder;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-public class messageInput extends JFrame implements ActionListener {
+public class MessageInput extends JFrame implements ActionListener {
 
    JPanel panel;
 
@@ -72,7 +72,7 @@ public class messageInput extends JFrame implements ActionListener {
    Color blueish;
    Color darkDarkGray;
 
-   public messageInput(Client client) throws IOException {
+   public MessageInput(Client client) throws IOException {
       
       //true if chat is selected
       chatSelected = false;
@@ -449,7 +449,7 @@ public class messageInput extends JFrame implements ActionListener {
    //adds conversations to the directory
    public void addConvo(String cid) {
       try {
-         System.out.println("REQUESTING CONVO INFO FOR " + cid);
+         //System.out.println("REQUESTING CONVO INFO FOR " + cid);
          String[] users = client.getConvoUsers(cid);
          String name = "";
          for(String u : users) {
