@@ -303,10 +303,9 @@ public class messageInput extends JFrame implements ActionListener {
 
       about = new JLabel();
       about.setFont(new Font("font", Font.PLAIN, 20));
-      about.setText("<html>This project was created by<br>" +
-            "Brady Pettengill and Morgan Wagner<br>" +
-            "as a revolutionary replacement for<br>" +
-            "your current communication technology.</html>");
+      about.setText("<html>Skypecord was created by<br>" +
+            "Brady Pettengill and Morgan Wagner.<br></br>" +
+            "CS B SY2022<br></html>");
       layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, about, 550, SpringLayout.HORIZONTAL_CENTER, panel);
       layout.putConstraint(SpringLayout.NORTH, about, 300, SpringLayout.NORTH, panel);
       about.setPreferredSize(new Dimension(250, 300));

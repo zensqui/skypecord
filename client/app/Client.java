@@ -212,10 +212,10 @@ class InputEventHandler implements InputEventListener {
 
     public void onInputEvent(JSONObject json) {
         if (json.get("type").equals("msg")) {
-            System.out.println("MESSAGE RECIEVED (CLIENT.JAVA:195) | [" + json.get("user") + "] " + json.get("data"));
+            //System.out.println("MESSAGE RECIEVED (CLIENT.JAVA:195) | [" + json.get("user") + "] " + json.get("data"));
             messageUi.addMessage(json.get("user").toString(), json.get("data").toString(), json.get("cid").toString());
         } else {
-            System.out.println("EVENT RECIEVED (CLIENT.JAVA:199) | " + json.toJSONString());
+            //System.out.println("EVENT RECIEVED (CLIENT.JAVA:199) | " + json.toJSONString());
             try {
                 // System.out.println("OTHER RESPONSE RECIEVED (CLIENT.JAVA:201) | " +
                 // json.toJSONString());
