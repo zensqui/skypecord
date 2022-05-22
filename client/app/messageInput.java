@@ -21,7 +21,7 @@ import javax.swing.border.LineBorder;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-public class MessageInput extends JFrame implements ActionListener {
+public class messageInput extends JFrame implements ActionListener {
 
    JPanel panel;
 
@@ -72,7 +72,7 @@ public class MessageInput extends JFrame implements ActionListener {
    Color blueish;
    Color darkDarkGray;
 
-   public MessageInput(Client client) throws IOException {
+   public messageInput(Client client) throws IOException {
       
       //true if chat is selected
       chatSelected = false;
@@ -327,9 +327,10 @@ public class MessageInput extends JFrame implements ActionListener {
    
       about = new JLabel();
       about.setFont(new Font("font", Font.PLAIN, 20));
-      about.setText("<html>Skypecord was created by<br>" +
-            "Brady Pettengill and Morgan Wagner.<br></br>" +
-            "CS B SY2022<br></html>");
+      about.setText("<html>This project was created by<br>" + 
+            "Brady Pettengill and Morgan Wagner<br>" + 
+            "as a revolutionary replacement for<br>" +
+            "your current communication technology.</html>");
       layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, about, 550, SpringLayout.HORIZONTAL_CENTER, panel);
       layout.putConstraint(SpringLayout.NORTH, about, 300, SpringLayout.NORTH, panel);
       about.setPreferredSize(new Dimension(250, 300));
@@ -347,21 +348,31 @@ public class MessageInput extends JFrame implements ActionListener {
       darkMode.addActionListener(this);
       panel.add(darkMode);
          
-      textToSpeak = new JButton("mute");
-      layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, textToSpeak, 450, SpringLayout.HORIZONTAL_CENTER, panel);
-      layout.putConstraint(SpringLayout.NORTH, textToSpeak, 625, SpringLayout.NORTH, panel);
+      ImageIcon tts = new ImageIcon("./client/app/content/unmuted.jpg");
+      textToSpeak = new JButton(tts);
+      layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, textToSpeak, 500, SpringLayout.HORIZONTAL_CENTER, panel);
+      layout.putConstraint(SpringLayout.NORTH, textToSpeak, 275, SpringLayout.NORTH, panel);
       textToSpeak.setPreferredSize(new Dimension(75, 50));
       textToSpeak.addActionListener(this);
       panel.add(textToSpeak);
-         
-      play = new JButton("play");
-      layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, play, 550, SpringLayout.HORIZONTAL_CENTER, panel);
-      layout.putConstraint(SpringLayout.NORTH, play, 625, SpringLayout.NORTH, panel);
+      textToSpeak.setOpaque(false);
+      textToSpeak.setContentAreaFilled(false);
+      textToSpeak.setBorderPainted(false);
+      textToSpeak.setFocusPainted(false);
+      
+      ImageIcon PLAY = new ImageIcon("./client/app/content/play.jpg");
+      play = new JButton(PLAY);
+      layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, play, 600, SpringLayout.HORIZONTAL_CENTER, panel);
+      layout.putConstraint(SpringLayout.NORTH, play, 275, SpringLayout.NORTH, panel);
       play.setPreferredSize(new Dimension(75, 50));
       play.addActionListener(this);
       play.setVisible(false);
       panel.add(play);
-         
+      play.setOpaque(false);
+      play.setContentAreaFilled(false);
+      play.setBorderPainted(false);
+      play.setFocusPainted(false);
+          
          //gets all the conversations on your account and puts them in directory
       getConvos();
          
@@ -449,7 +460,7 @@ public class MessageInput extends JFrame implements ActionListener {
    //adds conversations to the directory
    public void addConvo(String cid) {
       try {
-         //System.out.println("REQUESTING CONVO INFO FOR " + cid);
+         System.out.println("REQUESTING CONVO INFO FOR " + cid);
          String[] users = client.getConvoUsers(cid);
          String name = "";
          for(String u : users) {
@@ -702,6 +713,10 @@ public class MessageInput extends JFrame implements ActionListener {
          String addUser = "";
          while(addUser.equals("")){
             addUser = JOptionPane.showInputDialog("Enter User you want to add to the conversation");
+            
+            if(addUser == null){
+               return;
+            }
          }
       
          try {
@@ -727,8 +742,11 @@ public class MessageInput extends JFrame implements ActionListener {
             if(dmodel.elementAt(i).equals(chatInput)){
                String test = dmodel.remove(i);
                dmodel.add(i, test + ", " + addUser);
+               
                convo.remove(test);
                convo.put(test + ", " + addUser, cid);
+               
+               dList.setSelectedIndex(i);
                break;
             }  
          }
@@ -741,13 +759,22 @@ public class MessageInput extends JFrame implements ActionListener {
             ex.printStackTrace();
          }
                
-         System.out.println("User Added");
+         String selectedItem = (String) dList.getSelectedValue();
+         convoID = convo.get(selectedItem);
+         model.clear();
+         model.addElement("Chat with " + selectedItem);
+         model.addElement(" ");
+         getMsgs(convoID);
       }
       
       if((JButton)e.getSource() == removeFromConvo){
          
          String chatInput = dList.getSelectedValue();
-      
+         
+         if(chatInput == null){
+            return;
+         }
+         
          String userRemoved = "";
          String cid = convo.get(chatInput);
          String[] selected = chatInput.split(", ");
@@ -756,14 +783,18 @@ public class MessageInput extends JFrame implements ActionListener {
          userRemoved = (String) JOptionPane.showInputDialog(null, "Choose user you want to remove.", 
             "Edit Conversations", JOptionPane.QUESTION_MESSAGE, null, selected, selected[0]);
             
+         if(userRemoved == null){
+            return;
+         }
+            
          try {
-            System.out.println("it tried");
+            ////System.out.println("it tried");
             client.delConvoUser(cid, userRemoved);
-            System.out.println("it worked maybe");
+            //System.out.println("it worked maybe");
          } catch (IOException e1) {
             e1.printStackTrace();
          }
-         System.out.println("User Removed");
+         //System.out.println("User Removed");
       
          String finalName = "";
       
@@ -778,18 +809,29 @@ public class MessageInput extends JFrame implements ActionListener {
             if(dmodel.elementAt(i).equals(chatInput)){
                dmodel.remove(i);
                dmodel.add(i, finalName.substring(0, finalName.length() - 2));
+               
                convo.remove(chatInput);
                convo.put(finalName.substring(0, finalName.length() - 2), cid);
+               
+               dList.setSelectedIndex(i);
                break;
             }  
          }
          //adds a update message in the conversation for the users to see who was added
          String chatUpdate = "Removed " + userRemoved + " from the conversation.";
+         
          try {
             client.message(cid, chatUpdate);
          } catch (Exception ex) {
             ex.printStackTrace();
          }
+         
+         String selectedItem = (String) dList.getSelectedValue();
+         convoID = convo.get(selectedItem);
+         model.clear();
+         model.addElement("Chat with " + selectedItem);
+         model.addElement(" ");
+         getMsgs(convoID);
       }
    
       if((JButton)e.getSource() == logout){
@@ -891,18 +933,22 @@ public class MessageInput extends JFrame implements ActionListener {
       if((JButton)e.getSource() == textToSpeak){
          muted = !muted;
          if(muted){
-            textToSpeak.setText("unmute");
+            ImageIcon m = new ImageIcon("./client/app/content/muted.jpg");
+            textToSpeak.setIcon(m);
             synthesizer.cancelAll();
          }
-         else
-            textToSpeak.setText("mute");
+         else{
+            ImageIcon um = new ImageIcon("./client/app/content/unmuted.jpg");
+            textToSpeak.setIcon(um);
+         }
       }
       
       if((JButton)e.getSource() == play){
          paused = !paused;
          
          if(paused){
-            play.setText("play");
+            ImageIcon PLAY = new ImageIcon("./client/app/content/play.jpg");
+            play.setIcon(PLAY);
             synthesizer.pause();
          }
          else{
@@ -911,7 +957,8 @@ public class MessageInput extends JFrame implements ActionListener {
             }
             textSpeech((String) list.getSelectedValue());
             
-            play.setText("pause");
+            ImageIcon PAUSE = new ImageIcon("./client/app/content/pause.jpg");
+            play.setIcon(PAUSE);
             try{
                synthesizer.resume();
             }
