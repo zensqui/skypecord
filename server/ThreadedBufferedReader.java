@@ -41,7 +41,7 @@ public class ThreadedBufferedReader implements Runnable {
                 }
                 listener.onDisconnect();
             } catch (IOException e) {
-                e.printStackTrace();
+                listener.onDisconnect();
             }
         }
     }
