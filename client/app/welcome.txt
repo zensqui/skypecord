@@ -10,7 +10,4 @@ A not whatsoever fully funtional messaging service.
  
 Voice Chats coming soon!
  
-If there are any issues please forget about it because we will not fix them.
-I hope you didn't use your actual password because your password is not secure right now.
- 
-/r*************Please select or create a new chat to start chatting.*************
+/r********** Please select or create a new conversation to start chatting. **********
