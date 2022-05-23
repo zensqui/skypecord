@@ -21,7 +21,7 @@ import javax.swing.border.LineBorder;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-public class messageInput extends JFrame implements ActionListener {
+public class MessageInput extends JFrame implements ActionListener {
 
    JPanel panel;
 
@@ -72,7 +72,7 @@ public class messageInput extends JFrame implements ActionListener {
    Color blueish;
    Color darkDarkGray;
 
-   public messageInput(Client client) throws IOException {
+   public MessageInput(Client client) throws IOException {
 
       // true if chat is selected
       chatSelected = false;
