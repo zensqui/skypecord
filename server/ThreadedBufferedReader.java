@@ -23,7 +23,7 @@ public class ThreadedBufferedReader implements Runnable {
     }
 
     public void run() {
-        System.out.println("ThreadedBufferedReader: run()");
+        //System.out.println("ThreadedBufferedReader: run()");
 
         String input = "";
         JSONObject jsonIn = new JSONObject();
@@ -47,7 +47,7 @@ public class ThreadedBufferedReader implements Runnable {
     }
 
     public void stop() {
-        System.out.println("ThreadedBufferedReader: stop()");
+        //System.out.println("ThreadedBufferedReader: stop()");
         this.exit = true;
     }
 }

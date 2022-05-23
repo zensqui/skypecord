@@ -30,7 +30,7 @@ public class ConnectionHandler implements Runnable {
     }
 
     public void run() {
-        System.out.println("ConnectionHandler: run()");
+        //System.out.println("ConnectionHandler: run()");
 
         try {
             InputEventListener inputListener = new InputEventHandler(this, listener);
@@ -46,7 +46,7 @@ public class ConnectionHandler implements Runnable {
     }
 
     public void stop() {
-        System.out.println("ConnectionHandler: stop()");
+        //System.out.println("ConnectionHandler: stop()");
         exit = true;
         try {
             in.stop();

@@ -21,7 +21,7 @@ public class ThreadedQueueReader implements Runnable {
     }
 
     public void run() {
-        System.out.println("ThreadedQueueReader: run()");
+        //System.out.println("ThreadedQueueReader: run()");
 
         while (!exit) {
             try {
@@ -41,7 +41,7 @@ public class ThreadedQueueReader implements Runnable {
     }
 
     public void stop() {
-        System.out.println("ThreadedQueueReader: stop()");
+        //System.out.println("ThreadedQueueReader: stop()");
         this.exit = true;
     }
 }
