@@ -129,7 +129,7 @@ class EventHandler implements ServerEventListener {
                 System.out.println("unhandled event: " + type);
         }
     }
-    
+
     public void onConnectionClosed(ConnectionHandler connection) {
         String user = connection.getName();
         connections.remove(user);

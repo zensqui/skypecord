@@ -15,7 +15,7 @@ public class BackgroundRefresh implements Runnable {
     public void run() {
         while (true) {
             try {
-                //System.out.println("Conversation list refreshed.");
+                // System.out.println("Conversation list refreshed.");
                 Thread.sleep(delay * 1000);
 
                 String[] convos;
