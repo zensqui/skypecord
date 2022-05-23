@@ -1,5 +1,5 @@
-import java.awt.*;
-import java.awt.event.*;
+package deprecated.drawing;
+
 import javax.swing.*;
 
 import java.awt.BorderLayout;

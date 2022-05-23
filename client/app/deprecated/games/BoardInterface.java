@@ -1,3 +1,5 @@
+package deprecated.games;
+
 public interface BoardInterface {
 
     public boolean whiteToMove();

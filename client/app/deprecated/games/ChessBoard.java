@@ -1,3 +1,5 @@
+package deprecated.games;
+
 import javax.swing.JPanel;
 
 //chessboard that will control all of the logic on the client's end.

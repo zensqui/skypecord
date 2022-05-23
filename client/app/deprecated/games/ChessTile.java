@@ -1,3 +1,5 @@
+package deprecated.games;
+
 public class ChessTile {
     public int val;
     public char fen;

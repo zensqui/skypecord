@@ -1,5 +1,6 @@
+package deprecated.drawing;
+
 import java.awt.*;
-import java.awt.event.*;
 import javax.swing.*;
 import java.awt.image.BufferedImage;
 import java.awt.Color;

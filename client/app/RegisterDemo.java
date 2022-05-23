@@ -41,7 +41,7 @@ public class RegisterDemo extends JFrame implements ActionListener {
 
       // Username Label
       user_label = new JLabel();
-      user_label.setText("User Name :");
+      user_label.setText("Username:");
       userName_text = new JTextField();
       layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, user_label, 75, SpringLayout.HORIZONTAL_CENTER, panel);
       layout.putConstraint(SpringLayout.NORTH, user_label, 300, SpringLayout.NORTH, panel);
@@ -54,7 +54,7 @@ public class RegisterDemo extends JFrame implements ActionListener {
 
       // Password Label
       password_label = new JLabel();
-      password_label.setText("Password :");
+      password_label.setText("Password:");
       password_text = new JPasswordField();
       layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, password_label, 75, SpringLayout.HORIZONTAL_CENTER, panel);
       layout.putConstraint(SpringLayout.NORTH, password_label, 350, SpringLayout.NORTH, panel);
@@ -67,7 +67,7 @@ public class RegisterDemo extends JFrame implements ActionListener {
 
       // confirm password label
       confirmPassword_label = new JLabel();
-      confirmPassword_label.setText("<html>Confirm<br>Password : </html>");
+      confirmPassword_label.setText("<html>Confirm<br>Password: </html>");
       confirmPassword_text = new JPasswordField();
       layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, confirmPassword_label, 75, SpringLayout.HORIZONTAL_CENTER,
             panel);
@@ -127,7 +127,7 @@ public class RegisterDemo extends JFrame implements ActionListener {
          String confirmPassword = confirmPassword_text.getText();
 
          if (userName.equals("") || password.equals("") || confirmPassword.equals("")) {
-            message.setText("Enter information");
+            message.setText("Enter information.");
             return;
          }
 
@@ -173,7 +173,7 @@ public class RegisterDemo extends JFrame implements ActionListener {
             String confirmPassword = confirmPassword_text.getText();
 
             if (userName.equals("") || password.equals("") || confirmPassword.equals("")) {
-               message.setText("Enter information");
+               message.setText("Enter information.");
                return;
             }
 

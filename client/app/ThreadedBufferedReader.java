@@ -16,7 +16,7 @@ public class ThreadedBufferedReader implements Runnable {
         String input = "";
         JSONObject jsonIn = new JSONObject();
         JSONParser parser = new JSONParser();
-        
+
         try {
             while ((input = in.readLine()) != null) {
                 try {

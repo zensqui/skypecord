@@ -3,10 +3,10 @@ import java.util.HashMap;
 
 public class BackgroundRefresh implements Runnable {
     private Client client;
-    private messageInput messageUi;
+    private MessageInput messageUi;
     private int delay;
 
-    public BackgroundRefresh(Client client, messageInput mIn, int delay) {
+    public BackgroundRefresh(Client client, MessageInput mIn, int delay) {
         this.client = client;
         this.messageUi = mIn;
         this.delay = delay;
@@ -15,7 +15,7 @@ public class BackgroundRefresh implements Runnable {
     public void run() {
         while (true) {
             try {
-                System.out.println("Conversation list refreshed.");
+                // System.out.println("Conversation list refreshed.");
                 Thread.sleep(delay * 1000);
 
                 String[] convos;
