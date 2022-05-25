@@ -54,7 +54,6 @@ public class LoginGUI {
         login.addActionListener(new LoginPressed());
 
         // Register Button setup
-
         ImageIcon registerPic = new ImageIcon("./client/app/content/registerbutton.jpg");
 
         JButton Register = new JButton(registerPic);

@@ -14,6 +14,7 @@ public class Client {
     private OutputStreamWriter out;
     private LinkedBlockingQueue<JSONObject> queue;
     private InputEventHandler inputListener;
+    private BackgroundRefresh backgroundRefresh;
 
     private String user;
 
@@ -30,6 +31,9 @@ public class Client {
 
     public void setMessageUi(MessageInput messageUi) throws IOException {
         inputListener.updateMessageUi(messageUi);
+        this.backgroundRefresh = new BackgroundRefresh(this, messageUi, 2);
+        Thread tBg = new Thread(backgroundRefresh);
+        tBg.start();
     }
 
     public String getUser() {
@@ -150,7 +154,7 @@ public class Client {
         JSONArray convos = (JSONArray) new JSONParser().parse(jsonOut.get("data").toString());
         String[] cids = new String[convos.size()];
         for (int i = 0; i < convos.size(); i++) {
-            cids[i] = (String) convos.get(i);
+            cids[i] = convos.get(i).toString();
         }
         return cids;
     }

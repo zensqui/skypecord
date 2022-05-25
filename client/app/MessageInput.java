@@ -11,12 +11,8 @@ import java.util.Locale;
 import javax.speech.Central;
 import javax.speech.synthesis.Synthesizer;
 import javax.speech.synthesis.SynthesizerModeDesc;
-import com.sun.speech.freetts.Voice;
-import com.sun.speech.freetts.VoiceManager;
-import javax.speech.synthesis.SpeakableAdapter;
 
 import javax.swing.*;
-import javax.swing.border.LineBorder;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -469,6 +465,19 @@ public class MessageInput extends JFrame implements ActionListener {
       } catch (IOException e) {
          e.printStackTrace();
       }
+   }
+
+   public void removeConvo(String cid) {
+      for (String s : convo.keySet()) {
+         if (convo.get(s).equals(cid)) {
+            convo.remove(s);
+            dmodel.removeElement(s);
+         }
+      }
+   }
+
+   public HashMap<String, String> getCurrentConvos() {
+      return convo;
    }
 
    // returns the chat selected
